@@ -636,18 +636,16 @@ RSpec.describe 'System > Objects', type: :system do
 
     it 'date attribute' do
       in_modal do
-        page.find('select[name=data_type]').select('Date')
+        page.find('select[name=data_type]').select('Date field')
         fill_in 'Default time diff (hours)', with: ''
-
-        expect { page.find('.js-submit').click }.to change(ObjectManager::Attribute, :count).by(1)
       end
+      expect { page.find('.js-submit').click }.to change(ObjectManager::Attribute, :count).by(1)
     end
 
     it 'datetime attribute' do
       in_modal do
-        page.find('select[name=data_type]').select('Datetime')
+        page.find('select[name=data_type]').select('Date & time field')
         fill_in 'Default time diff (minutes)', with: ''
-
         expect { page.find('.js-submit').click }.to change(ObjectManager::Attribute, :count).by(1)
       end
     end
