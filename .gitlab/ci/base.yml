@@ -148,6 +148,16 @@
     - <<: *docker_redis
     - <<: *docker_memcached
 
+.services_mysql_postgresql_imap_redis_memcached: &services_mysql_postgresql_imap_redis_memcached
+  extends:
+    - .variables_redis_memcached
+  services:
+    - <<: *docker_mysql
+    - <<: *docker_postgresql
+    - <<: *docker_redis
+    - <<: *docker_memcached
+    - <<: *docker_imap
+
 .services_postgresql_selenium_chrome: &services_postgresql_selenium_chrome
   extends:
     - .variables_selenium_chrome
