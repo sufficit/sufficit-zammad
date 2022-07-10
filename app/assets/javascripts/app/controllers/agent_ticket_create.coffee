@@ -12,17 +12,21 @@ class App.TicketCreate extends App.Controller
     'click .js-active-toggle': 'toggleButton'
 
   types: {
+    'quepasa-out': {
+      icon: 'quepasa',
+      label: 'Send Quepasa Message'
+    },
     'phone-in': {
       icon: 'received-calls',
-      label: __('Received Call')
+      label: 'Received Call'
     },
     'phone-out': {
       icon: 'outbound-calls',
-      label: __('Outbound Call')
+      label: 'Outbound Call'
     },
     'email-out': {
       icon: 'email',
-      label: __('Send Email')
+      label: 'Send Email'
     }
   }
 
@@ -31,9 +35,8 @@ class App.TicketCreate extends App.Controller
     @sidebarState = {}
 
     # define default type and available types
-    @defaultType     = @Config.get('ui_ticket_create_default_type')
-    @availableTypes  = @Config.get('ui_ticket_create_available_types') || []
-
+    @defaultType = @Config.get('ui_ticket_create_default_type')
+    @availableTypes = @Config.get('ui_ticket_create_available_types') || []
     if !_.isArray(@availableTypes)
       @availableTypes = [@availableTypes]
 
@@ -49,15 +52,12 @@ class App.TicketCreate extends App.Controller
     if @ticket_id && @article_id
       @split = "/#{@ticket_id}/#{@article_id}"
 
-    @ajax(
-      type: 'GET'
-      url:  "#{@apiPath}/ticket_create"
-      processData: true
-      success: (data, status, xhr) =>
-        App.Collection.loadAssets(data.assets)
-        @formMeta = data.form_meta
-        @buildScreen(params)
-    )
+    load = (data) =>
+      App.Collection.loadAssets(data.assets)
+      @formMeta = data.form_meta
+      @buildScreen(params)
+    @bindId = App.TicketCreateCollection.bind(load, false)
+    App.TicketCreateCollection.fetch()
 
     # rerender view, e. g. on langauge change
     @controllerBind('ui:rerender', =>
@@ -72,6 +72,9 @@ class App.TicketCreate extends App.Controller
       return if !@sidebarWidget
       @sidebarWidget.render(@params())
     )
+
+  release: =>
+    App.TicketCreateCollection.unbindById(@bindId)
 
   currentChannel: =>
     if !type
@@ -104,20 +107,25 @@ class App.TicketCreate extends App.Controller
 
     # set form type attributes
     articleSenderTypeMap =
+      'quepasa-out':
+        sender:  'Agent'
+        article: 'quepasa personal-message'
+        title:   'Quepasa Outbound'
+        screen:  'create_quepasa_out'
       'phone-in':
         sender:  'Customer'
         article: 'phone'
-        title:   __('Inbound Call')
+        title:   'Call Inbound'
         screen:  'create_phone_in'
       'phone-out':
         sender:  'Agent'
         article: 'phone'
-        title:   __('Outbound Call')
+        title:   'Call Outbound'
         screen:  'create_phone_out'
       'email-out':
         sender:  'Agent'
         article: 'email'
-        title:   __('Email')
+        title:   'Email'
         screen:  'create_email_out'
     @articleAttributes = articleSenderTypeMap[type]
 
@@ -129,16 +137,8 @@ class App.TicketCreate extends App.Controller
     @$('[name="group_id"]').trigger('change')
 
     # add observer to change options
-    @$('[name="cc"], [name="group_id"], [name="customer_id"]').on('change', =>
+    @$('[name="cc"], [name="group_id"], [name="customer_id"]').bind('change', =>
       @updateSecurityOptions()
-    )
-
-    @listenTo(App.Group, 'refresh', =>
-      @sidebarWidget.render(@params())
-    )
-
-    @$('[name="group_id"]').bind('change', =>
-      @sidebarWidget.render(@params())
     )
     @updateSecurityOptions()
 
@@ -181,9 +181,7 @@ class App.TicketCreate extends App.Controller
   show: =>
     @navupdate("#ticket/create/id/#{@id}#{@split}", type: 'menu')
     @autosaveStart()
-    @controllerBind('ticket_create_rerender',           (template) => @renderQueue(template))
-    @controllerBind('ticket_create_shared_draft_saved',       @sharedDraftSaved)
-    @controllerBind('ticket_create_import_draft_attachments', @importDraftAttachments)
+    @controllerBind('ticket_create_rerender', (template) => @renderQueue(template))
 
     # initially hide sidebar on mobile
     if window.matchMedia('(max-width: 767px)').matches
@@ -193,8 +191,6 @@ class App.TicketCreate extends App.Controller
   hide: =>
     @autosaveStop()
     @controllerUnbind('ticket_create_rerender', (template) => @renderQueue(template))
-    @controllerUnbind('ticket_create_shared_draft_saved')
-    @controllerUnbind('ticket_create_import_draft_attachments')
 
   changed: =>
     return true if @hasAttachments()
@@ -231,7 +227,7 @@ class App.TicketCreate extends App.Controller
         @log 'debug', 'form hash changed', diff, data
         App.TaskManager.update(@taskKey, { 'state': data })
 
-        # check it task title in task needs to be updated
+        # check it task title in task need to be updated
         if @latestTitle isnt data.title
           @latestTitle = data.title
           App.TaskManager.touch(@taskKey)
@@ -246,7 +242,7 @@ class App.TicketCreate extends App.Controller
 
     if _.isEmpty(params.ticket_id) && _.isEmpty(params.article_id)
       if !_.isEmpty(params.customer_id)
-        @renderQueue(options: _.omit(params, 'id'))
+        @renderQueue(options: params)
         return
       @renderQueue()
       return
@@ -295,32 +291,8 @@ class App.TicketCreate extends App.Controller
     return if !@formMeta
     App.QueueManager.run(@queueKey)
 
-  importDraftAttachments: (options = {}) =>
-    @ajax
-      id: 'import_attachments'
-      type: 'POST'
-      url: "#{@apiPath}/tickets/shared_drafts/#{options.shared_draft_id}/import_attachments"
-      data: JSON.stringify({ form_id: @formId })
-      processData: true
-      success: (data, status, xhr) ->
-        App.Event.trigger(options.callbackName, { success: true, attachments: data.attachments })
-      error: ->
-        App.Event.trigger(options.callbackName, { success: false })
-
-  sharedDraftSaved: (options) =>
-    @el
-      .find('.ticket-create input[name=shared_draft_id]')
-      .val(options.shared_draft_id)
-
-  updateTaskManagerAttachments: (attribute, attachments) =>
-    taskData = App.TaskManager.get(@taskKey)
-    return if _.isEmpty(taskData)
-
-    taskData.attachments = attachments
-    App.TaskManager.update(@taskKey, taskData)
-
   render: (template = {}) ->
-
+    return if !@formMeta
     # get params
     params = @prefilledParams || {}
     if template && !_.isEmpty(template.options)
@@ -332,21 +304,18 @@ class App.TicketCreate extends App.Controller
       if !_.isEmpty(params['form_id'])
         @formId = params['form_id']
 
-    params.priority_id ||= App.TicketPriority.findByAttribute( 'default_create', true )?.id
-
     @html(App.view('agent_ticket_create')(
-      head:            __('New Ticket')
-      agent:           @permissionCheck('ticket.agent')
-      admin:           @permissionCheck('admin')
-      types:           @types,
-      availableTypes:  @availableTypes
-      form_id:         @formId
-      shared_draft_id: template.shared_draft_id || params.shared_draft_id
+      head:           'New Ticket'
+      agent:          @permissionCheck('ticket.agent')
+      admin:          @permissionCheck('admin')
+      types:          @types,
+      availableTypes: @availableTypes
+      form_id:        @formId
     ))
 
     App.Ticket.configure_attributes.push {
       name: 'cc'
-      display: __('CC')
+      display: 'Cc'
       tag: 'input'
       type: 'text'
       maxlength: 1000
@@ -365,16 +334,17 @@ class App.TicketCreate extends App.Controller
     handlers = @Config.get('TicketCreateFormHandler')
 
     @controllerFormCreateMiddle = new App.ControllerForm(
-      el:                       @$('.ticket-form-middle')
-      form_id:                  @formId
-      model:                    App.Ticket
-      screen:                   'create_middle'
-      handlersConfig:           handlers
-      formMeta:                 @formMeta
-      params:                   params
-      noFieldset:               true
-      taskKey:                  @taskKey
-      rejectNonExistentValues:  true
+      el:                      @$('.ticket-form-middle')
+      form_id:                 @formId
+      model:                   App.Ticket
+      screen:                  'create_middle'
+      handlersConfig:          handlers
+      filter:                  @formMeta.filter
+      formMeta:                @formMeta
+      params:                  params
+      noFieldset:              true
+      taskKey:                 @taskKey
+      rejectNonExistentValues: true
     )
 
     # tunnel events to make sure core workflow does know
@@ -397,8 +367,9 @@ class App.TicketCreate extends App.Controller
       screen:         'create_top'
       events:
         'change [name=customer_id]': @localUserInfo
-        'change [data-attribute-name=organization_id] .js-input': @localUserInfo
       handlersConfig: handlersTunnel
+      filter:         @formMeta.filter
+      formMeta:       @formMeta
       autofocus:      true
       params:         params
       taskKey:        @taskKey
@@ -414,8 +385,6 @@ class App.TicketCreate extends App.Controller
       handlersConfig: handlersTunnel
       params:  params
       taskKey: @taskKey
-      richTextUploadRenderCallback: @updateTaskManagerAttachments
-      richTextUploadDeleteCallback: @updateTaskManagerAttachments
     )
     @controllerFormCreateBottom = new App.ControllerForm(
       el:             @$('.ticket-form-bottom')
@@ -423,6 +392,8 @@ class App.TicketCreate extends App.Controller
       model:          App.Ticket
       screen:         'create_bottom'
       handlersConfig: handlersTunnel
+      filter:         @formMeta.filter
+      formMeta:       @formMeta
       params:         params
       taskKey:        @taskKey
     )
@@ -457,8 +428,10 @@ class App.TicketCreate extends App.Controller
       query:        @query
     )
 
-    if @formDefault.customer_id || @formDefault.organization_id
-      @localUserInfo(undefined, @formDefault)
+    if @formDefault.customer_id
+      callback = (customer) =>
+        @localUserInfoCallback(@formDefault, customer)
+      App.User.full(@formDefault.customer_id, callback)
 
     # update taskbar with new meta data
     App.TaskManager.touch(@taskKey)
@@ -471,33 +444,18 @@ class App.TicketCreate extends App.Controller
   tokanice: ->
     App.Utils.tokanice('.content.active input[name=cc]', 'email')
 
-  localUserInfo: (e, params = {}) =>
+  localUserInfo: (e) =>
     return if !@sidebarWidget
+    params = App.ControllerForm.params($(e.target).closest('form'))
 
-    # get params by event if given
-    params = App.ControllerForm.params($(e.target).closest('form')) if e
+    if params.customer_id
+      callback = (customer) =>
+        @localUserInfoCallback(params, customer)
+      App.User.full(params.customer_id, callback)
+      return
+    @localUserInfoCallback(params)
 
-    return if @localUserInfoCustomerId is params.customer_id && @localUserInfoOrganizationId is params.organization_id
-    @localUserInfoCustomerId     = params.customer_id
-    @localUserInfoOrganizationId = params.organization_id
-
-    callbackOrganization = =>
-      if params.organization_id
-        App.Organization.full(params.organization_id, => @localUserInfoCallback(params))
-      else
-        @localUserInfoCallback(params)
-
-    callbackUser = ->
-      if params.customer_id
-        App.User.full(params.customer_id, callbackOrganization)
-      else
-        callbackOrganization()
-
-    callbackUser()
-
-  localUserInfoCallback: (params) =>
-    customer = App.User.find(params.customer_id) || {}
-
+  localUserInfoCallback: (params, customer = {}) =>
     @sidebarWidget.render(params)
     @textModule.reload(
       config: App.Config.all()
@@ -623,7 +581,7 @@ class App.TicketCreate extends App.Controller
       if !@hasAttachments()
         matchingWord = App.Utils.checkAttachmentReference(article['body'])
         if matchingWord
-          if !confirm(App.i18n.translateContent('You used %s in the text but no attachment could be found. Do you want to continue?', matchingWord))
+          if !confirm(App.i18n.translateContent('You use %s in text but no attachment is attached. Do you want to continue?', matchingWord))
             return
 
     # add sidebar params
@@ -670,7 +628,7 @@ class App.TicketCreate extends App.Controller
         ui.submitEnable(e)
         ui.notify(
           type:    'error'
-          msg:     App.i18n.translateContent(details.error_human || details.error || __('The object could not be created.'))
+          msg:     App.i18n.translateContent(details.error_human || details.error || 'Unable to create object!')
           timeout: 6000
         )
     )
@@ -738,4 +696,4 @@ App.Config.set('ticket/create/:ticket_id/:article_id', Router, 'Routes')
 App.Config.set('ticket/create/id/:id/:ticket_id/:article_id', Router, 'Routes')
 
 # set new actions
-App.Config.set('TicketCreate', { prio: 8003, parent: '#new', name: __('New Ticket'), translate: true, target: '#ticket/create', permission: ['ticket.agent'], divider: true }, 'NavBarRight')
+App.Config.set('TicketCreate', { prio: 8003, parent: '#new', name: 'New Ticket', translate: true, target: '#ticket/create', permission: ['ticket.agent'], divider: true }, 'NavBarRight')

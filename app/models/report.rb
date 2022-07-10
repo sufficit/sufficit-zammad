@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2022 Zammad Foundation, https://zammad-foundation.org/
+# Copyright (C) 2012-2021 Zammad Foundation, http://zammad-foundation.org/
 
 class Report
 
@@ -12,14 +12,14 @@ class Report
 
     config[:metric][:count] = {
       name:    'count',
-      display: __('Ticket Count'),
+      display: 'Ticket Count',
       default: true,
       prio:    10_000,
     }
     backend = [
       {
         name:         'created',
-        display:      __('Created'),
+        display:      'Created',
         selected:     true,
         dataDownload: true,
         adapter:      Report::TicketGenericTime,
@@ -27,7 +27,7 @@ class Report
       },
       {
         name:         'closed',
-        display:      __('Closed'),
+        display:      'Closed',
         selected:     true,
         dataDownload: true,
         adapter:      Report::TicketGenericTime,
@@ -35,28 +35,28 @@ class Report
       },
       {
         name:         'backlog',
-        display:      __('Backlog'),
+        display:      'Backlog',
         selected:     true,
         dataDownload: false,
         adapter:      Report::TicketBacklog
       },
       {
         name:         'first_solution',
-        display:      __('First Solution'),
+        display:      'First Solution',
         selected:     false,
         dataDownload: true,
         adapter:      Report::TicketFirstSolution
       },
       {
         name:         'reopened',
-        display:      __('Reopened'),
+        display:      'Reopened',
         selected:     false,
         dataDownload: true,
         adapter:      Report::TicketReopened
       },
       {
         name:         'movedin',
-        display:      __('Moved in'),
+        display:      'Moved in',
         selected:     false,
         dataDownload: true,
         adapter:      Report::TicketMoved,
@@ -64,7 +64,7 @@ class Report
       },
       {
         name:         'movedout',
-        display:      __('Moved out'),
+        display:      'Moved out',
         selected:     false,
         dataDownload: true,
         adapter:      Report::TicketMoved,
@@ -75,13 +75,13 @@ class Report
 
     config[:metric][:create_channels] = {
       name:    'create_channels',
-      display: __('Creation Channels'),
+      display: 'Create Channels',
       prio:    9000,
     }
     backend = [
       {
         name:         'phone_in',
-        display:      __('Phone (in)'),
+        display:      'Phone (in)',
         selected:     true,
         dataDownload: true,
         adapter:      Report::TicketGenericTime,
@@ -101,7 +101,7 @@ class Report
       },
       {
         name:         'phone_out',
-        display:      __('Phone (out)'),
+        display:      'Phone (out)',
         selected:     true,
         dataDownload: true,
         adapter:      Report::TicketGenericTime,
@@ -121,7 +121,7 @@ class Report
       },
       {
         name:         'email_in',
-        display:      __('Email (in)'),
+        display:      'Email (in)',
         selected:     true,
         dataDownload: true,
         adapter:      Report::TicketGenericTime,
@@ -141,7 +141,7 @@ class Report
       },
       {
         name:         'email_out',
-        display:      __('Email (out)'),
+        display:      'Email (out)',
         selected:     true,
         dataDownload: true,
         adapter:      Report::TicketGenericTime,
@@ -161,7 +161,7 @@ class Report
       },
       {
         name:         'web_in',
-        display:      __('Web (in)'),
+        display:      'Web (in)',
         selected:     true,
         dataDownload: true,
         adapter:      Report::TicketGenericTime,
@@ -181,7 +181,7 @@ class Report
       },
       {
         name:         'twitter_in',
-        display:      __('Twitter (in)'),
+        display:      'Twitter (in)',
         selected:     true,
         dataDownload: true,
         adapter:      Report::TicketGenericTime,
@@ -201,7 +201,7 @@ class Report
       },
       {
         name:         'twitter_out',
-        display:      __('Twitter (out)'),
+        display:      'Twitter (out)',
         selected:     true,
         dataDownload: true,
         adapter:      Report::TicketGenericTime,
@@ -219,18 +219,58 @@ class Report
           },
         },
       },
+      {
+        name:         'quepasa_in',
+        display:      'Quepasa (in)',
+        selected:     true,
+        dataDownload: true,
+        adapter:      Report::TicketGenericTime,
+        params:       {
+          field:    'created_at',
+          selector: {
+            'create_article_type_id'   => {
+              'operator' => 'is',
+              'value'    => Ticket::Article::Type.lookup(name: 'quepasa personal-message').id,
+            },
+            'create_article_sender_id' => {
+              'operator' => 'is',
+              'value'    => Ticket::Article::Sender.lookup(name: 'Customer').id,
+            },
+          },
+        },
+      },
+      {
+        name:         'quepasa_out',
+        display:      'Quepasa (out)',
+        selected:     true,
+        dataDownload: true,
+        adapter:      Report::TicketGenericTime,
+        params:       {
+          field:    'created_at',
+          selector: {
+            'create_article_type_id'   => {
+              'operator' => 'is',
+              'value'    => Ticket::Article::Type.lookup(name: 'quepasa personal-message').id,
+            },
+            'create_article_sender_id' => {
+              'operator' => 'is',
+              'value'    => Ticket::Article::Sender.lookup(name: 'Agent').id,
+            },
+          },
+        },
+      },
     ]
     config[:metric][:create_channels][:backend] = backend
 
     config[:metric][:communication] = {
       name:    'communication',
-      display: __('Communication'),
+      display: 'Communication',
       prio:    7000,
     }
     backend = [
       {
         name:         'phone_in',
-        display:      __('Phone (in)'),
+        display:      'Phone (in)',
         selected:     true,
         dataDownload: false,
         adapter:      Report::ArticleByTypeSender,
@@ -241,7 +281,7 @@ class Report
       },
       {
         name:         'phone_out',
-        display:      __('Phone (out)'),
+        display:      'Phone (out)',
         selected:     true,
         dataDownload: false,
         adapter:      Report::ArticleByTypeSender,
@@ -252,7 +292,7 @@ class Report
       },
       {
         name:         'email_in',
-        display:      __('Email (in)'),
+        display:      'Email (in)',
         selected:     true,
         dataDownload: false,
         adapter:      Report::ArticleByTypeSender,
@@ -263,7 +303,7 @@ class Report
       },
       {
         name:         'email_out',
-        display:      __('Email (out)'),
+        display:      'Email (out)',
         selected:     true,
         dataDownload: false,
         adapter:      Report::ArticleByTypeSender,
@@ -274,7 +314,7 @@ class Report
       },
       {
         name:         'web_in',
-        display:      __('Web (in)'),
+        display:      'Web (in)',
         selected:     true,
         dataDownload: false,
         adapter:      Report::ArticleByTypeSender,
@@ -285,7 +325,7 @@ class Report
       },
       {
         name:         'twitter_in',
-        display:      __('Twitter (in)'),
+        display:      'Twitter (in)',
         selected:     true,
         dataDownload: false,
         adapter:      Report::ArticleByTypeSender,
@@ -296,7 +336,7 @@ class Report
       },
       {
         name:         'twitter_out',
-        display:      __('Twitter (out)'),
+        display:      'Twitter (out)',
         selected:     true,
         dataDownload: false,
         adapter:      Report::ArticleByTypeSender,
@@ -305,6 +345,28 @@ class Report
           sender: 'Agent',
         },
       },
+      {
+        name:         'quepasa_in',
+        display:      'Quepasa (in)',
+        selected:     true,
+        dataDownload: false,
+        adapter:      Report::ArticleByTypeSender,
+        params:       {
+          type:   'quepasa personal-message',
+          sender: 'Customer',
+        },
+      },
+      {
+        name:         'quepasa_out',
+        display:      'Quepasa (out)',
+        selected:     true,
+        dataDownload: false,
+        adapter:      Report::ArticleByTypeSender,
+        params:       {
+          type:   'quepasa personal-message',
+          sender: 'Agent',
+        },
+      }
     ]
     config[:metric][:communication][:backend] = backend
 

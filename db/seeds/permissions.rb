@@ -1,360 +1,367 @@
-# Copyright (C) 2012-2022 Zammad Foundation, https://zammad-foundation.org/
+# Copyright (C) 2012-2021 Zammad Foundation, http://zammad-foundation.org/
 
 Permission.create_if_not_exists(
   name:        'admin',
-  note:        __('Admin Interface'),
+  note:        'Admin Interface',
   preferences: {},
 )
 Permission.create_if_not_exists(
   name:        'admin.user',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Users')]
+    translations: ['Users']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.group',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Groups')]
+    translations: ['Groups']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.role',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Roles')]
+    translations: ['Roles']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.organization',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Organizations')]
+    translations: ['Organizations']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.overview',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Overviews')]
+    translations: ['Overviews']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.text_module',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Text Modules')]
+    translations: ['Text Modules']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.time_accounting',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Time Accounting')]
+    translations: ['Time Accounting']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.macro',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Macros')]
+    translations: ['Macros']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.tag',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Tags')]
+    translations: ['Tags']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.calendar',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Calendar')]
+    translations: ['Calendar']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.sla',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('SLA')]
+    translations: ['SLA']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.trigger',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Triggers')]
+    translations: ['Triggers']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.scheduler',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Scheduler')]
+    translations: ['Scheduler']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.report_profile',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Report Profiles')]
+    translations: ['Report Profiles']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.channel_web',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Channel - Web')]
+    translations: ['Channel - Web']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.channel_formular',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Channel - Form')]
+    translations: ['Channel - Formular']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.channel_email',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Channel - Email')]
+    translations: ['Channel - Email']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.channel_twitter',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Channel - Twitter')]
+    translations: ['Channel - Twitter']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.channel_facebook',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Channel - Facebook')]
+    translations: ['Channel - Facebook']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.channel_telegram',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Channel - Telegram')]
+    translations: ['Channel - Telegram']
+  },
+)
+Permission.create_if_not_exists(
+  name:        'admin.channel_quepasa',
+  note:        'Manage %s',
+  preferences: {
+    translations: ['Channel - Quepasa']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.channel_google',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Channel - Google')]
+    translations: ['Channel - Google']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.channel_microsoft365',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Channel - Microsoft 365')]
+    translations: ['Channel - Microsoft 365']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.channel_sms',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Channel - SMS')]
+    translations: ['Channel - SMS']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.channel_chat',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Channel - Chat')]
+    translations: ['Channel - Chat']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.branding',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Branding')]
+    translations: ['Branding']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.setting_system',
-  note:        __('Manage %s Settings'),
+  note:        'Manage %s Settings',
   preferences: {
-    translations: [__('System')]
+    translations: ['System']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.security',
-  note:        __('Manage %s Settings'),
+  note:        'Manage %s Settings',
   preferences: {
-    translations: [__('Security')]
+    translations: ['Security']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.ticket',
-  note:        __('Manage %s Settings'),
+  note:        'Manage %s Settings',
   preferences: {
-    translations: [__('Ticket')]
+    translations: ['Ticket']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.package',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Packages')]
+    translations: ['Packages']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.integration',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Integrations')]
+    translations: ['Integrations']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.api',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('API')]
+    translations: ['API']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.object',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Objects')]
+    translations: ['Objects']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.translation',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Translations')]
+    translations: ['Translations']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.monitoring',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Monitoring')]
+    translations: ['Monitoring']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.data_privacy',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Data Privacy')]
+    translations: ['Data Privacy']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.maintenance',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Maintenance')]
+    translations: ['Maintenance']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.session',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Sessions')]
+    translations: ['Sessions']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.webhook',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Webhooks')]
+    translations: ['Webhooks']
   },
 )
 Permission.create_if_not_exists(
   name:        'admin.core_workflow',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Core Workflow')]
+    translations: ['Core Workflow']
   },
 )
 Permission.create_if_not_exists(
   name:         'user_preferences',
-  note:         __('User Preferences'),
+  note:         'User Preferences',
   preferences:  {},
   allow_signup: true,
 )
 Permission.create_if_not_exists(
   name:         'user_preferences.password',
-  note:         __('Change %s'),
+  note:         'Change %s',
   preferences:  {
-    translations: [__('Password')]
+    translations: ['Password']
   },
   allow_signup: true,
 )
 Permission.create_if_not_exists(
   name:         'user_preferences.notifications',
-  note:         __('Manage %s'),
+  note:         'Manage %s',
   preferences:  {
-    translations: [__('Notifications')],
+    translations: ['Notifications'],
     required:     ['ticket.agent'],
   },
   allow_signup: true,
 )
 Permission.create_if_not_exists(
   name:         'user_preferences.access_token',
-  note:         __('Manage %s'),
+  note:         'Manage %s',
   preferences:  {
-    translations: [__('Token Access')]
+    translations: ['Token Access']
   },
   allow_signup: true,
 )
 Permission.create_if_not_exists(
   name:         'user_preferences.language',
-  note:         __('Change %s'),
+  note:         'Change %s',
   preferences:  {
-    translations: [__('Language')]
+    translations: ['Language']
   },
   allow_signup: true,
 )
 Permission.create_if_not_exists(
   name:         'user_preferences.linked_accounts',
-  note:         __('Manage %s'),
+  note:         'Manage %s',
   preferences:  {
-    translations: [__('Linked Accounts')]
+    translations: ['Linked Accounts']
   },
   allow_signup: true,
 )
 Permission.create_if_not_exists(
   name:         'user_preferences.device',
-  note:         __('Manage %s'),
+  note:         'Manage %s',
   preferences:  {
-    translations: [__('Devices')]
+    translations: ['Devices']
   },
   allow_signup: true,
 )
 Permission.create_if_not_exists(
   name:         'user_preferences.avatar',
-  note:         __('Manage %s'),
+  note:         'Manage %s',
   preferences:  {
-    translations: [__('Avatar')]
+    translations: ['Avatar']
   },
   allow_signup: true,
 )
 Permission.create_if_not_exists(
   name:         'user_preferences.calendar',
-  note:         __('Access to %s'),
+  note:         'Access to %s',
   preferences:  {
-    translations: [__('Calendars')],
+    translations: ['Calendars'],
     required:     ['ticket.agent'],
   },
   allow_signup: true,
 )
 Permission.create_if_not_exists(
   name:         'user_preferences.out_of_office',
-  note:         __('Change %s'),
+  note:         'Change %s',
   preferences:  {
-    translations: [__('Out of Office')],
+    translations: ['Out of Office'],
     required:     ['ticket.agent'],
   },
   allow_signup: true,
@@ -362,91 +369,90 @@ Permission.create_if_not_exists(
 
 Permission.create_if_not_exists(
   name:        'report',
-  note:        __('Report Interface'),
+  note:        'Report Interface',
   preferences: {},
 )
 Permission.create_if_not_exists(
   name:        'ticket',
-  note:        __('Ticket Interface'),
+  note:        'Ticket Interface',
   preferences: {
     disabled: true
   },
 )
 Permission.create_if_not_exists(
   name:        'ticket.agent',
-  note:        __('Access to Agent Tickets based on Group Access'),
+  note:        'Access to Agent Tickets based on Group Access',
   preferences: {
     plugin: ['groups']
   },
 )
 Permission.create_if_not_exists(
   name:         'ticket.customer',
-  note:         __('Access to Customer Tickets based on current_user and organization'),
+  note:         'Access to Customer Tickets based on current_user and organization',
   preferences:  {},
   allow_signup: true,
 )
 Permission.create_if_not_exists(
   name:        'chat',
-  note:        __('Access to %s'),
+  note:        'Access to %s',
   preferences: {
-    translations: [__('Chat')],
+    translations: ['Chat'],
     disabled:     true,
   },
 )
 Permission.create_if_not_exists(
   name:        'chat.agent',
-  note:        __('Access to %s'),
+  note:        'Access to %s',
   preferences: {
-    translations: [__('Chat')],
+    translations: ['Chat'],
   },
 )
 Permission.create_if_not_exists(
   name:        'cti',
-  note:        __('CTI'),
+  note:        'CTI',
   preferences: {
     disabled: true
   },
 )
 Permission.create_if_not_exists(
   name:        'cti.agent',
-  note:        __('Access to %s'),
+  note:        'Access to %s',
   preferences: {
-    translations: [__('CTI')],
+    translations: ['CTI'],
   },
 )
 
 Permission.create_if_not_exists(
   name:        'admin.knowledge_base',
-  note:        __('Create and set up %s'),
+  note:        'Create and setup %s',
   preferences: {
-    translations: [__('Knowledge Base')]
+    translations: ['Knowledge Base']
   }
 )
 
 Permission.create_if_not_exists(
   name:        'knowledge_base',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Knowledge Base')],
+    translations: ['Knowledge Base'],
     disabled:     true,
   }
 )
 
 Permission.create_if_not_exists(
   name:        'knowledge_base.editor',
-  note:        __('Manage %s'),
+  note:        'Manage %s',
   preferences: {
-    translations: [__('Knowledge Base Editor')]
+    translations: ['Knowledge Base Editor']
   }
 )
 
 Permission.create_if_not_exists(
-  name:         'knowledge_base.reader',
-  note:         __('Manage %s'),
-  preferences:  {
-    translations: [__('Knowledge Base Reader')]
-  },
-  allow_signup: true,
+  name:        'knowledge_base.reader',
+  note:        'Manage %s',
+  preferences: {
+    translations: ['Knowledge Base Reader']
+  }
 )
 
 admin = Role.find_by(name: 'Admin')
