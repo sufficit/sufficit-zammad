@@ -18,7 +18,7 @@ class ChannelsQuepasaController < ApplicationController
   end
 
   def add
-    quepasa = Quepasa.new(channel.options)
+    quepasa = Quepasa.new(params)
     begin
       channel = quepasa.create_or_update_channel(params)
     rescue => e
