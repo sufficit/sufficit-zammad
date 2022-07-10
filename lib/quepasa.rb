@@ -2,7 +2,7 @@
 
 class Quepasa
 
-  attr_accessor :client
+  attr_accessor :params
 
 =begin
 
@@ -57,12 +57,9 @@ returns
 =end
 
   def self.create_or_update_channel(params, channel = nil)
-    begin
-      # verify token
-      bot = Quepasa.check_token(params)
-    rescue => e
-      raise Exceptions::UnprocessableEntity, e.message
-    end
+
+    # verify token
+    bot = Quepasa.check_token(params)
 
     if !channel && Quepasa.bot_duplicate?(bot['id'])
       raise Exceptions::UnprocessableEntity, 'Bot already exists!'
