@@ -8,7 +8,7 @@ class Quepasa
 
 check token and return bot attributes of token
 
-  bot = Quepasa.check_token('token')
+  bot = Quepasa.check_token('token', 'url')
 
 =end
 
@@ -57,9 +57,12 @@ returns
 =end
 
   def self.create_or_update_channel(params, channel = nil)
-
-    # verify token
-    bot = Quepasa.check_token(params[:api_token], params[:api_base_url])
+    begin
+      # verify token
+      bot = Quepasa.check_token(params[:api_token], params[:api_base_url])
+    rescue => e
+      raise Exceptions::UnprocessableEntity, e.message
+    end
 
     if !channel && Quepasa.bot_duplicate?(bot['id'])
       raise Exceptions::UnprocessableEntity, 'Bot already exists!'
