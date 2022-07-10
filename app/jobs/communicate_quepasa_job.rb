@@ -85,7 +85,7 @@ class CommunicateQuepasaJob < ApplicationJob
     # set delivery status
     article.preferences['delivery_status_message'] = nil
     article.preferences['delivery_status'] = 'success'
-    article.preferences['delivery_status_date'] = Time.zone.now
+    article.preferences['delivery_status_date'] = Time.now.utc
     article.message_id = result['result']['messageId']
 
     article.save!
