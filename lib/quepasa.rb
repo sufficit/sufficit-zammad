@@ -56,7 +56,7 @@ returns
 
 =end
 
-  def self.create_or_update_channel(params, channel = nil)
+  def self.create_or_update_channel(params, options, channel = nil)
     begin
       # verify token
       bot = Quepasa.check_token(params[:api_token], params[:api_base_url])
