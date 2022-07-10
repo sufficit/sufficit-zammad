@@ -235,7 +235,7 @@ returns
     return false if message.nil?
 
     # caso tenho sido eu mesmo quem enviou a msg, não precisa processar pois o artigo já foi criado
-    # return false if ActiveModel::Type::Boolean.new.cast(message[:fromme])
+    return false if ActiveModel::Type::Boolean.new.cast(message[:fromme])
 
     # ignorando msgs de status do whatsapp
     return false if message[:chat][:id] == 'status@broadcast'
@@ -435,7 +435,7 @@ returns
       return ticket
     end
 
-    Rails.logger.info { "SUFF: Creating new ticket from message... #{bot_id}" }
+    Rails.logger.info { "QUEPASA: creating new ticket from message... #{bot_id}" }
     ticket = Ticket.new(
       group_id:    group_id,
       title:       title,
@@ -472,10 +472,6 @@ returns
     if user.permissions?('ticket.agent')
       article_sender_id = Ticket::Article::Sender.find_by(name: 'Agent').id
     end
-
-    # capturando timestamp correto do envio ou recebimento da msg pelo quepasa
-    # é preciso que seja em formato datetime, não int ou string
-    #received_at = DateTime.strptime(message[:timestamp].to_s,'%s')
 
     #recovering type id from database
     article_type_id = Ticket::Article::Type.find_by(name: 'quepasa personal-message').id
