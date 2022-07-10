@@ -37,10 +37,10 @@ returns
   def create_or_update_channel(params, channel = nil)
 
     # verify token
-    info = check_token(params)
+    info = self.check_token(params)
     @bid = info['bot']['id']
 
-    if !channel && bot_duplicate?(@bid)
+    if !channel && self.bot_duplicate?(@bid)
       raise Exceptions::UnprocessableEntity, 'Bot already exists!'
     end
 
@@ -65,7 +65,7 @@ returns
     @api.setWebhook(callback_url)
 
     if !channel
-      channel = bot_by_bot_id(@bid)
+      channel = self.bot_by_bot_id(@bid)
       if !channel
         channel = Channel.new
       end
