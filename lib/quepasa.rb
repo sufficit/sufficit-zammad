@@ -56,10 +56,10 @@ returns
 
 =end
 
-  def self.create_or_update_channel(params, channel = nil)
+  def self.create_or_update_channel(options, channel = nil)
     begin
       # verify token
-      bot = Quepasa.check_token(params[:api_token], params[:api_base_url])
+      bot = Quepasa.check_token(options[:api_token], options[:api_base_url])
     rescue => e
       raise Exceptions::UnprocessableEntity, e.message
     end
@@ -68,11 +68,11 @@ returns
       raise Exceptions::UnprocessableEntity, 'Bot already exists!'
     end
 
-    if params[:group_id].blank?
+    if options[:group_id].blank?
       raise Exceptions::UnprocessableEntity, 'Group needed!'
     end
 
-    group = Group.find_by(id: params[:group_id])
+    group = Group.find_by(id: options[:group_id])
     if !group
       raise Exceptions::UnprocessableEntity, 'Group invalid!'
     end
@@ -86,7 +86,7 @@ returns
 
     # set webhook / callback url for this bot @ quepasa
     callback_url = "#{Setting.get('http_type')}://#{Setting.get('fqdn')}/api/v1/channels_quepasa_webhook/#{callback_token}?bid=#{bot['id']}"
-    Quepasa.set_webhook(params[:api_token], params[:api_base_url], callback_url)
+    Quepasa.set_webhook(options[:api_token], options[:api_base_url], callback_url)
 
     if !channel
       channel = Quepasa.bot_by_bot_id(bot['id'])
@@ -104,8 +104,8 @@ returns
       },
       callback_token: callback_token,
       callback_url:   callback_url,
-      api_token:      params[:api_token],
-      api_base_url:   params[:api_base_url]
+      api_token:      options[:api_token],
+      api_base_url:   options[:api_base_url]
     }
     channel.group_id = group.id
     channel.active = true
