@@ -57,13 +57,7 @@ module Ticket::Article::EnqueueCommunicateQuepasaJob
       ticket.preferences = {
         # Usado para encontrar esse elemento ao responder um ticket
         # Usado somente se não encontrar pelo quepasa:bot
-        channel_id: channel.id,
-
-        # Salva informações do contato para ser usado ao responder qualquer artigo dentro deste ticket
-        quepasa:  {
-          bid:     channel.options[:bot][:id], # Qual Quepasa utilizar para resposta
-          chat_id: customer['quepasa'] # Destino no quepasa
-        }
+        channel_id: channel.id
       }
       ticket.save!
     end

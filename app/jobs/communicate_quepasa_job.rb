@@ -14,8 +14,8 @@ class CommunicateQuepasaJob < ApplicationJob
 
     ticket = Ticket.lookup(id: article.ticket_id)
     log_error(article, "Can't find ticket.preferences for Ticket.find(#{article.ticket_id})") if !ticket.preferences
-    log_error(article, "Can't find ticket.preferences['quepasa'] for Ticket.find(#{article.ticket_id})") if !ticket.preferences['quepasa']
-    log_error(article, "Can't find ticket.preferences['quepasa']['chat_id'] for Ticket.find(#{article.ticket_id})") if !ticket.preferences['quepasa']['chat_id']
+    #log_error(article, "Can't find ticket.preferences['quepasa'] for Ticket.find(#{article.ticket_id})") if !ticket.preferences['quepasa']
+    #log_error(article, "Can't find ticket.preferences['quepasa']['chat_id'] for Ticket.find(#{article.ticket_id})") if !ticket.preferences['quepasa']['chat_id']
 
     channel = Channel.lookup(id: ticket.preferences['channel_id'])
     log_error(article, "No such channel for channel id #{ticket.preferences['channel_id']}") if !channel
@@ -23,7 +23,6 @@ class CommunicateQuepasaJob < ApplicationJob
 
     begin
       api = QuepasaApi.new(channel.options[:api_token], channel.options[:api_base_url])
-      chat_id = ticket.preferences[:quepasa][:chat_id]
 
       # ajustando o corpo da msg para texto simples caso ainda não seja
       if article.content_type != 'text/plain'
@@ -45,6 +44,8 @@ class CommunicateQuepasaJob < ApplicationJob
         messageToSend = "#{prependText}#{messageToSend}"
       end
 
+      ### finding quepasa chat id
+      chat_id = Quepasa.GetChatIdByCustomer(ticket.customer_id)
       result = api.sendMessage(chat_id, messageToSend)
       me = api.getMe()
       article.attachments.each do |attach|

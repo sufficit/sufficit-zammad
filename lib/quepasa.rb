@@ -133,6 +133,14 @@ returns
     nil
   end
 
+  def selt.GetChatIdByCustomer(customerId)
+    user = User.find(customerId)
+    if !user raise Exceptions::UnprocessableEntity, "user not found for id #{customerId} "
+
+    return user.quepasa
+  end
+
+
 =begin
 
   client = Quepasa.new('params')
@@ -416,7 +424,7 @@ returns
 
     state_ids        = Ticket::State.where(name: %w[closed merged removed]).pluck(:id)
     possible_tickets = Ticket.where(customer_id: user.id).where.not(state_id: state_ids).order(:updated_at)
-    ticket           = possible_tickets.find_each.find { |possible_ticket| possible_ticket.preferences[:channel_id] == channel.id && possible_ticket.preferences[:quepasa][:bid] == @bid }
+    ticket           = possible_tickets.find_each.find { |possible_ticket| possible_ticket.preferences[:channel_id] == channel.id }
 
     if ticket
       Rails.logger.info { "QUEPASA: append to ticket(#{ticket.id}) from message ... #{@bid}" }
@@ -442,13 +450,7 @@ returns
       customer_id: user.id,
       preferences: {
         # Usado para encontrar esse elemento ao responder um ticket
-        channel_id: channel.id,
-
-        # Salva informações do contato para ser usado ao responder qualquer artigo dentro deste ticket
-        quepasa:  {
-          bid:     @bid, # Qual Quepasa utilizar para resposta
-          chat_id: message[:chat][:id] # Destino no quepasa
-        }
+        channel_id: channel.id
       }
     )
     ticket.save!
