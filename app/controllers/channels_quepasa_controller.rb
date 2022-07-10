@@ -18,8 +18,9 @@ class ChannelsQuepasaController < ApplicationController
   end
 
   def add
+    quepasa = Quepasa.new(channel.options)
     begin
-      channel = Quepasa.create_or_update_channel(params)
+      channel = quepasa.create_or_update_channel(params)
     rescue => e
       raise Exceptions::UnprocessableEntity, e.message
     end
@@ -28,8 +29,9 @@ class ChannelsQuepasaController < ApplicationController
 
   def update
     channel = Channel.find_by(id: params[:id], area: 'Quepasa::Bot')
+    quepasa = Quepasa.new(channel.options)
     begin
-      channel = Quepasa.create_or_update_channel(params, channel)
+      channel = quepasa.create_or_update_channel(params, channel)
     rescue => e
       raise Exceptions::UnprocessableEntity, e.message
     end

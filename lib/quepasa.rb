@@ -24,30 +24,9 @@ check token and return bot attributes of token
 
 =begin
 
-set webhook for bot
-
-  success = Quepasa.set_webhook(callback_url)
-
-returns
-
-  true|false
-
-=end
-
-  def self.set_webhook(callback_url)
-    begin
-      @api.setWebhook(callback_url)
-    rescue => e
-      raise Exceptions::UnprocessableEntity, e.message
-    end
-    true
-  end
-
-=begin
-
 create or update channel, store bot attributes and verify token
 
-  channel = Quepasa.create_or_update_channel(params, channel)
+  channel = create_or_update_channel(params, channel)
 
 returns
 
@@ -55,13 +34,13 @@ returns
 
 =end
 
-  def self.create_or_update_channel(params, channel = nil)
+  def create_or_update_channel(params, channel = nil)
 
     # verify token
-    info = Quepasa.check_token(params)
+    info = check_token(params)
     @bid = info['bot']['id']
 
-    if !channel && Quepasa.bot_duplicate?(@bid)
+    if !channel && bot_duplicate?(@bid)
       raise Exceptions::UnprocessableEntity, 'Bot already exists!'
     end
 
@@ -86,7 +65,7 @@ returns
     @api.setWebhook(callback_url)
 
     if !channel
-      channel = Quepasa.bot_by_bot_id(@bid)
+      channel = bot_by_bot_id(@bid)
       if !channel
         channel = Channel.new
       end
