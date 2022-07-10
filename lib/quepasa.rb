@@ -133,7 +133,7 @@ returns
     nil
   end
 
-  def selt.GetChatIdByCustomer(customerId)
+  def self.GetChatIdByCustomer(customerId)
     user = User.find(customerId)
     raise RuntimeError, "user not found for id #{customerId}" if user.nil?
 
