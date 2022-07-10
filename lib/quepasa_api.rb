@@ -4,7 +4,7 @@ require 'net/https'
 require 'uri'
 require 'rest-client'
 
-class QuepasaAPI
+class QuepasaApi
 
   ENDPOINTS = %w[
     getUpdates setWebhook deleteWebhook getWebhookInfo getMe sendMessage
@@ -45,8 +45,8 @@ class QuepasaAPI
   end
 
   # Vai na API do QuePasa e atualiza o endereço de webhook para agilizar as entregas de msgs
-  def setWebhook(urlWebHook)    
-    Rails.logger.info { "SUFF: Atualizando WebHook ... #{urlWebHook}" } 
+  def setWebhook(urlWebHook)
+    Rails.logger.info { "SUFF: Atualizando WebHook ... #{urlWebHook}" }
     payload = { url: urlWebHook }
     urlQuery = @url + '/bot/' + @token + '/webhook'
     ret = RestClient.post(urlQuery, payload.to_json, { :content_type => :json, accept: :json })
@@ -56,7 +56,7 @@ class QuepasaAPI
   # Envia para QuePasa
   # QuePasa espera por (recipient, message, attachments?(opcional))
   def sendMessage(chat_id, message)
-    Rails.logger.info { "QUEPASA: Sending message to: #{chat_id} :: #{message}" } 
+    Rails.logger.info { "QUEPASA: Sending message to: #{chat_id} :: #{message}" }
 
     payload = { recipient: chat_id, message: message }
     urlQuery = @url + '/bot/' + @token + '/sendtext'
@@ -66,7 +66,7 @@ class QuepasaAPI
   end
 
   def sendDocument(chat_id, document)
-    Rails.logger.info { "QUEPASA: Sending document to: #{chat_id} " }  
+    Rails.logger.info { "QUEPASA: Sending document to: #{chat_id} " }
     Rails.logger.info { "QUEPASA: #{ document[:filename] }" }
 
     payload = { recipient: chat_id, attachment: document }
@@ -74,11 +74,11 @@ class QuepasaAPI
     ret = RestClient.post(urlQuery, payload.to_json, { :content_type => :json, accept: :json })
     ret
   end
-  
+
   # Vai na API do QuePasa e faz o download do anexo específico
   # Individualmente
   def getAttachment(payload)
-    Rails.logger.info { "QUEPASA: Downloading attachment :: #{payload[:mime]}" } 
+    Rails.logger.info { "QUEPASA: Downloading attachment :: #{payload[:mime]}" }
 
     urlQuery = @url + '/bot/' + @token + '/attachment'
     ret = RestClient.post(urlQuery, payload.to_json, { :content_type => :json, accept: :json })
@@ -126,7 +126,7 @@ class QuepasaAPI
     get('')
   end
 
-  
+
 
   def fetch(last_seen_ts=nil)
     if last_seen_ts.nil?
@@ -144,5 +144,5 @@ class QuepasaAPI
     messages = results['messages']
     messages
   end
-  
+
 end
