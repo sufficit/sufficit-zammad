@@ -235,7 +235,7 @@ returns
     return false if message.nil?
 
     # caso tenho sido eu mesmo quem enviou a msg, não precisa processar pois o artigo já foi criado
-    return false if ActiveModel::Type::Boolean.new.cast(message[:fromme])
+    # return false if ActiveModel::Type::Boolean.new.cast(message[:fromme])
 
     # ignorando msgs de status do whatsapp
     return false if message[:chat][:id] == 'status@broadcast'
