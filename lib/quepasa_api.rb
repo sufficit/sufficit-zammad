@@ -30,7 +30,7 @@ class QuepasaApi
 
   attr_reader :token, :url
 
-  def initialize(token, url = 'http://api.quepasa.org:31000/v2')
+  def initialize(token, url = 'http://api.quepasa.org:31000/v3')
     @token = token
     @url = url
   end

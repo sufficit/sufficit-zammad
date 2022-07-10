@@ -71,21 +71,22 @@ class CommunicateQuepasaJob < ApplicationJob
     # only private, group messages. channel messages do not have from key
     if result
       article.preferences['quepasa'] = {
-        date:       result['date'],
-        from_id:    result['from']['id'],
+        # V3
+        source:     result['result']['source'],
+        recipient:  result['result']['recipient'],
+        messageId:  result['result']['messageId'],
+
+        # V2
         chat_id:    result['chat']['id'],
         message_id: result['message_id']
       }
-
-      #article.from = "@#{me['username']}"
-      #article.to = "#{result['chat']['title']} Channel"
     end
 
     # set delivery status
     article.preferences['delivery_status_message'] = nil
     article.preferences['delivery_status'] = 'success'
     article.preferences['delivery_status_date'] = Time.zone.now
-    article.message_id = result['message_id']
+    article.message_id = result['result']['messageId']
 
     article.save!
 

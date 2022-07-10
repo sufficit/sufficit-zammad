@@ -59,9 +59,10 @@ returns
   def self.create_or_update_channel(params, channel = nil)
 
     # verify token
-    bot = Quepasa.check_token(params)
+    info = Quepasa.check_token(params)
+    @bid = info['bot']['id']
 
-    if !channel && Quepasa.bot_duplicate?(bot['id'])
+    if !channel && Quepasa.bot_duplicate?(@bid)
       raise Exceptions::UnprocessableEntity, 'Bot already exists!'
     end
 
@@ -82,11 +83,11 @@ returns
                      end
 
     # set webhook / callback url for this bot @ quepasa
-    callback_url = "#{Setting.get('http_type')}://#{Setting.get('fqdn')}/api/v1/channels_quepasa_webhook/#{callback_token}?bid=#{bot['id']}"
+    callback_url = "#{Setting.get('http_type')}://#{Setting.get('fqdn')}/api/v1/channels_quepasa_webhook/#{callback_token}?bid=#{@bid}"
     Quepasa.set_webhook(params[:api_token], params[:api_base_url], callback_url)
 
     if !channel
-      channel = Quepasa.bot_by_bot_id(bot['id'])
+      channel = Quepasa.bot_by_bot_id(@bid)
       if !channel
         channel = Channel.new
       end
@@ -94,10 +95,7 @@ returns
     channel.area = 'Quepasa::Bot'
     channel.options = {
       bot:            {
-        id:         bot['id'],
-        username:   bot['username'],
-        first_name: bot['first_name'],
-        last_name:  bot['last_name'],
+        id:         @bid,
       },
       callback_token: callback_token,
       callback_url:   callback_url,
@@ -156,43 +154,6 @@ returns
       return channel if channel.options[:bot][:id].to_s == bot_id.to_s
     end
     nil
-  end
-
-=begin
-
-generate message_id for message
-
-  message_id = Quepasa.message_id(message)
-
-returns
-
-  message_id # 123456@quepasa
-
-=end
-
-  ### Não UTILIZADO ao copiar do telegram ..! ! !!
-  def self.message_id(params)
-    message_id = nil
-    %i[message edited_message].each do |key|
-      next if !params[key]
-      next if !params[key][:message_id]
-
-      message_id = params[key][:message_id]
-      break
-    end
-    if message_id
-      %i[message edited_message].each do |key|
-        next if !params[key]
-        next if !params[key][:chat]
-        next if !params[key][:chat][:id]
-
-        message_id = "#{message_id}.#{params[key][:chat][:id]}"
-      end
-    end
-    if !message_id
-      message_id = params[:update_id]
-    end
-    "#{message_id}@quepasa"
   end
 
 =begin
@@ -298,7 +259,7 @@ returns
     return false if ActiveModel::Type::Boolean.new.cast(message[:fromme])
 
     # ignorando msgs de status do whatsapp
-    return false if message[:replyto][:id] == 'status@broadcast'
+    return false if message[:chat][:id] == 'status@broadcast'
 
     return true
   end
@@ -338,12 +299,12 @@ returns
     Rails.logger.debug { 'Create user/quepasa group from group message...' }
 
     # Somente se for uma msg de grupo
-    if message[:replyto][:id].end_with?("@g.us")
+    if message[:chat][:id].end_with?("@g.us")
 
       # definindo o que utilizar como endpoint de usuario
-      endPointID = message[:replyto][:id]
-      endPointTitle = message[:replyto][:title]
-      endPointPhone = message[:replyto][:phone]
+      endPointID = message[:chat][:id]
+      endPointTitle = message[:chat][:title]
+      endPointPhone = message[:chat][:phone]
 
       # create or update users
       auth = Authorization.find_by(uid: endPointID, provider: 'quepasa')
@@ -402,9 +363,9 @@ returns
       endPointTitle = message[:participant][:title]
       endPointPhone = message[:participant][:phone]
     else
-      endPointID = message[:replyto][:id]
-      endPointTitle = message[:replyto][:title]
-      endPointPhone = message[:replyto][:phone]
+      endPointID = message[:chat][:id]
+      endPointTitle = message[:chat][:title]
+      endPointPhone = message[:chat][:phone]
     end
 
     # create or update users
@@ -549,14 +510,14 @@ returns
       sender_id:    article_sender_id,
       from:         "#{user[:firstname]}#{user[:lastname]}",
       to:           "#{channel[:options][:bot][:phone]} - #{channel[:options][:bot][:name]}",
-      message_id:   message[:message_id],
+      message_id:   message[:id],
       internal:     false,
       created_at:   receveid_at,
       preferences:  {
         quepasa: {
           timestamp:  message[:timestamp], # Duplicado, marcado para remoção, obsoleto
-          message_id: message[:message_id], # Duplicado, marcado para remoção, obsoleto
-          from:       message[:replyto][:id],
+          message_id: message[:id], # Duplicado, marcado para remoção, obsoleto
+          from:       message[:chat][:id],
         }
       }
     )
@@ -589,12 +550,12 @@ returns
       fileName = attachment['filename']
       if fileName.nil? || fileName.empty?
         extension = Rack::Mime::MIME_TYPES.invert[singleMime]
-        fileName = "#{message[:message_id]}#{extension}"
+        fileName = "#{message[:id]}#{extension}"
       end
 
       begin
         # Tentando extrair dados binarios (conteudo do anexo)
-        document = get_file(message[:replyto][:id], attachment, 'pt-br')
+        document = get_file(message[:chat][:id], attachment, 'pt-br')
 
         Store.add(
           object:      'Ticket::Article',
