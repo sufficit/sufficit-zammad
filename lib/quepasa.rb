@@ -57,17 +57,14 @@ returns
 =end
 
   def self.create_or_update_channel(params, channel = nil)
-    Rails.logger.info { 'quepasa: create_or_update_channel' }
 
     # verify token
     bot = Quepasa.check_token(params)
 
-    Rails.logger.info { 'quepasa: checked' }
     if !channel && Quepasa.bot_duplicate?(bot['id'])
       raise Exceptions::UnprocessableEntity, 'Bot already exists!'
     end
 
-    Rails.logger.info { 'quepasa: not duplicated' }
     if params[:group_id].blank?
       raise Exceptions::UnprocessableEntity, 'Group needed!'
     end
@@ -87,8 +84,6 @@ returns
     # set webhook / callback url for this bot @ quepasa
     callback_url = "#{Setting.get('http_type')}://#{Setting.get('fqdn')}/api/v1/channels_quepasa_webhook/#{callback_token}?bid=#{bot['id']}"
     Quepasa.set_webhook(params[:api_token], params[:api_base_url], callback_url)
-
-    Rails.logger.info { 'quepasa: webhook setted' }
 
     if !channel
       channel = Quepasa.bot_by_bot_id(bot['id'])
@@ -210,7 +205,7 @@ returns
     Rails.logger.info { params.inspect }
     @token = params[:api_token]
     @url = params[:api_base_url]
-    @api = QuepasaApi.new(token, url)
+    @api = QuepasaApi.new(@token, @url)
   end
 
 =begin
