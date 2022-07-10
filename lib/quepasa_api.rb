@@ -47,7 +47,7 @@ class QuepasaApi
 
   # Vai na API do QuePasa e atualiza o endereço de webhook para agilizar as entregas de msgs
   def setWebhook(urlWebHook)
-    Rails.logger.info { "SUFF: Atualizando WebHook ... #{urlWebHook}" }
+    Rails.logger.info { "QUEPASA API: atualizando webhook, url: #{urlWebHook}" }
     payload = { url: urlWebHook }
     urlQuery = @url + '/bot/' + @token + '/webhook'
     ret = RestClient.post(urlQuery, payload.to_json, { :content_type => :json, accept: :json })
@@ -57,7 +57,7 @@ class QuepasaApi
   # Envia para QuePasa
   # QuePasa espera por (recipient, message, attachments?(opcional))
   def sendMessage(chat_id, message)
-    Rails.logger.info { "QUEPASA API: Sending message to: #{chat_id} :: #{message}" }
+    Rails.logger.info { "QUEPASA API: sending message to: #{chat_id} :: #{message}" }
 
     payload = { recipient: chat_id, message: message }
     urlQuery = @url + '/bot/' + @token + '/sendtext'

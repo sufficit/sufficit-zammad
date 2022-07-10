@@ -37,8 +37,8 @@ returns
   def self.set_webhook(callback_url)
     begin
       @api.setWebhook(callback_url)
-    rescue
-      raise Exceptions::UnprocessableEntity, 'Unable to set webhook at Quepasa, seems to be a invalid url.'
+    rescue => e
+      raise Exceptions::UnprocessableEntity, e.message
     end
     true
   end
