@@ -135,7 +135,7 @@ returns
 
   def selt.GetChatIdByCustomer(customerId)
     user = User.find(customerId)
-    if !user raise Exception.new "user not found for id #{customerId}"
+    raise RuntimeError, "user not found for id #{customerId}" if user.nil?
 
     return user.quepasa
   end
@@ -420,7 +420,7 @@ returns
     end
 
     # find ticket or create one
-    if !@bid raise Exception.new "bot id not setted"
+    raise RuntimeError, 'bot id not setted' if @bid.nil?
 
     state_ids        = Ticket::State.where(name: %w[closed merged removed]).pluck(:id)
     possible_tickets = Ticket.where(customer_id: user.id).where.not(state_id: state_ids).order(:updated_at)
