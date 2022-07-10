@@ -33,26 +33,22 @@ module Ticket::Article::EnqueueCommunicateQuepasaJob
     # only communicate messages without message id
     # ensure that the message is an outbound message and its not a duplicated message
     return true if !message_id.nil?
-    Rails.logger.info { "QUEPASA ENQUEUE: message: #{message_id}" }
 
     ### starting a ticket by quepasa
     ### starting a ticket by quepasa
     ### starting a ticket by quepasa
 
     Rails.logger.info { "QUEPASA ENQUEUE: ticket: #{ticket_id}" }
-    ticket = Ticket.lookup(id: ticket_id)
 
     # Confere se o ticket foi criado por um agente
     # e preenche as informações basicas
     if !ticket.preferences['channel_id']
       Rails.logger.info { 'QUEPASA ENQUEUE: starting a ticket by quepasa' }
+      Rails.logger.info { ticket.inspect }
 
       ###
       ### setting the first quepasa channel as default outbound sender
       channel = Channel.where(area: 'Quepasa::Bot').first()
-
-      customer = User.find(ticket['customer_id'])
-      Rails.logger.info { "QUEPASA ENQUEUE: customer #{customer}" }
 
       ticket.preferences = {
         # Usado para encontrar esse elemento ao responder um ticket

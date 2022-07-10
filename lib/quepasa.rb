@@ -152,7 +152,7 @@ returns
     Rails.logger.info { params.inspect }
     @token = params[:api_token]
     @url = params[:api_base_url]
-    @bid = params[:bot][:id] 
+    @bid = params[:bot][:id]
     @api = QuepasaApi.new(@token, @url)
   end
 
@@ -285,7 +285,7 @@ returns
   end
 
   def to_wagroup(message)
-    Rails.logger.debug { 'Create user/quepasa group from group message...' }
+    Rails.logger.info { 'QUEPASA: to user from group message ...' }
 
     # Somente se for uma msg de grupo
     if message[:chat][:id].end_with?("@g.us")
@@ -303,7 +303,7 @@ returns
               User.where(quepasa: endPointID).order(:updated_at).first
             end
       unless user
-        Rails.logger.info { "SUFF: Create user from group message... #{endPointID}" }
+        Rails.logger.info { "QUEPASA: create user from group message ... #{endPointID}" }
         user = User.create!(
           login:  endPointID,
           quepasa: endPointID,
@@ -343,7 +343,7 @@ returns
   end
 
   def to_wauser(message)
-    Rails.logger.info { 'QUEPASA: create user from message ...' }
+    Rails.logger.info { 'QUEPASA: to user from message ...' }
     Rails.logger.info { message.inspect }
 
     # definindo o que utilizar como endpoint de usuario
@@ -365,7 +365,7 @@ returns
              User.where(quepasa: endPointID).order(:updated_at).first
            end
     unless user
-      Rails.logger.info { "SUFF: Create user from message... #{endPointID}" }
+      Rails.logger.info { "QUEPASA: create user from message ... #{endPointID}" }
 
       user = User.create!(
         phone: endPointPhone,
