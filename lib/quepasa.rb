@@ -64,7 +64,7 @@ returns
     @api.setWebhook(callback_url)
 
     if !channel
-      channel = Quepasa.bot_by_bot_id(@bid)
+      channel = Quepasa.GetChannelFromId(@bid)
       if !channel
         channel = Channel.new
       end
@@ -114,7 +114,7 @@ returns
 
 get channel by bot_id
 
-  channel = Quepasa.bot_by_bot_id(bot_id)
+  channel = Quepasa.GetChannelFromId(bot_id)
 
 returns
 
@@ -123,15 +123,23 @@ returns
 =end
 
   ### Tentar localizar no Zammad o Bot referente ao ID passado em parametro
-  def self.bot_by_bot_id(bot_id)
+  def self.GetChannelFromId(botId)
     Channel.where(area: 'Quepasa::Bot').each do |channel|
       next if !channel.options
       next if !channel.options[:bot]
       next if !channel.options[:bot][:id]
-      return channel if channel.options[:bot][:id].to_s == bot_id.to_s
+      return channel if channel.options[:bot][:id].to_s == botId.to_s
     end
     nil
   end
+
+  def self.GetChatIdByCustomer(customerId)
+    user = User.find(customerId)
+    raise RuntimeError, "user not found for id #{customerId}" if user.nil?
+
+    return user.quepasa
+  end
+
 
 =begin
 
@@ -140,9 +148,11 @@ returns
 =end
 
   def initialize(params)
+    Rails.logger.info { 'QUEPASA: initialize' }
     Rails.logger.info { params.inspect }
     @token = params[:api_token]
     @url = params[:api_base_url]
+    @bid = params[:bot][:id]
     @api = QuepasaApi.new(@token, @url)
   end
 
@@ -275,7 +285,7 @@ returns
   end
 
   def to_wagroup(message)
-    Rails.logger.debug { 'Create user/quepasa group from group message...' }
+    Rails.logger.info { 'QUEPASA: to user from group message ...' }
 
     # Somente se for uma msg de grupo
     if message[:chat][:id].end_with?("@g.us")
@@ -293,7 +303,7 @@ returns
               User.where(quepasa: endPointID).order(:updated_at).first
             end
       unless user
-        Rails.logger.info { "SUFF: Create user from group message... #{endPointID}" }
+        Rails.logger.info { "QUEPASA: create user from group message ... #{endPointID}" }
         user = User.create!(
           login:  endPointID,
           quepasa: endPointID,
@@ -333,7 +343,7 @@ returns
   end
 
   def to_wauser(message)
-    Rails.logger.info { 'QUEPASA: create user from message ...' }
+    Rails.logger.info { 'QUEPASA: to user from message ...' }
     Rails.logger.info { message.inspect }
 
     # definindo o que utilizar como endpoint de usuario
@@ -355,7 +365,7 @@ returns
              User.where(quepasa: endPointID).order(:updated_at).first
            end
     unless user
-      Rails.logger.info { "SUFF: Create user from message... #{endPointID}" }
+      Rails.logger.info { "QUEPASA: create user from message ... #{endPointID}" }
 
       user = User.create!(
         phone: endPointPhone,
@@ -397,10 +407,10 @@ returns
   def to_ticket(message, user, group_id, channel)
     UserInfo.current_user_id = user.id
 
-    Rails.logger.info { 'QUEPASA: create ticket from message ...' }
+    Rails.logger.info { 'QUEPASA: get or create ticket from message ...' }
     Rails.logger.info { message.inspect }
     Rails.logger.info { user.inspect }
-    Rails.logger.info { group_id.inspect }
+    Rails.logger.info { channel.inspect }
 
     # prepare title
     title = '-'
@@ -412,16 +422,14 @@ returns
     end
 
     # find ticket or create one
-    bot_id = message['bid']
-    state_ids        = Ticket::State.where(name: %w[closed merged removed]).pluck(:id)
-    possible_tickets = Ticket.where(customer_id: user.id).where.not(state_id: state_ids).order(:updated_at)
-    ticket           = possible_tickets.find_each.find { |possible_ticket| possible_ticket.preferences[:channel_id] == channel.id && possible_ticket.preferences[:quepasa][:bid] == bot_id }
+    raise RuntimeError, 'bot id not setted' if @bid.nil?
 
-    # old method
-    # ticket = Ticket.where(customer_id: user.id).where.not(state_id: state_ids).where("preferences LIKE :bid", {:bid => "%bid: #{bot_id}%"}).order(:updated_at).first
+    state_ids        = Ticket::State.where(name: %w[closed merged removed]).pluck(:id)
+    possible_tickets = Ticket.where(customer_id: user.id).where.not(state_id: state_ids)
+    ticket           = possible_tickets.find_each.find { |possible_ticket| possible_ticket.preferences[:channel_id] == channel.id }
 
     if ticket
-      Rails.logger.info { "SUFF: Append to ticket(#{ticket.id}) from message... #{bot_id}" }
+      Rails.logger.info { "QUEPASA: append to ticket(#{ticket.id}) from message ... #{@bid}" }
 
       # check if title need to be updated
       if ticket.title == '-'
@@ -435,7 +443,7 @@ returns
       return ticket
     end
 
-    Rails.logger.info { "QUEPASA: creating new ticket from message... #{bot_id}" }
+    Rails.logger.info { "QUEPASA: creating new ticket from message ... #{@bid}" }
     ticket = Ticket.new(
       group_id:    group_id,
       title:       title,
@@ -444,14 +452,7 @@ returns
       customer_id: user.id,
       preferences: {
         # Usado para encontrar esse elemento ao responder um ticket
-        # Usado somente se não encontrar pelo quepasa:bot
-        channel_id: channel.id,
-
-        # Salva informações do contato para ser usado ao responder qualquer artigo dentro deste ticket
-        quepasa:  {
-          bid:     bot_id, # Qual Quepasa utilizar para resposta
-          chat_id: message[:chat][:id] # Destino no quepasa
-        }
+        channel_id: channel.id
       }
     )
     ticket.save!

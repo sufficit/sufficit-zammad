@@ -5,7 +5,7 @@ class CommunicateQuepasaJob < ApplicationJob
   }
 
   def perform(article_id)
-    Rails.logger.info { "QUEPASA: Comunicate Performing: #{article_id}" }
+    Rails.logger.info { "QUEPASA COMMUNICATE: comunicate performing: #{article_id}" }
     article = Ticket::Article.find(article_id)
 
     # set retry count
@@ -14,26 +14,20 @@ class CommunicateQuepasaJob < ApplicationJob
 
     ticket = Ticket.lookup(id: article.ticket_id)
     log_error(article, "Can't find ticket.preferences for Ticket.find(#{article.ticket_id})") if !ticket.preferences
-    log_error(article, "Can't find ticket.preferences['quepasa'] for Ticket.find(#{article.ticket_id})") if !ticket.preferences['quepasa']
-    log_error(article, "Can't find ticket.preferences['quepasa']['chat_id'] for Ticket.find(#{article.ticket_id})") if !ticket.preferences['quepasa']['chat_id']
-    if ticket.preferences['quepasa'] && ticket.preferences['quepasa']['bid']
-      channel = Quepasa.bot_by_bot_id(ticket.preferences['quepasa']['bid'])
-    end
-    if !channel
-      channel = Channel.lookup(id: ticket.preferences['channel_id'])
-    end
-    log_error(article, "No such channel for bot #{ticket.preferences['bid']} or channel id #{ticket.preferences['channel_id']}") if !channel
-    #log_error(article, "Channel.find(#{channel.id}) isn't a quepasa channel!") if channel.options[:adapter] !~ /\Aquepasa/i
+    #log_error(article, "Can't find ticket.preferences['quepasa'] for Ticket.find(#{article.ticket_id})") if !ticket.preferences['quepasa']
+    #log_error(article, "Can't find ticket.preferences['quepasa']['chat_id'] for Ticket.find(#{article.ticket_id})") if !ticket.preferences['quepasa']['chat_id']
+
+    channel = Channel.lookup(id: ticket.preferences['channel_id'])
+    log_error(article, "No such channel for channel id #{ticket.preferences['channel_id']}") if !channel
     log_error(article, "Channel.find(#{channel.id}) has not quepasa api token!") if channel.options[:api_token].blank?
 
     begin
       api = QuepasaApi.new(channel.options[:api_token], channel.options[:api_base_url])
-      chat_id = ticket.preferences[:quepasa][:chat_id]
 
       # ajustando o corpo da msg para texto simples caso ainda não seja
       if article.content_type != 'text/plain'
 
-        Rails.logger.info { "QUEPASA: adjust content type #{article.content_type} :: #{article.body}" }
+        Rails.logger.info { "QUEPASA COMMUNICATE: adjust content type #{article.content_type} :: #{article.body}" }
 
         # tenta atualizar primeiro, depois troca o formato se a atualização foi bem sucedida
         article.body = article.body.html2text
@@ -45,11 +39,13 @@ class CommunicateQuepasaJob < ApplicationJob
       ### Prepend user name to quepasa
       user = User.find_by(id: article.created_by_id)
       if user
-        Rails.logger.info { "QUEPASA: Prepending user title" }
+        Rails.logger.info { 'QUEPASA COMMUNICATE: prepending user title' }
         prependText = "\*#{user.firstname} #{user.lastname}\*: "
         messageToSend = "#{prependText}#{messageToSend}"
       end
 
+      ### finding quepasa chat id
+      chat_id = Quepasa.GetChatIdByCustomer(ticket.customer_id)
       result = api.sendMessage(chat_id, messageToSend)
       me = api.getMe()
       article.attachments.each do |attach|
@@ -66,7 +62,7 @@ class CommunicateQuepasaJob < ApplicationJob
       return
     end
 
-    Rails.logger.info { "QUEPASA: Result info: #{result}" }
+    Rails.logger.info { "QUEPASA COMMUNICATE: result info: #{result}" }
 
     # only private, group messages. channel messages do not have from key
     if result
@@ -90,8 +86,7 @@ class CommunicateQuepasaJob < ApplicationJob
 
     article.save!
 
-    Rails.logger.info "QUEPASA: Sended quepasa message to: '#{article.to}' (from #{article.from})"
-
+    Rails.logger.info { "QUEPASA COMMUNICATE: sended quepasa message to: '#{article.to}' (from #{article.from})" }
     article
   end
 
