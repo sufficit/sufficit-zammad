@@ -101,9 +101,8 @@ returns
       },
       callback_token: callback_token,
       callback_url:   callback_url,
-      api_token:      token,
-      welcome:        params[:welcome],
-      goodbye:        params[:goodbye],
+      api_token:      params[:api_token],
+      api_base_url:   params[:api_base_url]
     }
     channel.group_id = group.id
     channel.active = true
