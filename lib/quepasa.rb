@@ -26,7 +26,7 @@ check token and return bot attributes of token
 
 set webhook for bot
 
-  success = Quepasa.set_webhook(token, url, callback_url)
+  success = Quepasa.set_webhook(callback_url)
 
 returns
 
@@ -34,10 +34,9 @@ returns
 
 =end
 
-  def self.set_webhook(token, url, callback_url)
-    api = QuepasaApi.new(token, url)
+  def self.set_webhook(callback_url)
     begin
-      api.setWebhook(callback_url)
+      @api.setWebhook(callback_url)
     rescue
       raise Exceptions::UnprocessableEntity, 'Unable to set webhook at Quepasa, seems to be a invalid url.'
     end
@@ -84,7 +83,7 @@ returns
 
     # set webhook / callback url for this bot @ quepasa
     callback_url = "#{Setting.get('http_type')}://#{Setting.get('fqdn')}/api/v1/channels_quepasa_webhook/#{callback_token}?bid=#{@bid}"
-    Quepasa.set_webhook(@token, @url, callback_url)
+    Quepasa.set_webhook(callback_url)
 
     if !channel
       channel = Quepasa.bot_by_bot_id(@bid)
@@ -171,24 +170,26 @@ returns
 
 =begin
 
-  client.message(chat_id, 'some message', language_code)
+  client.message(destination, 'some message', language)
 
 =end
 
   # Usa a API para encaminhar uma mensagem, passando pelo sistema de tradução
-  def message(chat_id, message, language_code = 'en')
+  def message(destination, message, language = 'en')
     return if Rails.env.test?
+    Rails.logger.info { 'QUEPASA: sending message ...' }
+    Rails.logger.info { message.inspect }
 
-    locale = Locale.find_by(alias: language_code)
+    locale = Locale.find_by(alias: language)
     if !locale
-      locale = Locale.where('locale LIKE :prefix', prefix: "#{language_code}%").first
+      locale = Locale.where('locale LIKE :prefix', prefix: "#{language}%").first
     end
 
     if locale
       message = Translation.translate(locale[:locale], message)
     end
 
-    @api.sendMessage(chat_id, message)
+    @api.sendMessage(destination, message)
   end
 
   def user(params)
@@ -201,8 +202,8 @@ returns
   end
 
   def to_user(params)
-    Rails.logger.debug { 'Create user from message...' }
-    Rails.logger.debug { params.inspect }
+    Rails.logger.info { 'QUEPASA: creating user from message ...' }
+    Rails.logger.info { params.inspect }
 
     # do message_user lookup
     message_user = user(params)
@@ -249,8 +250,8 @@ returns
 
   ## Metodo de entrada exclusivo para o processamento das mensagens recebidas
   def self.MessageValidate(message)
-    Rails.logger.debug { 'validating message' }
-    Rails.logger.debug message
+    Rails.logger.info { 'QUEPASA: validating message' }
+    Rails.logger.info { message.inspect }
 
     # caso seja nula ou inválida
     return false if message.nil?
@@ -354,8 +355,8 @@ returns
   end
 
   def to_wauser(message)
-    Rails.logger.debug { "Create user from message ..." }
-    Rails.logger.debug { message.inspect }
+    Rails.logger.info { 'QUEPASA: create user from message ...' }
+    Rails.logger.info { message.inspect }
 
     # definindo o que utilizar como endpoint de usuario
     if !(message[:participant][:id].to_s.empty?)
@@ -418,10 +419,10 @@ returns
   def to_ticket(message, user, group_id, channel)
     UserInfo.current_user_id = user.id
 
-    Rails.logger.debug { "Create ticket from message..." }
-    Rails.logger.debug { message.inspect }
-    Rails.logger.debug { user.inspect }
-    Rails.logger.debug { group_id.inspect }
+    Rails.logger.info { 'QUEPASA: create ticket from message ...' }
+    Rails.logger.info { message.inspect }
+    Rails.logger.info { user.inspect }
+    Rails.logger.info { group_id.inspect }
 
     # prepare title
     title = '-'
