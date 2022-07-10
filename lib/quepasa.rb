@@ -12,14 +12,13 @@ check token and return bot attributes of token
 
 =end
 
-  def self.check_token(params)
-    api = QuepasaApi.new(params[:api_token], params[:api_base_url])
+  def check_token()
     begin
-      bot = api.getMe()
+      info = @api.getMe()
     rescue
       raise Exceptions::UnprocessableEntity, 'invalid api token'
     end
-    bot
+    info
   end
 
 =begin
@@ -37,10 +36,10 @@ returns
   def create_or_update_channel(params, channel = nil)
 
     # verify token
-    info = self.check_token(params)
+    info = check_token()
     @bid = info['bot']['id']
 
-    if !channel && self.bot_duplicate?(@bid)
+    if !channel && duplicate?()
       raise Exceptions::UnprocessableEntity, 'Bot already exists!'
     end
 
@@ -65,7 +64,7 @@ returns
     @api.setWebhook(callback_url)
 
     if !channel
-      channel = self.bot_by_bot_id(@bid)
+      channel = Quepasa.bot_by_bot_id(@bid)
       if !channel
         channel = Channel.new
       end
@@ -90,7 +89,7 @@ returns
 
 check if bot already exists as channel
 
-  success = Quepasa.bot_duplicate?(bot_id)
+  success = duplicate?(channel_id)
 
 returns
 
@@ -98,12 +97,12 @@ returns
 
 =end
 
-  def self.bot_duplicate?(bot_id, channel_id = nil)
+  def duplicate?(channel_id = nil)
     Channel.where(area: 'Quepasa::Bot').each do |channel|
       next if !channel.options
       next if !channel.options[:bot]
       next if !channel.options[:bot][:id]
-      next if channel.options[:bot][:id] != bot_id
+      next if channel.options[:bot][:id] != @bid
       next if channel.id.to_s == channel_id.to_s
 
       return true
