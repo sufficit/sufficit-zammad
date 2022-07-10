@@ -19,6 +19,9 @@ class Channel::Driver::Quepasa
 =end
 
   def send(options, article, notification = false)
+    Rails.logger.info { "QUEPASA DRIVER: sending, notification: #{notification} " }
+    Rails.logger.info { options.inspect }
+    Rails.logger.info { article.inspect }
 
     # return if we run import mode
     return if Setting.get('import_mode')

@@ -40,7 +40,7 @@ class CommunicateQuepasaJob < ApplicationJob
       ### Prepend user name to quepasa
       user = User.find_by(id: article.created_by_id)
       if user
-        Rails.logger.info { "QUEPASA COMMUNICATE: prepending user title" }
+        Rails.logger.info { 'QUEPASA COMMUNICATE: prepending user title' }
         prependText = "\*#{user.firstname} #{user.lastname}\*: "
         messageToSend = "#{prependText}#{messageToSend}"
       end
@@ -61,7 +61,7 @@ class CommunicateQuepasaJob < ApplicationJob
       return
     end
 
-    Rails.logger.info { "QUEPASA: Result info: #{result}" }
+    Rails.logger.info { "QUEPASA COMMUNICATE: result info: #{result}" }
 
     # only private, group messages. channel messages do not have from key
     if result
@@ -85,8 +85,7 @@ class CommunicateQuepasaJob < ApplicationJob
 
     article.save!
 
-    Rails.logger.info "QUEPASA COMMUNICATE: sended quepasa message to: '#{article.to}' (from #{article.from})"
-
+    Rails.logger.info { "QUEPASA COMMUNICATE: sended quepasa message to: '#{article.to}' (from #{article.from})" }
     article
   end
 
