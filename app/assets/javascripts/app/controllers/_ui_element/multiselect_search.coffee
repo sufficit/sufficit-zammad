@@ -4,10 +4,14 @@ class App.UiElement.multiselect_search extends App.UiElement.ApplicationUiElemen
     attribute = $.extend(true, {}, attributeConfig)
 
     # set multiple option
+<<<<<<< HEAD
     if attribute.multiple
       attribute.multiple = 'multiple'
     else
       attribute.multiple = ''
+=======
+    attribute.multiple = 'multiple'
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
     delete attribute.filter
 

@@ -364,11 +364,11 @@ class App.TicketZoom extends App.Controller
 
     modifier = 'alt+ctrl+left'
     $(document).on("keydown.ticket_zoom#{@ticket_id}", modifier, (e) =>
-      @articleNavigate('up')
+      @articleNavigate('ascending')
     )
     modifier = 'alt+ctrl+right'
     $(document).on("keydown.ticket_zoom#{@ticket_id}", modifier, (e) =>
-      @articleNavigate('down')
+      @articleNavigate('descending')
     )
 
   shortcutNavigationstop: =>
@@ -387,7 +387,7 @@ class App.TicketZoom extends App.Controller
     )
 
     # navigate to article
-    if direction is 'up'
+    if direction is 'ascending'
       articleStates = articleStates.reverse()
     jumpTo = undefined
     for articleState in articleStates
@@ -978,6 +978,8 @@ class App.TicketZoom extends App.Controller
     params =
       new_article:       @articleNew.params()
       ticket_attributes: @ticketParams()
+
+    params.new_article.body = App.Utils.signatureRemoveByHtml(params.new_article.body)
 
     loaded_draft_id = params.new_article.shared_draft_id
 

@@ -2,6 +2,10 @@
 class App.UiElement.tag
   @render: (attributeConfig) ->
     attribute = $.extend(true, {}, attributeConfig)
+<<<<<<< HEAD
+=======
+
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
     if !attribute.id
       attribute.id = 'tag-' + new Date().getTime() + '-' + Math.floor(Math.random() * 999999)
     item = $( App.view('generic/input')(attribute: attribute) )

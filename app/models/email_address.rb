@@ -2,7 +2,6 @@
 
 class EmailAddress < ApplicationModel
   include ChecksHtmlSanitized
-  include ChecksLatestChangeObserved
   include HasCollectionUpdate
 
   has_many        :groups, after_add: :cache_update, after_remove: :cache_update
@@ -55,7 +54,7 @@ check and if channel not exists reset configured channels for email addresses
 
     self.email = email.downcase.strip
     email_address_validation = EmailAddressValidation.new(email)
-    if !email_address_validation.valid_format?
+    if !email_address_validation.valid?
       raise Exceptions::UnprocessableEntity, "Invalid email '#{email}'"
     end
 

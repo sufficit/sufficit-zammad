@@ -25,18 +25,9 @@ class KnowledgeBase::Answer < ApplicationModel
   alias assets_essential assets
 
   def attributes_with_association_ids
-    key = "#{self.class}::aws::#{id}"
-
-    cache = Cache.read(key)
-    return cache if cache
-
     attrs = super
-
     attrs[:attachments] = attachments_sorted.map { |elem| self.class.attachment_to_hash(elem) }
     attrs[:tags]        = tag_list
-
-    Cache.write(key, attrs)
-
     attrs
   end
 
@@ -62,7 +53,7 @@ class KnowledgeBase::Answer < ApplicationModel
     filename     = file.try(:original_filename) || File.basename(file.path)
     content_type = file.try(:content_type) || MIME::Types.type_for(filename).first&.content_type || 'application/octet-stream'
 
-    Store.add(
+    Store.create!(
       object:      self.class.name,
       o_id:        id,
       data:        file.read,
@@ -120,14 +111,6 @@ class KnowledgeBase::Answer < ApplicationModel
       siblings
     end
   end
-
-  def reordering_callback
-    return if !category_id_changed? && !position_changed?
-
-    # drop siblings cache to make sure ordering is always up to date
-    category.answers.each(&:cache_delete)
-  end
-  before_save :reordering_callback
 
   def touch_translations
     translations.each(&:touch) # move to #touch_all when migrationg to Rails 6

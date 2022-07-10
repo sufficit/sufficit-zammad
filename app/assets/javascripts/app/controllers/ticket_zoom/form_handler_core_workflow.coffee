@@ -151,7 +151,6 @@ class App.FormHandlerCoreWorkflow
             item.default  = obj[item.name]
             item.newValue = obj[item.name]
         else
-          item.default  = ''
           item.newValue = ''
 
         if attribute.relation
@@ -176,6 +175,7 @@ class App.FormHandlerCoreWorkflow
         )
 
         form.find('[name="' + field + '"]').closest('.form-group').replaceWith(newElement)
+        form.find('[name="' + field + '"]').closest('.form-group').find('.js-helpMessage').tooltip()
 
         if shown
           ui.show(field, form)
@@ -191,12 +191,25 @@ class App.FormHandlerCoreWorkflow
     return if _.isEmpty(data)
 
     for field, values of data
+<<<<<<< HEAD
       fieldElement = $("div[data-attribute-name='" + field + "']")
       if fieldElement.hasClass('tree_select')
         fieldElement.find(".js-option[data-value='" + data[field] + "']").trigger('click')
       else
         form.find('[name="' + field + '"]').val(data[field])
       coreWorkflowParams[classname][field] = data[field]
+=======
+      if !_.isArray(values)
+        values = [values]
+
+      for value in values
+        fieldElement = $("div[data-attribute-name='" + field + "']")
+        if fieldElement.hasClass('tree_select') || fieldElement.hasClass('multi_tree_select')
+          fieldElement.find(".js-option[data-value='" + value + "'] span").trigger('click')
+        else
+          form.find('[name="' + field + '"]').val(value)
+      coreWorkflowParams[classname][field] = values
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
   # fill in data in input fields
   @fillIn: (classname, form, ui, attributes, params, data) ->

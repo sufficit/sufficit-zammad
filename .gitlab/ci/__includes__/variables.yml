@@ -1,0 +1,30 @@
+# Global variables added to the ENV of each job and service container.
+variables:
+  # for faster translation loading
+  Z_LOCALES: "en-us:de-de"
+  RAILS_ENV: "test"
+  # Browser tests and variables
+  RAILS_SERVE_STATIC_FILES: "true"
+  TZ: "Europe/London"
+  # docker-imap-devel variables required for browser tests
+  MAILNAME: "mail.test.dc.zammad.com"
+  MAILBOX_INIT: "zammad@mail.test.dc.zammad.com:zammad"
+  MAIL_ADDRESS: "zammad@mail.test.dc.zammad.com"
+  MAIL_PASS: "zammad"
+  # docker-imap-devel variables required for integration tests
+  MAIL_SERVER: "mail"
+  MAIL_SERVER_ACCOUNT: "zammad@mail.test.dc.zammad.com:zammad"
+  MAIL_SERVER_EMAIL: "zammad@mail.test.dc.zammad.com"
+  KEEP_ON_MAIL_SERVER: "mail"
+  KEEP_ON_MAIL_SERVER_ACCOUNT: "zammad@mail.test.dc.zammad.com:zammad"
+
+  # Settings for elasticsearch, if active
+  ES_INDEX_RAND: 'true'
+  ELASTICSEARCH_TAG: '7.16'
+
+  # Temporary switch to enable the mobile front end for testing.
+  ENABLE_EXPERIMENTAL_MOBILE_FRONTEND: 'true'
+  # Compile assets only once.
+  CI_SKIP_ASSETS_PRECOMPILE: 'true'
+  # Avoid unnecessary DB resets.
+  CI_SKIP_DB_RESET: 'true'

@@ -1,91 +1,31 @@
-# Workaround to enable usage of mixed SSH and Docker GitLab CI runners
-.template_pre: &template_pre
+# Write CI cache once for faster runs
+'write runner cache: ruby':
   stage: pre
-  extends:
-    - .tags_docker
-    - .rules_singletest
+  cache: !reference [.cache, read_write_ruby]
   before_script:
-    - source /etc/profile.d/rvm.sh # ensure RVM is loaded
-    - source /opt/rh/rh-nodejs*/enable # ensure Node.js is available
+    - !reference [.scripts, source_rvm]
+  script:
+    - !reference [.scripts, bundle_install]
 
-.template_pre_rails: &template_pre_rails
+'write runner cache: nodejs':
   stage: pre
-  extends:
-    - .tags_docker
-    - .rules_singletest
-    - .services_postgresql
-  before_script:
-    - source /etc/profile.d/rvm.sh # ensure RVM is loaded
-    - source /opt/rh/rh-nodejs*/enable # ensure Node.js is available
-    - echo -e "\\e[0Ksection_start:`date +%s`:bundle_install[collapsed=true]\\r\\e[0Kbundle install"
-    - bundle install -j $(nproc) --path vendor
-    - echo -e "\\e[0Ksection_end:`date +%s`:bundle_install\\r\\e[0K"
-    - bundle exec ruby .gitlab/configure_environment.rb
-    - source .gitlab/environment.env
-    - echo -e "\\e[0Ksection_start:`date +%s`:zammad_db_init[collapsed=true]\\r\\e[0Kbundle exec rake zammad:db:init"
-    - bundle exec rake zammad:db:init
-    - echo -e "\\e[0Ksection_end:`date +%s`:zammad_db_init\\r\\e[0K"
-
-# Must be a separate job because it uses a custom image.
-"lint: shellcheck":
-  <<: *template_pre
-  image: koalaman/shellcheck-alpine:stable
-  before_script:
-    - echo "Disable default before_script."
+  cache: !reference [.cache, read_write_nodejs]
+  before_script: []
   script:
-    - shellcheck -S warning $(find . -name "*.sh" -o -name "functions" | grep -v "/vendor/")
-
-"lint: i18n, rails & security":
-  <<: *template_pre_rails
-  artifacts:
-    expire_in: 1 week
-    paths:
-      - tmp/brakeman-report.html
-    when: on_failure
-  script:
-    - echo "Checking .po file syntax..."
-    - for FILE in i18n/*.pot i18n/*.po; do echo "Checking $FILE"; msgfmt -o /dev/null -c $FILE; done
-    - echo "Checking .pot catalog consistency..."
-    - bundle exec rails generate translation_catalog --check
-    - echo "Brakeman security check..."
-    - bundle exec brakeman -o /dev/stdout -o tmp/brakeman-report.html
-    - echo "bundler-audit security check..."
-    - gem install bundler-audit
-    - bundle-audit update
-    - bundle-audit --ignore CVE-2015-9284
-    - echo "Rails zeitwerk:check autoloader check..."
-    - bundle exec rails zeitwerk:check
-
-"lint: ruby, js & css":
-  <<: *template_pre
-  script:
-    - echo "Coffeelint check..."
-    - coffeelint --rules ./.coffeelint/rules/* app/
-    - echo "Stylelint check..."
-    - yarn install
-    - yarn lint:css
-    - echo "Rubocop check..."
-    - echo -e "\\e[0Ksection_start:`date +%s`:bundle_install[collapsed=true]\\r\\e[0Kbundle install"
-    - bundle install -j $(nproc) --path vendor
-    - echo -e "\\e[0Ksection_end:`date +%s`:bundle_install\\r\\e[0K"
-    - bundle exec rubocop --parallel
-
-# Must be a separate job because it may fail and is only executed for develop.
-"lint: orphaned ruby gems":
-  <<: *template_pre_rails
-  allow_failure: true
-  rules:
-    - if: $CI_MERGE_REQUEST_ID
-      when: never
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-      when: always
-    - when: manual
-  script:
-    - bundle exec rake zammad:ci:bundle:orphaned 5
+    - !reference [.scripts, yarn_install]
+    - yarn storybook:install
+    - yarn cypress:install
+    - yarn --cwd ./.eslint-plugin-zammad install
 
 # Executed on a dedicated runner.
+<<<<<<< HEAD
 "push to github":
   <<: *template_pre
+=======
+'push to github':
+  stage: pre
+  cache: []
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
   before_script:
     - test -d $HOME/.ssh || mkdir $HOME/.ssh
     - ssh-keyscan github.com >> $HOME/.ssh/known_hosts
@@ -96,11 +36,12 @@
     - git fetch --unshallow
     - script/build/sync_repo.sh git@github.com:zammad/zammad.git
 
-global_refresh_envs:
-  extends:
-    - .tags_docker
-    - .services_postgresql
+'refresh global envs':
+  services:
+    - !reference [.services, postgresql]
   stage: pre
+  needs:
+    - 'write runner cache: ruby'
   # ensure that only one Job runs in the whole project (branches etc.)
   resource_group: global_refresh_envs
   # allow download via the web UI to restore ENVs in case global cache got deleted (see: `.gitlab-ci.yml`)
@@ -115,6 +56,5 @@ global_refresh_envs:
       when: manual
       allow_failure: true
     - when: on_success
-
   script:
     - bundle exec rake zammad:ci:refresh_envs

@@ -88,8 +88,8 @@ RSpec.describe 'Keyboard Shortcuts', type: :system do
       end
 
       it 'shows list of shortcuts' do
-        in_modal disappears: false do
-          expect(page).to have_selector('h1.modal-title', text: 'Keyboard Shortcuts')
+        in_modal do
+          expect(page).to have_selector('h1', text: 'Keyboard Shortcuts')
         end
       end
 
@@ -139,7 +139,7 @@ RSpec.describe 'Keyboard Shortcuts', type: :system do
         end
       end
 
-      context 'for Next in tab' do
+      context 'shows the next tab' do
         let(:tab) { [:tab] }
 
         it 'show the next tab' do

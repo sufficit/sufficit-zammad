@@ -85,7 +85,7 @@ module ZammadCapybarActionDelegator
   end
 
   def hot_keys
-    mac_platform? ? %i[control alt] : %i[control shift]
+    mac_platform? ? %i[control alt] : %i[shift control]
   end
 
   def magic_key
@@ -131,11 +131,13 @@ class ZammadCapybaraSessionDelegator < SimpleDelegator
   extend Forwardable
 
   def_delegator :@context, :await_empty_ajax_queue
+  attr_reader :element
 
   include ZammadCapybarSelectorDelegator
 
   def initialize(context:, element:)
     @context = context
+    @element = element
 
     super(element)
   end

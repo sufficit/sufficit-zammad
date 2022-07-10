@@ -5,10 +5,10 @@ class Setting < ApplicationModel
   store         :state_current
   store         :state_initial
   store         :preferences
-  before_create :state_check, :set_initial, :check_broadcast
-  after_create  :reset_change_id, :reset_cache
-  before_update :state_check, :check_broadcast
-  after_update  :reset_change_id, :reset_cache
+  before_create :state_check, :set_initial
+  after_create  :reset_change_id, :reset_cache, :check_broadcast
+  before_update :state_check
+  after_update  :reset_change_id, :reset_cache, :check_broadcast
 
   attr_accessor :state
 
@@ -126,7 +126,7 @@ reload config settings
       end
     end
 
-    @@change_id = Cache.read('Setting::ChangeId') # rubocop:disable Style/ClassVars
+    @@change_id = Rails.cache.read('Setting::ChangeId') # rubocop:disable Style/ClassVars
     @@lookup_at = Time.now.to_i # rubocop:disable Style/ClassVars
     true
   end
@@ -142,7 +142,7 @@ reload config settings
     @@current[name] = state_current[:value]
     change_id = SecureRandom.uuid
     logger.debug { "Setting.reset_change_id: set new cache, #{change_id}" }
-    Cache.write('Setting::ChangeId', change_id, { expires_in: 24.hours })
+    Rails.cache.write('Setting::ChangeId', change_id, { expires_in: 24.hours })
     @@lookup_at = nil # rubocop:disable Style/ClassVars
     true
   end
@@ -151,7 +151,7 @@ reload config settings
     return true if preferences[:cache].blank?
 
     preferences[:cache].each do |key|
-      Cache.delete(key)
+      Rails.cache.delete(key)
     end
     true
   end
@@ -163,7 +163,7 @@ reload config settings
       return true
     end
 
-    change_id = Cache.read('Setting::ChangeId')
+    change_id = Rails.cache.read('Setting::ChangeId')
     if @@change_id && change_id == @@change_id
       @@lookup_at = Time.now.to_i # rubocop:disable Style/ClassVars
       # logger.debug "Setting.cache_valid?: cache still valid, #{@@change_id}/#{change_id}"
@@ -191,6 +191,7 @@ reload config settings
     if state_current.key?(:value)
       value = state_current[:value]
     end
+
     Sessions.broadcast(
       {
         event: 'config_update',
@@ -198,6 +199,7 @@ reload config settings
       },
       preferences[:authentication] ? 'authenticated' : 'public'
     )
+    Gql::ZammadSchema.subscriptions.trigger(Gql::Subscriptions::ConfigUpdates.field_name, {}, self)
     true
   end
 end

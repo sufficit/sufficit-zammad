@@ -9,7 +9,8 @@ RSpec.describe Transaction::Notification, type: :model do
     let(:ticket) { create(:ticket, owner: user, state_name: 'open', pending_time: Time.current) }
 
     before do
-      travel_to Time.current.noon
+      travel_to Time.use_zone('UTC') { Time.current.noon }
+
       user.groups << group
       ticket
 
@@ -19,7 +20,7 @@ RSpec.describe Transaction::Notification, type: :model do
     end
 
     it 'notification not sent at UTC midnight' do
-      travel_to Time.current.end_of_day + 1.minute
+      travel_to Time.use_zone('UTC') { Time.current.end_of_day + 1.minute }
 
       expect { run(ticket, user, 'reminder_reached') }.not_to change(OnlineNotification, :count)
     end
@@ -28,6 +29,46 @@ RSpec.describe Transaction::Notification, type: :model do
       travel_to Time.use_zone('America/Santiago') { Time.current.end_of_day + 1.minute }
 
       expect { run(ticket, user, 'reminder_reached') }.to change(OnlineNotification, :count).by(1)
+    end
+  end
+
+  # https://github.com/zammad/zammad/issues/4066
+  describe 'notification sending reason may be fully translated' do
+    let(:group) { create(:group) }
+    let(:user)      { create(:agent, groups: [group]) }
+    let(:ticket)    { create(:ticket, owner: user, state_name: 'open', pending_time: Time.current) }
+    let(:reason_en) { 'You are receiving this because you are the owner of this ticket.' }
+    let(:reason_de) do
+      Translation.translate('de-de', reason_en).tap do |translated|
+        expect(translated).not_to eq(reason_en)
+      end
+    end
+
+    before do
+      allow(NotificationFactory::Mailer).to receive(:send)
+    end
+
+    it 'notification includes English footer' do
+      run(ticket, user, 'reminder_reached')
+
+      expect(NotificationFactory::Mailer)
+        .to have_received(:send)
+        .with hash_including body: %r{#{reason_en}}
+    end
+
+    context 'when locale set to Deutsch' do
+      before do
+        user.preferences[:locale] = 'de-de'
+        user.save
+      end
+
+      it 'notification includes German footer' do
+        run(ticket, user, 'reminder_reached')
+
+        expect(NotificationFactory::Mailer)
+          .to have_received(:send)
+          .with hash_including body: %r{#{reason_de}}
+      end
     end
   end
 

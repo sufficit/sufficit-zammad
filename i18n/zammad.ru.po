@@ -2,7 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zammad\n"
 "POT-Creation-Date: \n"
+<<<<<<< HEAD
 "PO-Revision-Date: 2022-05-19 08:49+0000\n"
+=======
+"PO-Revision-Date: 2022-06-28 05:33+0000\n"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 "Last-Translator: Zhilin Ruslan <x-th-unicorn@hotmail.com>\n"
 "Language-Team: Russian <https://translations.zammad.org/projects/zammad/"
 "zammad-stable/ru/>\n"
@@ -12,7 +16,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+<<<<<<< HEAD
 "X-Generator: Weblate 4.12.1\n"
+=======
+"X-Generator: Weblate 4.13\n"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #. Default date format to use for the current locale.
 #. These placeholders are supported:
@@ -45,6 +53,10 @@ msgstr "dd.mm.yyyy"
 #. - 'P' - Meridian indicator ('am' or 'pm')
 msgid "FORMAT_DATETIME"
 msgstr "dd.mm.yyyy HH:MM"
+
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
+msgid " to "
+msgstr " до "
 
 #: db/seeds/settings.rb
 msgid ""
@@ -134,6 +146,13 @@ msgstr "%s создал(а) пользователя |%s|"
 #: app/assets/javascripts/app/views/import/zendesk.jst.eco
 msgid "%s credentials"
 msgstr "%s учетные данные"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "%s days ago"
+msgstr "%s дней назад"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/models/user.coffee
 msgid "%s ended switch to |%s|!"
@@ -148,6 +167,13 @@ msgstr "%s папки"
 #: app/assets/javascripts/app/views/integration/ldap_summary.jst.eco
 msgid "%s groups to %s roles assignments"
 msgstr "%s групп для %s назначений ролей"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "%s hours ago"
+msgstr "%s часа(-ов) назад"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/channel/email_account_overview.jst.eco
 #: app/assets/javascripts/app/views/channel/sms_account_overview.jst.eco
@@ -155,6 +181,14 @@ msgstr "%s групп для %s назначений ролей"
 #: app/assets/javascripts/app/views/microsoft365/list.jst.eco
 msgid "%s is inactive, please select an active one."
 msgstr "%s неактивен, пожалуйста, выберите активный."
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "%s minutes ago"
+msgstr "%s минут(ы) назад"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "%s months ago"
+msgstr "%s месяца(-ев) назад"
 
 #: app/assets/javascripts/app/views/generic/object_import/imported.jst.eco
 msgid "%s object(s) have been created."
@@ -216,6 +250,14 @@ msgstr "%s поддомен"
 #: app/assets/javascripts/app/models/user.coffee
 msgid "%s switched to |%s|!"
 msgstr "%s переключился на |%s|!"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/apps/mobile/components/Organization/OrganizationItem.vue
+#: app/frontend/apps/mobile/components/User/UserItem.vue
+msgid "%s tickets"
+msgstr "%s заявки"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/models/ticket_article.coffee
 msgid "%s updated article for |%s|"
@@ -253,6 +295,17 @@ msgstr "%s обновил(а) пользователя |%s|"
 #: app/assets/javascripts/app/views/integration/ldap_summary.jst.eco
 msgid "%s user to %s user"
 msgstr "%s пользователь, пользователю %s"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "%s weeks ago"
+msgstr "%s недели(-ь) назад"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "%s years ago"
+msgstr "%s года/лет назад"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/dashboard/stats/ticket_in_process.jst.eco
 msgid "%s% are currently in process"
@@ -321,17 +374,44 @@ msgstr ""
 msgid "1 day"
 msgstr "1 день"
 
+#: app/frontend/shared/i18n/dates.ts
+msgid "1 day ago"
+msgstr "1 день назад"
+
 #: db/seeds/settings.rb
 msgid "1 hour"
 msgstr "1 час"
 
+#: app/frontend/shared/i18n/dates.ts
+msgid "1 hour ago"
+msgstr "1 час назад"
+
 #: db/seeds/ticket_priorities.rb
 msgid "1 low"
 msgstr "1 (Низкий)"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "1 minute ago"
+msgstr "1 минуту назад"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "1 month ago"
+msgstr "1 месяц назад"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/settings.rb
 msgid "1 week"
 msgstr "1 неделя"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "1 week ago"
+msgstr "1 неделю назад"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "1 year ago"
+msgstr "1 год назад"
 
 #: db/seeds/settings.rb
 msgid "2 hours"
@@ -405,6 +485,13 @@ msgstr ""
 msgid "A new version of Zammad is available, please reload your browser."
 msgstr "Новая версия Zammad доступна. Пожалуйста перезагрузите браузер."
 
+#: app/frontend/shared/composables/useAppMaintenanceCheck.ts
+msgid ""
+"A newer version of the app is available. Please reload at your earliest."
+msgstr ""
+"Доступна более новая версия приложения. Пожалуйста, перезагрузите как можно "
+"раньше."
+
 #: app/assets/javascripts/app/controllers/_integration/clearbit.coffee
 msgid "A powerful service to get more information about your customers."
 msgstr ""
@@ -460,6 +547,13 @@ msgstr "Ключ доступа программного интерфейса п
 #: app/assets/javascripts/app/views/integration/idoit.jst.eco
 msgid "API token"
 msgstr "Ключ программного интерфейса приложения (API)"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/apps/mobile/modules/account/views/AccountOverview.vue
+msgid "About"
+msgstr "Об"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/permissions.rb
 msgid "Access to %s"
@@ -476,6 +570,8 @@ msgstr ""
 "организации"
 
 #: app/assets/javascripts/app/views/channel/sms_account_overview.jst.eco
+#: app/frontend/apps/mobile/modules/account/routes.ts
+#: app/frontend/apps/mobile/modules/account/views/AccountAvatar.vue
 msgid "Account"
 msgstr "Учетная запись"
 
@@ -499,6 +595,7 @@ msgstr "Аккаунт не подтвержден"
 
 #: app/assets/javascripts/app/models/ticket.coffee
 #: app/assets/javascripts/app/views/ticket_zoom/time_unit.jst.eco
+#: app/assets/javascripts/app/views/time_accounting/index.jst.eco
 msgid "Accounted Time"
 msgstr "Учетное время"
 
@@ -530,6 +627,7 @@ msgstr "Учетные записи"
 #: app/assets/javascripts/app/views/integration/ldap_wizard.jst.eco
 #: app/assets/javascripts/app/views/integration/placetel.jst.eco
 #: app/assets/javascripts/app/views/integration/sipgate.jst.eco
+#: app/assets/javascripts/app/views/object_manager/attribute/multi_tree_select.jst.eco
 #: app/assets/javascripts/app/views/object_manager/attribute/multiselect.jst.eco
 #: app/assets/javascripts/app/views/object_manager/attribute/select.jst.eco
 #: app/assets/javascripts/app/views/object_manager/attribute/tree_select.jst.eco
@@ -556,11 +654,13 @@ msgstr "Активирует рекурсивную обработку триг�
 msgid "Activates lost password feature for users."
 msgstr "Активировать восстановление пароля для пользователей."
 
+#: app/assets/javascripts/app/controllers/_integration/ldap.coffee
 #: app/assets/javascripts/app/models/chat.coffee
 #: app/assets/javascripts/app/models/core_workflow.coffee
 #: app/assets/javascripts/app/models/email_address.coffee
 #: app/assets/javascripts/app/models/group.coffee
 #: app/assets/javascripts/app/models/job.coffee
+#: app/assets/javascripts/app/models/ldap_source.coffee
 #: app/assets/javascripts/app/models/macro.coffee
 #: app/assets/javascripts/app/models/object_manager_attribute.coffee
 #: app/assets/javascripts/app/models/overview.coffee
@@ -575,6 +675,7 @@ msgstr "Активировать восстановление пароля дл�
 #: app/assets/javascripts/app/models/webhook.coffee
 #: app/assets/javascripts/app/views/calendar/holiday_selector.jst.eco
 #: app/assets/javascripts/app/views/generic/sla_times.jst.eco
+#: app/assets/javascripts/app/views/integration/ldap_wizard.jst.eco
 #: db/seeds/object_manager_attributes.rb
 msgid "Active"
 msgstr "Активный"
@@ -583,6 +684,10 @@ msgstr "Активный"
 #: app/assets/javascripts/app/views/customer_chat/chat_header.jst.eco
 msgid "Active Agents"
 msgstr "Активные агенты"
+
+#: app/assets/javascripts/app/views/time_accounting/index.jst.eco
+msgid "Activity"
+msgstr "Деятельность"
 
 #: app/assets/javascripts/app/views/dashboard.jst.eco
 msgid "Activity Stream"
@@ -616,6 +721,7 @@ msgstr "Адаптер"
 #: app/assets/javascripts/app/views/object_manager/attribute/select.jst.eco
 #: app/assets/javascripts/app/views/profile/linked_accounts.jst.eco
 #: app/assets/javascripts/app/views/tag/index.jst.eco
+#: app/frontend/shared/form/i18n/locales.ts
 msgid "Add"
 msgstr "Добавить"
 
@@ -672,10 +778,44 @@ msgstr "Добавить оповещение для отложенных и э�
 #: app/assets/javascripts/app/views/channel/form.jst.eco
 msgid "Add attachment option to upload."
 msgstr "Добавить вложение для загрузки."
+<<<<<<< HEAD
+=======
+
+#: app/frontend/shared/components/Form/fields/FieldEditor/useEditorActions.ts
+msgid "Add bullet list"
+msgstr "Добавить маркированный список"
+
+#: app/frontend/shared/components/Form/fields/FieldEditor/useEditorActions.ts
+msgid "Add first level heading"
+msgstr "Добавить заголовок первого уровня"
+
+#: app/frontend/shared/components/Form/fields/FieldEditor/useEditorActions.ts
+msgid "Add image"
+msgstr "Добавить изображение"
+
+#: app/frontend/shared/components/Form/fields/FieldEditor/useEditorActions.ts
+msgid "Add link"
+msgstr "Добавить ссылку"
+
+#: app/frontend/shared/components/Form/fields/FieldEditor/useEditorActions.ts
+msgid "Add ordered list"
+msgstr "Добавить упорядоченный список"
+
+#: app/frontend/shared/components/Form/fields/FieldEditor/useEditorActions.ts
+msgid "Add second level heading"
+msgstr "Добавить заголовок второго уровня"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/settings.rb
 msgid "Add sender initials to end of a tweet."
 msgstr "Добавить инициалы отправителя в конец сообщения в tweeter."
+<<<<<<< HEAD
+=======
+
+#: app/frontend/shared/components/Form/fields/FieldEditor/useEditorActions.ts
+msgid "Add third level heading"
+msgstr "Добавить заголовок третьего уровня"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_channel/chat.coffee
 msgid "Add this class to a button on your page that should open the chat."
@@ -732,8 +872,10 @@ msgid "Age"
 msgstr "Возраст"
 
 #: app/assets/javascripts/app/views/popover/ticket.jst.eco
+#: app/assets/javascripts/app/views/time_accounting/by_activity.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_ticket.jst.eco
-#: db/seeds/roles.rb db/seeds/ticket_article_senders.rb
+#: app/controllers/time_accountings_controller.rb db/seeds/roles.rb
+#: db/seeds/ticket_article_senders.rb
 msgid "Agent"
 msgstr "Агент"
 
@@ -762,6 +904,7 @@ msgid "Alarm"
 msgstr "Оповещение"
 
 #: app/assets/javascripts/app/views/profile/notification.jst.eco
+#: app/frontend/apps/mobile/modules/home/views/Home.vue
 msgid "All Tickets"
 msgstr "Все заявки"
 
@@ -829,6 +972,20 @@ msgid "Alternatively, you can use the Zammad API to import data."
 msgstr ""
 "Кроме того, вы можете использовать программный интерфейс приложения (API) "
 "Zammad для импорта данных."
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/controllers/ticket_zoom/article_calendar_view.coffee
+msgid "An error has occurred"
+msgstr "Произошла ошибка"
+
+#: app/frontend/shared/server/apollo/handler/BaseHandler.ts
+msgid ""
+"An error occured during the operation. Please contact your administrator."
+msgstr ""
+"Во время операции произошла ошибка. Пожалуйста, свяжитесь с вашим "
+"администратором."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/integration/exchange_last_import.jst.eco
 #: app/assets/javascripts/app/views/integration/ldap_last_import.jst.eco
@@ -930,10 +1087,12 @@ msgstr "Применить общий черновик"
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
 #: app/assets/javascripts/app/controllers/report.coffee
 #: app/assets/javascripts/app/controllers/time_accounting.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Apr"
 msgstr "Апр"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "April"
 msgstr "Апрель"
 
@@ -1059,6 +1218,11 @@ msgstr ""
 msgid "At least one letter is required"
 msgstr "Необходим хотя бы один символ"
 
+#: app/models/postmaster_filter.rb
+msgid "At least one match rule is required, but none was provided."
+msgstr ""
+"Требуется хотя бы одно правило соответствия, но оно не было предоставлено."
+
 #: app/assets/javascripts/app/controllers/widget/ticket_bulk_form.coffee
 msgid "At least one object must be selected."
 msgstr "Должен быть выбран хотя бы один объект."
@@ -1067,10 +1231,21 @@ msgstr "Должен быть выбран хотя бы один объект."
 msgid "At least one user needs to have admin permissions."
 msgstr "По крайней мере, один пользователь должен иметь права администратора."
 
+#: app/assets/javascripts/app/lib/app_post/utils.coffee
+msgid "Attached"
+msgstr "Вложенный"
+
 #: app/assets/javascripts/app/views/generic/attachments.jst.eco
 #: app/views/knowledge_base/public/answers/show.html.erb
 msgid "Attached Files"
 msgstr "Прикрепленные файлы"
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/lib/app_post/utils.coffee
+msgid "Attachment"
+msgstr "Вложение"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/settings.rb
 msgid "Attachment - Search for follow-up also in attachments."
@@ -1081,6 +1256,10 @@ msgstr "Вложения - В дополнение использовать дл
 #: app/assets/javascripts/app/views/knowledge_base/sidebar/attachments.jst.eco
 msgid "Attachments"
 msgstr "Вложения"
+
+#: app/assets/javascripts/app/views/generic/calender_preview.jst.eco
+msgid "Attendees"
+msgstr "Участники"
 
 #: app/assets/javascripts/app/views/import/kayako.jst.eco
 msgid ""
@@ -1119,10 +1298,12 @@ msgstr "Атрибуты"
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
 #: app/assets/javascripts/app/controllers/report.coffee
 #: app/assets/javascripts/app/controllers/time_accounting.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Aug"
 msgstr "Авг"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "August"
 msgstr "Август"
 
@@ -1147,7 +1328,8 @@ msgid "Authentication not possible (not offered by the service)"
 msgstr "Аутентификация невозможна (не предлагается службой)"
 
 #: app/controllers/application_controller/authenticates.rb
-#: app/policies/pundit_policy.rb lib/user_context.rb
+#: app/graphql/gql/context/current_user_aware.rb app/policies/pundit_policy.rb
+#: lib/user_context.rb
 msgid "Authentication required"
 msgstr "Требуется аутентификация"
 
@@ -1213,6 +1395,9 @@ msgstr "Доступные типы для новой заявки"
 #: app/assets/javascripts/app/views/customer_chat/setting.jst.eco
 #: app/assets/javascripts/app/views/profile/avatar.jst.eco
 #: app/assets/javascripts/app/views/profile/imageCropper.jst.eco
+#: app/frontend/apps/mobile/modules/account/routes.ts
+#: app/frontend/apps/mobile/modules/account/views/AccountAvatar.vue
+#: app/frontend/apps/mobile/modules/account/views/AccountOverview.vue
 #: db/seeds/permissions.rb
 msgid "Avatar"
 msgstr "Аватар"
@@ -1241,6 +1426,10 @@ msgstr "Назад"
 #: app/assets/javascripts/app/views/widget/switch_back_to_user.jst.eco
 msgid "Back to my view"
 msgstr "Вернуться к моему виду"
+
+#: app/assets/javascripts/app/views/integration/ldap.jst.eco
+msgid "Back to overview"
+msgstr "Назад к обзору"
 
 #: app/assets/javascripts/app/views/knowledge_base/reader.jst.eco
 msgid "Back to search results"
@@ -1343,12 +1532,17 @@ msgid "Body - Search for follow-up also in mail body."
 msgstr "Тело - В дополнение использовать для проверки тело письма."
 
 #: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
+<<<<<<< HEAD
 msgid "Boolean"
 msgstr "Логический"
 
 #: lib/telegram.rb
 msgid "Bot already exists!"
 msgstr "Бот уже существует!"
+=======
+msgid "Boolean field"
+msgstr "Логическое поле"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/telegram/index.jst.eco
 msgid "Bots"
@@ -1363,10 +1557,13 @@ msgstr "Брендирование"
 msgid "Browser"
 msgstr "Браузер"
 
+<<<<<<< HEAD
 #: app/assets/javascripts/app/lib/app_post/browser.coffee
 msgid "Browser too old!"
 msgstr "Браузер слишком старый!"
 
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 #: app/assets/javascripts/app/lib/mixins/ticket_mass_updatable.coffee
 msgid "Bulk action executed!"
 msgstr "Массовое действие выполнено!"
@@ -1509,17 +1706,30 @@ msgid "Caller ID of outbound calls can be changed as well."
 msgstr ""
 "Caller ID (Идентификатор вызывающего абонента) исходящих вызовов также может "
 "быть изменен."
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/views/integration/cti.jst.eco
 msgid "Caller Log Filter"
 msgstr "Фильтр журнала вызовов"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/integration/cti.jst.eco
 #: app/assets/javascripts/app/views/integration/placetel.jst.eco
 #: app/assets/javascripts/app/views/integration/sipgate.jst.eco
+<<<<<<< HEAD
 msgid "Caller id to block"
 msgstr ""
 "Caller ID (Идентификатор вызывающего абонента), который нужно заблокировать"
+=======
+msgid "Caller ID to block"
+msgstr ""
+"Caller ID (Идентификатор вызывающего абонента), который нужно заблокировать"
+
+#: app/assets/javascripts/app/views/integration/cti.jst.eco
+msgid "Caller Log Filter"
+msgstr "Фильтр журнала вызовов"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/cti/index.jst.eco
 msgid "Caller log"
@@ -1527,6 +1737,7 @@ msgstr "Журнал звонков"
 
 #: app/assets/javascripts/app/controllers/_profile/avatar.coffee
 #: app/assets/javascripts/app/views/profile/avatar.jst.eco
+#: app/frontend/apps/mobile/modules/account/views/AccountAvatar.vue
 msgid "Camera"
 msgstr "Камера"
 
@@ -1574,6 +1785,8 @@ msgstr ""
 #: app/assets/javascripts/app/views/integration/ldap_wizard.jst.eco
 #: app/assets/javascripts/app/views/knowledge_base/scheduled_widget.jst.eco
 #: app/assets/javascripts/app/views/widget/invite_user.jst.eco
+#: app/frontend/apps/mobile/components/CommonSectionPopup/CommonSectionPopup.vue
+#: app/frontend/apps/mobile/modules/search/views/SearchOverview.vue
 msgid "Cancel"
 msgstr "Отменить"
 
@@ -1601,6 +1814,7 @@ msgstr "Не удается удалить категорию"
 msgid "Cannot follow-up on a closed ticket. Please create a new ticket."
 msgstr ""
 "Невозможно отслеживание закрытой заявки. Пожалуйста, создайте новую заявку."
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/report.coffee
 msgid "Cannot generate report"
@@ -1609,6 +1823,8 @@ msgstr "Не удается создать отчет"
 #: app/assets/javascripts/app/lib/app_post/html5_upload.coffee
 msgid "Cannot upload file"
 msgstr "Не удается загрузить файл"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/knowledge_base/sidebar/categories.coffee
 msgid "Categories"
@@ -1875,6 +2091,13 @@ msgstr "Очистить \"HttpLog\"."
 #: db/seeds/schedulers.rb
 msgid "Clean up ActiveJob locks."
 msgstr "Очистить блокировки ActiveJob."
+<<<<<<< HEAD
+=======
+
+#: db/seeds/schedulers.rb
+msgid "Clean up cache."
+msgstr "Очистить кеш."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/schedulers.rb
 msgid "Clean up closed sessions."
@@ -1887,6 +2110,22 @@ msgstr "Очистить мертвые сеансы."
 #: db/seeds/schedulers.rb
 msgid "Clean up expired sessions."
 msgstr "Очистить просроченные сеансы."
+<<<<<<< HEAD
+=======
+
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
+msgid "Clear"
+msgstr "Очистить"
+
+#: app/frontend/shared/components/CommonInputSearch/CommonInputSearch.vue
+msgid "Clear Search"
+msgstr "Очистить поиск"
+
+#: app/frontend/shared/components/Form/fields/FieldSelect/FieldSelectInput.vue
+#: app/frontend/shared/components/Form/fields/FieldTreeSelect/FieldTreeSelectInput.vue
+msgid "Clear Selection"
+msgstr "Очистить выбор"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_integration/clearbit.coffee
 #: app/assets/javascripts/app/views/integration/clearbit.jst.eco
@@ -1913,10 +2152,6 @@ msgstr "Идентификатор клиента"
 #: db/seeds/settings.rb
 msgid "Client Secret"
 msgstr "Пароль клиента"
-
-#: db/seeds/settings.rb
-msgid "Client storage"
-msgstr "Клиентское хранилище"
 
 #: app/assets/javascripts/app/models/application.coffee
 msgid "Clients"
@@ -2061,8 +2296,13 @@ msgid "Configure App"
 msgstr "Настроить приложение"
 
 #: app/assets/javascripts/app/controllers/getting_started/base.coffee
+<<<<<<< HEAD
 msgid "Configure Base"
 msgstr "Настроить базу"
+=======
+msgid "Configure Basic Settings"
+msgstr "Настройка основных параметров"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_plugin/keyboard_shortcuts.coffee
 msgid "Confirm/submit dialog"
@@ -2197,6 +2437,10 @@ msgstr "Всё равно продолжить"
 msgid "Continue session"
 msgstr "Продолжение сессии"
 
+#: app/frontend/apps/mobile/modules/login/views/Login.vue
+msgid "Continue to desktop app"
+msgstr "Перейти к настольному приложению"
+
 #: app/assets/javascripts/app/views/translation/index.jst.eco
 msgid "Contributing Translations"
 msgstr "Внести свой вклад переводы"
@@ -2243,6 +2487,7 @@ msgstr ""
 "Основные рабочие процессы — это действия или ограничения выбора в формах. В "
 "зависимости от действия можно скрыть или ограничить поля или изменить "
 "обязательность их заполнения."
+<<<<<<< HEAD
 
 #: app/controllers/reports_controller.rb
 msgid "Could not find active reporting profile."
@@ -2283,6 +2528,8 @@ msgstr "Не удалось создать Базу знаний"
 #: app/assets/javascripts/app/controllers/knowledge_base/public_menu_form.coffee
 msgid "Couldn't save changes"
 msgstr "Не удалось сохранить изменения"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/tag/table.jst.eco
 msgid "Count"
@@ -2320,10 +2567,13 @@ msgstr "Создать администратора"
 
 #: lib/excel_sheet/ticket.rb
 msgid "Create Channel"
+<<<<<<< HEAD
 msgstr "Создать канал"
 
 #: app/models/report.rb
 msgid "Create Channels"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 msgstr "Создать канал"
 
 #: app/assets/javascripts/app/views/knowledge_base/new_controller.coffee
@@ -2438,6 +2688,7 @@ msgstr "Создать вашу первую заявку"
 #: app/assets/javascripts/app/models/chat_sessions.coffee
 #: app/assets/javascripts/app/models/data_privacy_task.coffee
 #: app/assets/javascripts/app/models/job.coffee
+#: app/assets/javascripts/app/models/ldap_source.coffee
 #: app/assets/javascripts/app/models/overview.coffee
 #: app/assets/javascripts/app/models/postmaster_filter.coffee
 #: app/assets/javascripts/app/models/role.coffee
@@ -2451,10 +2702,12 @@ msgstr "Создать вашу первую заявку"
 #: app/assets/javascripts/app/views/popover/ticket.jst.eco
 #: app/assets/javascripts/app/views/profile/token_access.jst.eco
 #: app/assets/javascripts/app/views/widget/ticket_stats_frequency.jst.eco
+#: app/frontend/apps/mobile/modules/ticket/components/TicketList/TicketList.vue
 #: app/models/report.rb
 msgid "Created"
 msgstr "Создан/а"
 
+#: app/assets/javascripts/app/views/time_accounting/by_activity.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_ticket.jst.eco
 #: lib/excel_sheet/ticket.rb
 msgid "Created At"
@@ -2467,6 +2720,7 @@ msgstr "Созданный на"
 #: app/assets/javascripts/app/views/customer_chat/chat_window.jst.eco
 #: app/assets/javascripts/app/views/widget/http_log.jst.eco
 #: app/assets/javascripts/app/views/widget/http_log_show.jst.eco
+#: app/controllers/time_accountings_controller.rb
 msgid "Created at"
 msgstr "Создано в"
 
@@ -2475,6 +2729,7 @@ msgstr "Создано в"
 #: app/assets/javascripts/app/models/chat_sessions.coffee
 #: app/assets/javascripts/app/models/data_privacy_task.coffee
 #: app/assets/javascripts/app/models/job.coffee
+#: app/assets/javascripts/app/models/ldap_source.coffee
 #: app/assets/javascripts/app/models/organization.coffee
 #: app/assets/javascripts/app/models/overview.coffee
 #: app/assets/javascripts/app/models/postmaster_filter.coffee
@@ -2486,6 +2741,10 @@ msgstr "Создано в"
 #: app/assets/javascripts/app/models/user.coffee
 msgid "Created by"
 msgstr "Создал"
+
+#: app/models/report.rb
+msgid "Creation Channels"
+msgstr "Создание каналов"
 
 #: app/assets/javascripts/app/controllers/core_workflow.coffee
 msgid "Creation mask"
@@ -2560,10 +2819,12 @@ msgstr "Пользовательский адрес не задан"
 #: app/assets/javascripts/app/models/ticket.coffee
 #: app/assets/javascripts/app/views/agent_ticket_view/detail.jst.eco
 #: app/assets/javascripts/app/views/popover/ticket.jst.eco
+#: app/assets/javascripts/app/views/time_accounting/by_activity.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_customer.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_ticket.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/index.jst.eco
 #: app/controllers/time_accountings_controller.rb
+#: app/frontend/apps/mobile/modules/ticket/components/TicketList/TicketList.vue
 #: db/seeds/object_manager_attributes.rb db/seeds/roles.rb
 #: db/seeds/ticket_article_senders.rb lib/excel_sheet/ticket.rb
 msgid "Customer"
@@ -2623,7 +2884,6 @@ msgstr "База данных"
 msgid "Database Update Required"
 msgstr "Требуется обновление базы данных"
 
-#: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
 #: app/assets/javascripts/app/controllers/knowledge_base/content_can_be_published_form.coffee
 #: app/assets/javascripts/app/views/calendar/holiday_selector.jst.eco
 msgid "Date"
@@ -2633,13 +2893,22 @@ msgstr "Дата"
 msgid "Date & Time"
 msgstr "Время и дата"
 
+#: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
+msgid "Date & time field"
+msgstr "Поле даты и времени"
+
 #: db/seeds/settings.rb
 msgid "Date (Year.Month.Day.SystemID.Counter)"
 msgstr "Дата (Год.Месяц.День.СистемныйИдентификатор.Счетчик)"
 
 #: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
+<<<<<<< HEAD
 msgid "Datetime"
 msgstr "Дата и время"
+=======
+msgid "Date field"
+msgstr "Поле даты"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/generic/timer.jst.eco
 #: app/assets/javascripts/app/views/report/time_range_picker.jst.eco
@@ -2657,10 +2926,12 @@ msgstr "Дни"
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
 #: app/assets/javascripts/app/controllers/report.coffee
 #: app/assets/javascripts/app/controllers/time_accounting.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Dec"
 msgstr "Дек"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "December"
 msgstr "Декабрь"
 
@@ -2992,10 +3263,13 @@ msgid "Defines if generic CTI integration is enabled or not."
 msgstr ""
 "Определяет, включена универсальная интеграция с компьютерной телефонией "
 "(CTI) или нет."
+<<<<<<< HEAD
 
 #: db/seeds/settings.rb
 msgid "Defines if i-doit (http://www.i-doit) is enabled or not."
 msgstr "Определяет, включен i-doit (http://www.i-doit) или нет."
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/settings.rb
 msgid "Defines if sipgate.io (http://www.sipgate.io) is enabled or not."
@@ -3047,6 +3321,16 @@ msgstr ""
 "пользователя/организации."
 
 #: db/seeds/settings.rb
+<<<<<<< HEAD
+=======
+msgid ""
+"Defines if the i-doit (https://www.i-doit.org/) integration is enabled or "
+"not."
+msgstr ""
+"Определяет, включена интеграция с i-doit (https://www.i-doit.org/) или нет."
+
+#: db/seeds/settings.rb
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 msgid "Defines if tickets can be created via web form."
 msgstr "Определяет, можно ли создавать заявки с помощью веб-формы."
 
@@ -3257,10 +3541,13 @@ msgstr "Определяет настройки Exchange."
 #: db/seeds/settings.rb
 msgid "Defines the HTTP protocol of your instance."
 msgstr "Определяет версию протокола HTTP для вашего экземпляра."
+<<<<<<< HEAD
 
 #: db/seeds/settings.rb
 msgid "Defines the LDAP config."
 msgstr "Определяет настройки LDAP."
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/settings.rb
 msgid "Defines the Placetel config."
@@ -3537,6 +3824,7 @@ msgstr "Определяет серверную операцию."
 #: app/assets/javascripts/app/views/twitter/list.jst.eco
 #: app/assets/javascripts/app/views/widget/template.jst.eco
 #: app/assets/javascripts/app/views/widget/text_module.jst.eco
+#: app/frontend/apps/mobile/modules/account/views/AccountAvatar.vue
 msgid "Delete"
 msgstr "Удалить"
 
@@ -3758,6 +4046,13 @@ msgstr "Не зашифровывать электронную почту"
 #: app/assets/javascripts/app/controllers/_ui_element/ticket_perform_action.coffee
 msgid "Do not sign email"
 msgstr "Не подписывать электронную почту"
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/views/settings/proxy.jst.eco
+msgid "Do not use the proxy for the following hosts."
+msgstr "Не использовать прокси для следующих хостов."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/knowledge_base/delete_action.coffee
 #: app/assets/javascripts/app/controllers/knowledge_base/sidebar/attachments.coffee
@@ -3795,6 +4090,13 @@ msgstr ""
 #: app/assets/javascripts/app/controllers/_integration/ldap.coffee
 msgid "Don't synchronize"
 msgstr "Не синхронизировать"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/shared/components/Form/fields/FieldTreeSelect/FieldTreeSelectInput.vue
+msgid "Done"
+msgstr "Готово"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/ticket_zoom/article_image_view.coffee
 msgid "Download"
@@ -3874,6 +4176,7 @@ msgstr "Рождественские каникулы"
 #: app/assets/javascripts/app/views/telegram/index.jst.eco
 #: app/assets/javascripts/app/views/twitter/list.jst.eco
 #: app/assets/javascripts/app/views/widget/text_module.jst.eco
+#: app/frontend/apps/mobile/modules/home/views/Home.vue
 msgid "Edit"
 msgstr "Редактировать"
 
@@ -4233,8 +4536,13 @@ msgid "Enables user authentication via LinkedIn."
 msgstr "Включить аутентификацию пользователя с помощью LinkedIn."
 
 #: db/seeds/settings.rb
+<<<<<<< HEAD
 msgid "Enables user authentication via Office 365."
 msgstr "Включить аутентификацию пользователя с помощью Office 365."
+=======
+msgid "Enables user authentication via Microsoft 365."
+msgstr "Включить аутентификацию пользователя с помощью Microsoft 365."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/settings.rb
 msgid "Enables user authentication via SAML."
@@ -4249,6 +4557,14 @@ msgid "Enables users to create their own account via web interface."
 msgstr ""
 "Позволяет пользователям создавать свои собственные учетные записи через веб-"
 "интерфейс."
+
+#: app/assets/javascripts/app/lib/app_post/utils.coffee
+msgid "Enclosed"
+msgstr "Приложенный"
+
+#: app/assets/javascripts/app/lib/app_post/utils.coffee
+msgid "Enclosure"
+msgstr "Вложение"
 
 #: app/assets/javascripts/app/views/agent_ticket_create.jst.eco
 #: app/assets/javascripts/app/views/ticket_zoom/article_new.jst.eco
@@ -4321,6 +4637,10 @@ msgstr "Введите название…"
 msgid "Enter credentials"
 msgstr "Введите учетные данные"
 
+#: app/frontend/shared/components/Form/fields/FieldEditor/useEditorActions.ts
+msgid "Enter link URL"
+msgstr "Введите URL ссылки"
+
 #: app/assets/javascripts/app/views/import/freshdesk.jst.eco
 #: app/assets/javascripts/app/views/import/kayako.jst.eco
 msgid "Enter the Subdomain of your %s system"
@@ -4384,6 +4704,13 @@ msgstr "Введите свое имя пользователя или адре�
 #: app/assets/javascripts/app/controllers/widget/error_modal.coffee
 msgid "Error"
 msgstr "Ошибка"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/apps/mobile/modules/error/views/Error.vue
+msgid "Error - %s"
+msgstr "Ошибка - %s"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/controllers/getting_started_controller.rb
 msgid "Error during execution of auto wizard."
@@ -4483,8 +4810,13 @@ msgid "Examples"
 msgstr "Примеры"
 
 #: app/assets/javascripts/app/controllers/_manage/ticket_auto_assignment.coffee
+<<<<<<< HEAD
 msgid "Exception users"
 msgstr "Пользователи-исключения"
+=======
+msgid "Excepted users"
+msgstr "Исключенные пользователи"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_integration/exchange.coffee
 #: app/assets/javascripts/app/views/integration/exchange.jst.eco
@@ -4612,10 +4944,12 @@ msgstr "Функция не включена!"
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
 #: app/assets/javascripts/app/controllers/report.coffee
 #: app/assets/javascripts/app/controllers/time_accounting.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Feb"
 msgstr "Фев"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "February"
 msgstr "Февраль"
 
@@ -4755,8 +5089,17 @@ msgid ""
 msgstr ""
 "Из соображений безопасности API-ключ отображается только один раз. Прежде "
 "чем продолжить, вам нужно сохранить его в безопасном месте."
+<<<<<<< HEAD
+=======
+
+#: app/frontend/shared/router/guards/before/permission.ts
+msgid "Forbidden"
+msgstr "Запрещено"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/login.jst.eco
+#: app/frontend/apps/mobile/modules/login/views/Login.vue
+#: app/models/form_schema/form/mobile/login.rb
 msgid "Forgot password?"
 msgstr "Забыли пароль?"
 
@@ -4818,6 +5161,7 @@ msgid "Freshdesk"
 msgstr "Freshdesk"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Fri"
 msgstr "Птн"
 
@@ -4825,12 +5169,14 @@ msgstr "Птн"
 #: app/assets/javascripts/app/controllers/_ui_element/timer.coffee
 #: app/assets/javascripts/app/lib/app_post/business_hours.coffee
 #: app/assets/javascripts/app/views/calendar/index.jst.eco
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Friday"
 msgstr "Пятница"
 
 #: app/assets/javascripts/app/controllers/_ui_element/postmaster_match.coffee
 #: app/assets/javascripts/app/models/ticket_article.coffee
 #: app/assets/javascripts/app/views/cti/caller_log.jst.eco
+#: app/assets/javascripts/app/views/generic/calender_preview.jst.eco
 #: app/assets/javascripts/app/views/profile/out_of_office.jst.eco
 #: app/assets/javascripts/app/views/ticket_zoom/article_view.jst.eco
 msgid "From"
@@ -4993,10 +5339,13 @@ msgstr "Учетные данные приложения Google"
 #: db/seeds/settings.rb
 msgid "Google Maps"
 msgstr "Карты Google"
+<<<<<<< HEAD
 
 #: app/models/text_module.rb
 msgid "Got no locale"
 msgstr "Нет доступных языков"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/ticket_zoom/highlighter.coffee
 msgid "Green"
@@ -5033,6 +5382,7 @@ msgstr "Приветствие"
 #: app/views/mailer/ticket_create/zh-cn.html.erb
 #: app/views/mailer/ticket_create/zh-tw.html.erb
 #: app/views/slack/ticket_create/en.md.erb
+#: app/views/slack/ticket_create/fr.md.erb
 #: app/views/slack/ticket_create/pt-br.md.erb
 #: app/views/slack/ticket_create/zh-cn.md.erb
 #: app/views/slack/ticket_create/zh-tw.md.erb
@@ -5064,6 +5414,7 @@ msgstr "Группа (читать)"
 #: app/assets/javascripts/app/views/integration/ldap.jst.eco
 msgid "Group Filter"
 msgstr "Фильтр групп"
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/ticket_overview.coffee
 #: app/assets/javascripts/app/models/overview.coffee
@@ -5078,6 +5429,8 @@ msgstr "Группировать по направлению"
 #: app/policies/ticket_policy.rb
 msgid "Group can't be blank"
 msgstr "Группа не может быть пустой"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_integration/ldap.coffee
 msgid ""
@@ -5086,10 +5439,13 @@ msgid ""
 msgstr ""
 "Информация о группе не может быть получена, пожалуйста, проверьте свои "
 "разрешения на привязку пользователя."
+<<<<<<< HEAD
 
 #: lib/telegram.rb
 msgid "Group invalid!"
 msgstr "Недействительная группа!"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/models/channel/driver/sms/base.rb
 msgid "Group is invalid!"
@@ -5098,10 +5454,13 @@ msgstr "Группа недействительна!"
 #: app/models/channel/driver/sms/base.rb
 msgid "Group needed in channel definition!"
 msgstr "Требуется группа для определения канала!"
+<<<<<<< HEAD
 
 #: lib/telegram.rb
 msgid "Group needed!"
 msgstr "Требуется группа!"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/channel/form.jst.eco db/seeds/settings.rb
 msgid "Group selection for Ticket creation"
@@ -5110,6 +5469,19 @@ msgstr "Выбор группы для создания заявки"
 #: db/seeds/settings.rb
 msgid "Group selection for ticket creation"
 msgstr "Выбор группы для создания заявки"
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/controllers/ticket_overview.coffee
+#: app/assets/javascripts/app/models/overview.coffee
+msgid "Grouping by"
+msgstr "Группировка по"
+
+#: app/assets/javascripts/app/controllers/ticket_overview.coffee
+#: app/assets/javascripts/app/models/overview.coffee
+msgid "Grouping order"
+msgstr "Порядок группировки"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/group.coffee
 #: app/assets/javascripts/app/models/macro.coffee
@@ -5280,6 +5652,11 @@ msgstr "Выходные / праздники"
 msgid "Holidays iCalendar Feed"
 msgstr "Праздники в iCalendar Feed"
 
+#: app/frontend/apps/mobile/modules/home/routes.ts
+#: app/frontend/apps/mobile/modules/home/views/Home.vue
+msgid "Home"
+msgstr "Главная"
+
 #: app/assets/javascripts/app/controllers/_channel/email.coffee
 #: app/assets/javascripts/app/controllers/getting_started/channel_email.coffee
 #: app/assets/javascripts/app/controllers/getting_started/email_notification.coffee
@@ -5418,6 +5795,17 @@ msgid "Idle timeout in seconds until agent is set offline automatically."
 msgstr ""
 "Времени ожидания простоя в секундах, пока агент не будет автоматически "
 "переведен в автономный режим."
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/controllers/_integration/ldap.coffee
+msgid ""
+"If a user is found in two (or more) configured LDAP sources, the last "
+"synchronisation will win."
+msgstr ""
+"Если пользователь найден в двух (или более) настроенных источниках LDAP, "
+"последняя синхронизация будет иметь преимущество."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_channel/chat.coffee
 msgid ""
@@ -5495,10 +5883,16 @@ msgstr ""
 "Если вы хотите перевести его через таблицу переводов, просто перейдите ниже."
 
 #: app/assets/javascripts/app/views/getting_started/email_pre_configured.jst.eco
-msgid "If you want to use more email adresses, you can configure them later."
+msgid ""
+"If you want to use additional email addresses, you can configure them later."
 msgstr ""
+<<<<<<< HEAD
 "Если вы хотите использовать больше адресов электронной почты, вы можете "
 "настроить их позже."
+=======
+"Если вы хотите использовать дополнительные адреса электронной почты, вы "
+"можете настроить их позже."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/settings.rb
 msgid "Ignore Escalation/SLA Information"
@@ -5659,6 +6053,17 @@ msgstr ""
 msgid "In order for Zammad to access %s, the %s API token must be stored here"
 msgstr ""
 "Чтобы Zammad мог получить доступ к %s, здесь должен храниться API-ключ %s"
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/controllers/_integration/ldap.coffee
+msgid ""
+"In order to be able to influence the desired behaviour in this regard, you "
+"can influence the order of the LDAP sources via drag & drop."
+msgstr ""
+"Чтобы влиять на поведение в этом отношении, вы можете изменить порядок "
+"источников LDAP, перетаскивая их мышью."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/channel/email_account_overview.jst.eco
 #: app/assets/javascripts/app/views/channel/sms_account_overview.jst.eco
@@ -5767,6 +6172,14 @@ msgstr "Не удалось создать встроенный контент."
 msgid "Inline translation"
 msgstr "Встроенный перевод"
 
+#: app/frontend/shared/components/Form/fields/FieldEditor/useEditorActions.ts
+msgid "Insert text from Knowledge Base article"
+msgstr "Вставить текст из статьи базы знаний"
+
+#: app/frontend/shared/components/Form/fields/FieldEditor/useEditorActions.ts
+msgid "Insert text from text module"
+msgstr "Вставить текст из текстового модуля"
+
 #: app/assets/javascripts/app/views/channel/chat.jst.eco
 msgid ""
 "Insert the widget code into the source code of every page the chat shall be "
@@ -5802,8 +6215,8 @@ msgid "Installed"
 msgstr "Установлен"
 
 #: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
-msgid "Integer"
-msgstr "Целое"
+msgid "Integer field"
+msgstr "Целочисленное поле"
 
 #: app/assets/javascripts/app/controllers/integrations.coffee
 #: db/seeds/permissions.rb
@@ -5820,13 +6233,18 @@ msgstr "Промежуточный"
 msgid "Internal"
 msgstr "Внутренний"
 
-#: app/models/scheduler.rb
+#: app/models/import_job.rb
 msgid ""
-"Interrupted by scheduler restart. Please restart manually or wait till next "
-"execution time."
+"Interrupted by a restart of the background worker process. Please restart "
+"manually or wait until the next execution time."
 msgstr ""
+<<<<<<< HEAD
 "Прервано перезапуском планировщика. Пожалуйста, перезапустите вручную или "
 "дождитесь следующего времени выполнения."
+=======
+"Прервано перезапуском фонового рабочего процесса. Пожалуйста, перезапустите "
+"вручную или дождитесь следующего времени выполнения."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/controllers/first_steps_controller.rb
 msgid "Intro"
@@ -5858,6 +6276,7 @@ msgstr "Недействительный API-ключ GitLab GraphQL"
 msgid "Invalid GitLab issue link format"
 msgstr "Неверный формат ссылки на проблему GitLab"
 
+<<<<<<< HEAD
 #: app/controllers/import_freshdesk_controller.rb
 #: app/controllers/import_kayako_controller.rb
 #: app/controllers/import_otrs_controller.rb
@@ -5865,6 +6284,8 @@ msgstr "Неверный формат ссылки на проблему GitLab"
 msgid "Invalid URL!"
 msgstr "Недействительный URL!"
 
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 #: app/controllers/getting_started_controller.rb
 msgid "Invalid auto wizard file."
 msgstr "Файл автоматического мастера поврежден."
@@ -5876,6 +6297,7 @@ msgstr "Неверный идентификатор клиента (client_id) �
 #: app/controllers/long_polling_controller.rb
 msgid "Invalid client_id received!"
 msgstr "Получен неверный идентификатор клиента (client_id)!"
+<<<<<<< HEAD
 
 #: app/controllers/import_freshdesk_controller.rb
 #: app/controllers/import_kayako_controller.rb
@@ -5894,6 +6316,8 @@ msgstr "Недопустимая конечная точка (endpoint) (нет 
 #: app/models/webhook.rb
 msgid "Invalid endpoint!"
 msgstr "Недопустимая конечная точка (endpoint)!"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/controllers/tickets_controller.rb
 msgid "Invalid link structure"
@@ -5906,16 +6330,19 @@ msgstr "Неверная структура ссылки (Объект → Ти�
 #: app/controllers/tickets_controller.rb
 msgid "Invalid link structure (Object)"
 msgstr "Неверная структура ссылки (Объект)"
+<<<<<<< HEAD
 
 #: app/controllers/mentions_controller.rb
 msgid "Invalid mentionable_type!"
 msgstr "Недопустимый тип для упоминания (mentionable_type)!"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: lib/external_credential/twitter.rb
 msgid "Invalid oauth_token given!"
 msgstr "Указан неверный ключ_открытого_протокола_авторизации (oauth_token)!"
 
-#: lib/password_policy/length.rb
+#: lib/password_policy/min_length.rb
 msgid "Invalid password, it must be at least %s characters long!"
 msgstr "Недопустимый пароль, он должен содержать не менее %s символов!"
 
@@ -5952,12 +6379,15 @@ msgstr "Недействительные разрешения, не блокир
 msgid "Invalid ticket selector conditions"
 msgstr "Не корректные условия отбора заявок"
 
+<<<<<<< HEAD
 #: app/controllers/application_controller/authenticates.rb
 #: app/controllers/integration/check_mk_controller.rb
 #: app/controllers/users_controller.rb
 msgid "Invalid token!"
 msgstr "Недействительный ключ!"
 
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 #: app/controllers/integration/cti_controller.rb
 #: app/controllers/integration/placetel_controller.rb
 #: app/controllers/integration/sipgate_controller.rb
@@ -6009,10 +6439,12 @@ msgstr "Элементов на странице"
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
 #: app/assets/javascripts/app/controllers/report.coffee
 #: app/assets/javascripts/app/controllers/time_accounting.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Jan"
 msgstr "Янв"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "January"
 msgstr "Январь"
 
@@ -6032,20 +6464,24 @@ msgstr "Присоединиться к"
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
 #: app/assets/javascripts/app/controllers/report.coffee
 #: app/assets/javascripts/app/controllers/time_accounting.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Jul"
 msgstr "Июл"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "July"
 msgstr "Июль"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
 #: app/assets/javascripts/app/controllers/report.coffee
 #: app/assets/javascripts/app/controllers/time_accounting.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Jun"
 msgstr "Июн"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "June"
 msgstr "Июнь"
 
@@ -6072,6 +6508,7 @@ msgid "Keep messages on server"
 msgstr "Хранить сообщения на сервере"
 
 #: app/assets/javascripts/app/views/object_manager/attribute/boolean.jst.eco
+#: app/assets/javascripts/app/views/object_manager/attribute/multi_tree_select.jst.eco
 #: app/assets/javascripts/app/views/object_manager/attribute/multiselect.jst.eco
 #: app/assets/javascripts/app/views/object_manager/attribute/select.jst.eco
 #: app/assets/javascripts/app/views/object_manager/attribute/tree_select.jst.eco
@@ -6127,10 +6564,13 @@ msgstr "Легковесный протокол доступа к каталог
 #: app/assets/javascripts/app/views/integration/ldap.jst.eco
 msgid "LDAP Host"
 msgstr "Сервер легковесного протокола доступа к каталогам (LDAP)"
+<<<<<<< HEAD
 
 #: db/seeds/settings.rb
 msgid "LDAP config"
 msgstr "Настройки легковесного протокола доступа к каталогам (LDAP)"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/settings.rb
 msgid "LDAP integration"
@@ -6154,6 +6594,7 @@ msgstr "Макет посадочной страницы"
 #: app/assets/javascripts/app/views/generic/multi_locales.jst.eco
 #: app/assets/javascripts/app/views/popover/kb_generic.jst.eco
 #: app/assets/javascripts/app/views/profile/language.jst.eco
+#: app/frontend/apps/mobile/modules/account/views/AccountOverview.vue
 #: db/seeds/permissions.rb
 msgid "Language"
 msgstr "Язык"
@@ -6200,6 +6641,10 @@ msgstr "Фамилия"
 msgid "Last run"
 msgstr "Последний запуск"
 
+#: app/frontend/apps/mobile/modules/search/views/SearchOverview.vue
+msgid "Last searches"
+msgstr "Последние запросы"
+
 #: app/assets/javascripts/app/views/integration/exchange_last_import.jst.eco
 #: app/assets/javascripts/app/views/integration/ldap_last_import.jst.eco
 msgid "Last sync"
@@ -6220,6 +6665,13 @@ msgstr "Последние обновления"
 #: app/assets/javascripts/app/models/knowledge_base.coffee
 msgid "Layout"
 msgstr "Макет"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/apps/mobile/modules/account/views/AccountAvatar.vue
+msgid "Library"
+msgstr "Библиотека"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/profile/notification.jst.eco
 msgid "Limit Groups"
@@ -6280,10 +6732,13 @@ msgstr "Связать с шаблоном"
 msgid "Link issue"
 msgstr "Проблема со связью"
 
+<<<<<<< HEAD
 #: app/assets/javascripts/app/controllers/ticket_link_add.coffee
 msgid "Link type is needed!"
 msgstr "Нужен тип связи!"
 
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 #: app/assets/javascripts/app/controllers/_profile/linked_accounts.coffee
 #: app/assets/javascripts/app/views/popover/user.jst.eco
 #: app/assets/javascripts/app/views/widget/user.jst.eco db/seeds/permissions.rb
@@ -6344,6 +6799,7 @@ msgstr "Локализация"
 msgid "Locale not found"
 msgstr "Локализация не найдена"
 
+#: app/assets/javascripts/app/views/generic/calender_preview.jst.eco
 #: app/assets/javascripts/app/views/profile/devices.jst.eco
 #: app/assets/javascripts/app/views/session.jst.eco
 msgid "Location"
@@ -6359,11 +6815,13 @@ msgstr "Войдите в %s"
 
 #: app/assets/javascripts/app/models/user.coffee
 #: app/assets/javascripts/app/views/maintenance.jst.eco
+#: app/controllers/time_accountings_controller.rb
 #: db/seeds/object_manager_attributes.rb
 msgid "Login"
 msgstr "Вход"
 
 #: app/controllers/application_controller/authenticates.rb
+#: app/graphql/gql/mutations/login.rb
 msgid ""
 "Login failed. Have you double-checked your credentials and completed the "
 "email verification step?"
@@ -6488,10 +6946,12 @@ msgstr "Cопоставление"
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
 #: app/assets/javascripts/app/controllers/report.coffee
 #: app/assets/javascripts/app/controllers/time_accounting.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Mar"
 msgstr "Мар"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "March"
 msgstr "Март"
 
@@ -6524,6 +6984,10 @@ msgstr "Максимальное число клиентов в списке о�
 msgid "Max. concurrent chats"
 msgstr "Максимум одновременных чатов"
 
+#: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
+msgid "Max. length"
+msgstr "Максимальная длина"
+
 #: db/seeds/settings.rb
 msgid "Max. length of the subject in an email reply."
 msgstr "Максимальная длина темы в ответе по электронной почте."
@@ -6543,14 +7007,18 @@ msgstr "Максимальное количество неудачных поп�
 #: db/seeds/settings.rb
 msgid "Maximum number of recursively executed triggers."
 msgstr "Максимальное количество рекурсивно выполняемых триггеров."
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
 msgid "Maxlength"
 msgstr "Максимальная длина"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
 #: app/assets/javascripts/app/controllers/report.coffee
 #: app/assets/javascripts/app/controllers/time_accounting.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "May"
 msgstr "Май"
 
@@ -6559,6 +7027,10 @@ msgstr "Май"
 #: app/assets/javascripts/app/views/widget/organization.jst.eco
 msgid "Members"
 msgstr "Пользователи"
+
+#: app/frontend/shared/components/Form/fields/FieldEditor/useEditorActions.ts
+msgid "Mention user"
+msgstr "Упомянуть пользователя"
 
 #: app/assets/javascripts/app/views/twitter/list.jst.eco
 msgid "Mentions"
@@ -6611,6 +7083,13 @@ msgstr "Microsoft"
 #: app/assets/javascripts/app/views/microsoft365/list.jst.eco
 msgid "Microsoft 365"
 msgstr "Microsoft 365"
+<<<<<<< HEAD
+=======
+
+#: db/seeds/settings.rb
+msgid "Microsoft 365 App Credentials"
+msgstr "Учетные данные приложения Microsoft 365"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/settings.rb
 msgid "Microsoft Application Registration Portal"
@@ -6639,10 +7118,13 @@ msgstr "Плагина переноса не может прочитать вы�
 msgid "Milestone"
 msgstr "Этап"
 
+<<<<<<< HEAD
 #: app/models/postmaster_filter.rb
 msgid "Min. one match rule needed!"
 msgstr "Требуется минимум одно правило соответствия!"
 
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 #: db/seeds/settings.rb
 msgid "Min. size of number"
 msgstr "Минимальный размер числа"
@@ -6655,10 +7137,13 @@ msgstr "Минимум"
 msgid "Minimum length"
 msgstr "Минимальная длина"
 
+<<<<<<< HEAD
 #: app/assets/javascripts/app/controllers/_profile/token_access.coffee
 msgid "Minimum of one permission is needed!"
 msgstr "Требуется минимум одно разрешение!"
 
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 #: app/assets/javascripts/app/views/generic/timer.jst.eco
 msgid "Minute"
 msgstr "Минута"
@@ -6671,6 +7156,7 @@ msgstr "Минут(а/ы)"
 msgid "Minutes"
 msgstr "Минуты"
 
+<<<<<<< HEAD
 #: app/controllers/channels_twitter_controller.rb
 msgid "Missing 'for_user_id' in payload!"
 msgstr "В полезной нагрузке отсутствует 'for_user_id'!"
@@ -6709,6 +7195,8 @@ msgstr "Отсутствует параметр настройки постав�
 msgid "Missing ticket_number setting option"
 msgstr "Отсутствует параметр настройки номер_заявки (ticket_number)"
 
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 #: db/seeds/object_manager_attributes.rb
 msgid "Mobile"
 msgstr "Мобильный"
@@ -6723,6 +7211,7 @@ msgid "Module"
 msgstr "Модуль"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Mon"
 msgstr "Пнд"
 
@@ -6730,6 +7219,7 @@ msgstr "Пнд"
 #: app/assets/javascripts/app/controllers/_ui_element/timer.coffee
 #: app/assets/javascripts/app/lib/app_post/business_hours.coffee
 #: app/assets/javascripts/app/views/calendar/index.jst.eco
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Monday"
 msgstr "Понедельник"
 
@@ -6762,6 +7252,10 @@ msgstr "Месяц(а/ев)"
 msgid "Mood"
 msgstr "Настроение"
 
+#: app/models/user.rb
+msgid "More than 250 secondary organizations are not allowed."
+msgstr "Не допускается наличие более 250 вторичных организаций."
+
 #: app/assets/javascripts/app/views/profile/devices.jst.eco
 msgid "Most recent activity"
 msgstr "Последняя активность"
@@ -6787,10 +7281,21 @@ msgid "Moved out"
 msgstr "Перемещено из"
 
 #: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
+<<<<<<< HEAD
 msgid "Multiselect"
 msgstr "Выбор из нескольких вариантов"
 
 #: db/seeds/overviews.rb
+=======
+msgid "Multiple selection field"
+msgstr "Поле множественного выбора"
+
+#: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
+msgid "Multiple tree selection field"
+msgstr "Поле выбора нескольких деревьев"
+
+#: app/frontend/apps/mobile/modules/home/views/Home.vue db/seeds/overviews.rb
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 msgid "My Assigned Tickets"
 msgstr "Назначенные мне заявки"
 
@@ -6798,7 +7303,11 @@ msgstr "Назначенные мне заявки"
 msgid "My Organization Tickets"
 msgstr "Заявки моей организации"
 
+<<<<<<< HEAD
 #: db/seeds/overviews.rb
+=======
+#: app/frontend/apps/mobile/modules/home/views/Home.vue db/seeds/overviews.rb
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 msgid "My Pending Reached Tickets"
 msgstr "Мои ожидающие решения заявки"
 
@@ -6810,7 +7319,11 @@ msgstr "Мои замененные заявки"
 msgid "My Stats"
 msgstr "Моя статистика"
 
+<<<<<<< HEAD
 #: db/seeds/overviews.rb
+=======
+#: app/frontend/apps/mobile/modules/home/views/Home.vue db/seeds/overviews.rb
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 msgid "My Subscribed Tickets"
 msgstr "Мои заявки по подписке"
 
@@ -6837,6 +7350,7 @@ msgid "Nagios integration"
 msgstr "Интеграция с Nagios"
 
 #: app/assets/javascripts/app/controllers/_application_controller/reorder_modal.coffee
+#: app/assets/javascripts/app/controllers/_integration/ldap.coffee
 #: app/assets/javascripts/app/controllers/chat.coffee
 #: app/assets/javascripts/app/models/_application_model.coffee
 #: app/assets/javascripts/app/models/application.coffee
@@ -6848,6 +7362,7 @@ msgstr "Интеграция с Nagios"
 #: app/assets/javascripts/app/models/group.coffee
 #: app/assets/javascripts/app/models/job.coffee
 #: app/assets/javascripts/app/models/knowledge_base_answer_translation.coffee
+#: app/assets/javascripts/app/models/ldap_source.coffee
 #: app/assets/javascripts/app/models/macro.coffee
 #: app/assets/javascripts/app/models/object_manager_attribute.coffee
 #: app/assets/javascripts/app/models/organization.coffee
@@ -6880,6 +7395,7 @@ msgstr "Интеграция с Nagios"
 #: app/assets/javascripts/app/views/tag/table.jst.eco
 #: app/assets/javascripts/app/views/widget/organization.jst.eco
 #: app/assets/javascripts/app/views/widget/user.jst.eco
+#: app/controllers/time_accountings_controller.rb
 #: db/seeds/object_manager_attributes.rb
 msgid "Name"
 msgstr "Имя"
@@ -6947,6 +7463,17 @@ msgstr ""
 #: db/seeds/settings.rb
 msgid "Needed"
 msgstr "Необходимо"
+<<<<<<< HEAD
+=======
+
+#: app/controllers/sessions_controller.rb
+msgid ""
+"Neither an SSO environment variable 'REMOTE_USER' nor a 'X-Forwarded-User' "
+"header could be found."
+msgstr ""
+"Ни переменная среды единого входа (SSO) REMOTE_USER, ни заголовок X-"
+"Forwarded-User не найдены."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_manage/system.coffee
 msgid "Network"
@@ -7012,6 +7539,10 @@ msgstr "Новое соглашение об уровне обслуживани
 msgid "New Scheduler"
 msgstr "Новое Расписание"
 
+#: app/assets/javascripts/app/controllers/_integration/ldap.coffee
+msgid "New Source"
+msgstr "Новый источник"
+
 #: app/assets/javascripts/app/views/tag/index.jst.eco db/seeds/settings.rb
 msgid "New Tags"
 msgstr "Новые теги"
@@ -7067,6 +7598,13 @@ msgstr "Новая вкладка"
 #: app/assets/javascripts/app/controllers/text_module.coffee
 msgid "New text module"
 msgstr "Новый текстовый модуль"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/apps/mobile/modules/login/views/Login.vue
+msgid "New user?"
+msgstr "Новый пользователь?"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/settings.rb
 msgid "Newbie"
@@ -7083,25 +7621,29 @@ msgstr "Далее"
 #: db/seeds/settings.rb
 msgid "Next in overview"
 msgstr "Далее в представлении"
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/_plugin/keyboard_shortcuts.coffee
 msgid "Next in tab"
 msgstr "Далее на вкладке"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_ui_element/ticket_perform_action.coffee
 msgid "No"
 msgstr "Нет"
 
 #: app/assets/javascripts/app/views/integration/exchange.jst.eco
-#: app/assets/javascripts/app/views/integration/ldap.jst.eco
 msgid "No %s configured."
 msgstr "%s не настроен(а/о)."
 
 #: app/assets/javascripts/app/views/generic/admin/empty.jst.eco
+#: app/assets/javascripts/app/views/generic/calender_preview.jst.eco
 #: app/assets/javascripts/app/views/integration/exchange.jst.eco
 #: app/assets/javascripts/app/views/integration/ldap.jst.eco
 #: app/assets/javascripts/app/views/integration/smime_group.jst.eco
 #: app/assets/javascripts/app/views/integration/smime_list.jst.eco
+#: app/assets/javascripts/app/views/time_accounting/by_activity.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_customer.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_organization.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_ticket.jst.eco
@@ -7116,6 +7658,7 @@ msgstr "Приложение Facebook не настроено!"
 #: lib/external_credential/google.rb
 msgid "No Google app configured!"
 msgstr "Приложение Google не настроено!"
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/knowledge_base/agent_controller.coffee
 msgid "No Knowledge Base created"
@@ -7124,6 +7667,12 @@ msgstr "База знаний не создана"
 #: lib/external_credential/microsoft365.rb
 msgid "No Microsoft365 app configured!"
 msgstr "Приложение Microsoft365 не настроено!"
+=======
+
+#: lib/external_credential/microsoft365.rb
+msgid "No Microsoft 365 app configured!"
+msgstr "Приложение Microsoft 365 не настроено!"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/settings.rb
 msgid "No Proxy"
@@ -7145,6 +7694,7 @@ msgstr "Приложение Twitter не настроено!"
 #: app/assets/javascripts/app/controllers/knowledge_base/sidebar/answers.coffee
 msgid "No answers"
 msgstr "Нет ответов"
+<<<<<<< HEAD
 
 #: lib/external_credential/facebook.rb
 msgid "No application_id param!"
@@ -7153,6 +7703,8 @@ msgstr "Параметр идентификатор_приложения (applic
 #: lib/external_credential/facebook.rb
 msgid "No application_secret param!"
 msgstr "Параметр пароль_приложения (application_secret) отсутствует!"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_profile/avatar.coffee
 msgid "No camera found."
@@ -7163,6 +7715,7 @@ msgid "No categories"
 msgstr "Без категории"
 
 #: lib/external_credential/google.rb lib/external_credential/microsoft365.rb
+<<<<<<< HEAD
 msgid "No client_id param!"
 msgstr "Параметр идентификатор_клиента (client_id) отсутствует!"
 
@@ -7173,10 +7726,19 @@ msgstr "Параметр пароль_клиента (client_secret) отсут�
 #: lib/external_credential/google.rb lib/external_credential/microsoft365.rb
 msgid "No code for session found!"
 msgstr "Код сеанса не найден!"
+=======
+msgid "No code for session found!"
+msgstr "Код сеанса не найден!"
+
+#: app/assets/javascripts/app/views/integration/ldap.jst.eco
+msgid "No configuration set."
+msgstr "Не задана конфигурация."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/models/calendar.rb
 msgid "No configured business hours found!"
 msgstr "Настроенные рабочие часы не найдены!"
+<<<<<<< HEAD
 
 #: lib/external_credential/twitter.rb
 msgid "No consumer_key param!"
@@ -7185,6 +7747,8 @@ msgstr "Параметр ключ_пользователя (consumer_key) отс
 #: lib/external_credential/twitter.rb
 msgid "No consumer_secret param!"
 msgstr "Параметр пароль_пользователя (consumer_secret) отсутствует!"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/views/knowledge_base/public/categories/index.html.erb
 #: app/views/knowledge_base/public/tags/show.html.erb
@@ -7198,11 +7762,26 @@ msgstr "Нет электронной почты!"
 #: app/controllers/integration/exchange_controller.rb
 msgid "No entries were found in the selected folder(s)."
 msgstr "В выбранных папках не найдено ни одной записи."
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/_ui_element/_application_selector.coffee
 #: app/assets/javascripts/app/controllers/_ui_element/ticket_perform_action.coffee
 msgid "No filter."
 msgstr "Без фильтра."
+=======
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "No file chosen."
+msgstr "Файл не выбран."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "No file formats allowed."
+msgstr "Недопустимые форматы файлов."
+
+#: app/assets/javascripts/app/controllers/_ui_element/_application_selector.coffee
+msgid "No filter was configured."
+msgstr "Фильтр не настроен."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/controllers/integration/exchange_controller.rb
 msgid "No folders were found for the given user credentials."
@@ -7212,6 +7791,7 @@ msgstr "Для указанных учетных данных пользоват
 msgid "No linked issues"
 msgstr "Нет связанных проблем"
 
+<<<<<<< HEAD
 #: lib/external_credential/twitter.rb
 msgid "No oauth_token param!"
 msgstr "Параметр oauth_ключ (oauth_token) отсутствует!"
@@ -7219,8 +7799,13 @@ msgstr "Параметр oauth_ключ (oauth_token) отсутствует!"
 #: lib/external_credential/twitter.rb
 msgid "No oauth_token_secret param!"
 msgstr "Параметр oauth_пароль_ключа (oauth_token_secret) отсутствует!"
+=======
+#: app/frontend/apps/mobile/modules/search/views/SearchOverview.vue
+msgid "No previous searches"
+msgstr "Нет предыдущих запросов"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
-#: app/assets/javascripts/app/views/settings/proxy.jst.eco db/seeds/settings.rb
+#: db/seeds/settings.rb
 msgid "No proxy for the following hosts."
 msgstr "Не использовать прокси для следующих хостов."
 
@@ -7233,6 +7818,7 @@ msgid "No request_token for session found!"
 msgstr "Ключ запроса (request_token) для сеанса не найден!"
 
 #: app/assets/javascripts/app/lib/base/jquery.textmodule.js
+#: app/frontend/shared/components/Form/fields/FieldTreeSelect/FieldTreeSelectInput.vue
 msgid "No results found"
 msgstr "Результатов не найдено"
 
@@ -7313,6 +7899,7 @@ msgstr "Недоступно"
 #: app/assets/javascripts/app/controllers/_profile/out_of_office.coffee
 #: app/assets/javascripts/app/controllers/knowledge_base/agent_controller.coffee
 #: app/assets/javascripts/app/controllers/ticket_zoom.coffee
+#: app/frontend/apps/mobile/modules/error/views/Error.vue
 #: app/helpers/knowledge_base_public_page_title_helper.rb
 msgid "Not Found"
 msgstr "Не найдено"
@@ -7426,15 +8013,18 @@ msgstr "Уведомления"
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
 #: app/assets/javascripts/app/controllers/report.coffee
 #: app/assets/javascripts/app/controllers/time_accounting.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Nov"
 msgstr "Ноя"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "November"
 msgstr "Ноябрь"
 
 #: app/assets/javascripts/app/controllers/_manage/ticket.coffee
 #: app/assets/javascripts/app/views/agent_ticket_view/detail.jst.eco
+#: app/frontend/apps/mobile/modules/ticket/components/TicketList/TicketList.vue
 msgid "Number"
 msgstr "Число"
 
@@ -7472,17 +8062,22 @@ msgstr "Объекты"
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
 #: app/assets/javascripts/app/controllers/report.coffee
 #: app/assets/javascripts/app/controllers/time_accounting.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Oct"
 msgstr "Окт"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "October"
 msgstr "Октябрь"
 
+<<<<<<< HEAD
 #: db/seeds/settings.rb
 msgid "Office 365 App Credentials"
 msgstr "Учетные данные приложения Office 365"
 
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 #: app/assets/javascripts/app/controllers/knowledge_base/delete_action.coffee
 msgid "Ok"
 msgstr "Хорошо"
@@ -7535,7 +8130,7 @@ msgstr "Разрешены только строчные буквы, цифры 
 
 #: app/assets/javascripts/app/views/package.jst.eco
 msgid ""
-"Only packages from known, trusted, and verfied sources should be installed."
+"Only packages from known, trusted, and verified sources should be installed."
 msgstr ""
 "Следует устанавливать пакеты только из известных, надежных и проверенных "
 "источников."
@@ -7593,6 +8188,7 @@ msgstr "Настройки"
 #: app/assets/javascripts/app/views/getting_started/intro.jst.eco
 msgid "Or migrate from another system."
 msgstr "Или перейти с другой системы."
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/ticket_overview.coffee
 #: app/assets/javascripts/app/models/overview.coffee
@@ -7603,17 +8199,21 @@ msgstr "Сортировка"
 #: app/assets/javascripts/app/models/overview.coffee
 msgid "Order by Direction"
 msgstr "Сортировать по направлению"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_ui_element/_application_selector.coffee
 #: app/assets/javascripts/app/controllers/_ui_element/core_workflow_condition.coffee
 #: app/assets/javascripts/app/controllers/agent_ticket_create/sidebar_organization.coffee
 #: app/assets/javascripts/app/controllers/organization.coffee
 #: app/assets/javascripts/app/controllers/organization_profile.coffee
+#: app/assets/javascripts/app/controllers/ticket_customer.coffee
 #: app/assets/javascripts/app/controllers/ticket_zoom/sidebar_organization.coffee
 #: app/assets/javascripts/app/models/ticket.coffee
 #: app/assets/javascripts/app/models/user.coffee
 #: app/assets/javascripts/app/views/agent_ticket_view/detail.jst.eco
 #: app/assets/javascripts/app/views/getting_started/base.jst.eco
+#: app/assets/javascripts/app/views/time_accounting/by_activity.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_customer.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_organization.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_ticket.jst.eco
@@ -7644,6 +8244,7 @@ msgstr "Служба Поддержки"
 #: app/assets/javascripts/app/views/import/freshdesk.jst.eco
 #: app/assets/javascripts/app/views/import/kayako.jst.eco
 #: app/assets/javascripts/app/views/import/zendesk.jst.eco
+#: app/frontend/apps/mobile/modules/search/plugins/organization.ts
 #: db/seeds/permissions.rb
 msgid "Organizations"
 msgstr "Организации"
@@ -7655,6 +8256,13 @@ msgid ""
 msgstr ""
 "Организации предназначены для любого человека в системе: агентов "
 "(владельцев, ответственных, …) и клиентов."
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/views/generic/calender_preview.jst.eco
+msgid "Organizer"
+msgstr "Организатор"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/models/ticket_article.coffee
 msgid "Origin By"
@@ -7703,6 +8311,10 @@ msgstr "Исходящие"
 msgid "Outbound Call"
 msgstr "Исходящий вызов"
 
+#: app/assets/javascripts/app/lib/app_post/browser.coffee
+msgid "Outdated Browser"
+msgstr "Устаревший браузер"
+
 #: app/assets/javascripts/app/controllers/overview.coffee
 #: app/assets/javascripts/app/models/group.coffee
 msgid "Overview"
@@ -7716,7 +8328,6 @@ msgstr "Общий обзор масок"
 #: app/assets/javascripts/app/controllers/_plugin/keyboard_shortcuts.coffee
 #: app/assets/javascripts/app/controllers/overview.coffee
 #: app/assets/javascripts/app/controllers/ticket_overview.coffee
-#: app/assets/javascripts/app/views/time_accounting/index.jst.eco
 #: db/seeds/permissions.rb
 msgid "Overviews"
 msgstr "Представления"
@@ -7745,6 +8356,7 @@ msgstr "Перезаписать черновик"
 #: app/views/mailer/ticket_create/zh-cn.html.erb
 #: app/views/mailer/ticket_create/zh-tw.html.erb
 #: app/views/slack/ticket_create/en.md.erb
+#: app/views/slack/ticket_create/fr.md.erb
 #: app/views/slack/ticket_create/pt-br.md.erb
 #: app/views/slack/ticket_create/zh-cn.md.erb
 #: app/views/slack/ticket_create/zh-tw.md.erb
@@ -7803,6 +8415,9 @@ msgstr "Родитель"
 #: app/assets/javascripts/app/views/integration/exchange.jst.eco
 #: app/assets/javascripts/app/views/integration/exchange_wizard.jst.eco
 #: app/assets/javascripts/app/views/login.jst.eco
+#: app/frontend/apps/mobile/modules/login/views/Login.vue
+#: app/frontend/shared/components/Form/Form.stories.ts
+#: app/models/form_schema/form/mobile/login.rb
 #: db/seeds/object_manager_attributes.rb db/seeds/permissions.rb
 msgid "Password"
 msgstr "Пароль"
@@ -7815,7 +8430,11 @@ msgstr "Доступ по паролю"
 msgid "Password changed successfully!"
 msgstr "Пароль успешно изменен!"
 
-#: app/assets/javascripts/app/views/settings/proxy.jst.eco db/seeds/settings.rb
+#: app/assets/javascripts/app/views/settings/proxy.jst.eco
+msgid "Password for proxy connection"
+msgstr "Пароль для подключения через прокси"
+
+#: db/seeds/settings.rb
 msgid "Password for proxy connection."
 msgstr "Пароль для подключения через прокси."
 
@@ -7949,6 +8568,10 @@ msgstr "Интеграция с Placetel"
 msgid "Play user interface sound effects"
 msgstr "Звуковые эффекты пользовательского интерфейса"
 
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "Please accept the %s."
+msgstr "Пожалуйста, примите %s."
+
 #: app/views/knowledge_base/public/categories/index.html.erb
 msgid "Please add categories and/or answers"
 msgstr "Пожалуйста, добавьте категории и/или ответы"
@@ -7976,6 +8599,13 @@ msgstr ""
 #: app/assets/javascripts/app/controllers/ticket_zoom/article_new.coffee
 msgid "Please enter a text."
 msgstr "Пожалуйста, введите текст."
+<<<<<<< HEAD
+=======
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "Please enter a valid email address."
+msgstr "Пожалуйста, введите действующий адрес электронной почты."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/ticket_zoom/time_accounting.jst.eco
 msgid "Please enter the time you want to record."
@@ -7986,13 +8616,20 @@ msgid "Please enter valid path or domain"
 msgstr "Пожалуйста, введите действительный путь или домен"
 
 #: app/assets/javascripts/app/views/object_manager/index.jst.eco
-msgid "Please execute database changes only in a maintenance time-slot."
+msgid "Please execute database changes only in a maintenance window."
 msgstr ""
 "Пожалуйста, вносите изменения в базу данных только в период обслуживания."
 
 #: app/assets/javascripts/app/controllers/knowledge_base/public_menu_form_item.coffee
 msgid "Please fill in all fields"
 msgstr "Пожалуйста, заполните все поля"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "Please include a valid url."
+msgstr "Укажите действительный URL."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/controllers/integration/exchange_controller.rb
 msgid "Please select at least one folder."
@@ -8029,6 +8666,7 @@ msgid "Postmaster Filter"
 msgstr "Фильтр почтового мастера"
 
 #: app/assets/javascripts/app/views/login.jst.eco
+#: app/frontend/apps/mobile/modules/login/views/Login.vue
 msgid "Powered by"
 msgstr "Работает на"
 
@@ -8039,6 +8677,7 @@ msgstr "Удобный формат даты"
 #: app/assets/javascripts/app/views/channel/chat.jst.eco
 #: app/assets/javascripts/app/views/channel/form.jst.eco
 #: app/assets/javascripts/app/views/generic/application_selector.jst.eco
+#: app/assets/javascripts/app/views/generic/attachments.jst.eco
 #: app/assets/javascripts/app/views/profile/imageCropper.jst.eco
 #: app/assets/javascripts/app/views/settings/ticket_number.jst.eco
 #: app/assets/javascripts/app/views/widget/text_module.jst.eco
@@ -8064,10 +8703,13 @@ msgstr "Назад"
 #: app/assets/javascripts/app/views/ticket_zoom/overview_navigator.jst.eco
 msgid "Previous in overview"
 msgstr "Ранее в представлении"
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/_plugin/keyboard_shortcuts.coffee
 msgid "Previous tab"
 msgstr "Предыдущая вкладка"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/data_privacy/tasks.jst.eco
 msgid "Previously owned tickets (%s in total)"
@@ -8157,8 +8799,8 @@ msgid "Proxy User"
 msgstr "Пользователь прокси"
 
 #: app/assets/javascripts/app/views/settings/proxy.jst.eco
-msgid "Proxy address."
-msgstr "Proxy адрес."
+msgid "Proxy address"
+msgstr "Адрес прокси"
 
 #: app/assets/javascripts/app/controllers/knowledge_base/content_can_be_published_form.coffee
 msgid "Public"
@@ -8176,6 +8818,13 @@ msgstr "Опубликовать"
 #: app/assets/javascripts/app/controllers/_application_controller/article_public_confirm.coffee
 msgid "Publish Article"
 msgstr "Опубликовать статью"
+<<<<<<< HEAD
+=======
+
+#: app/views/knowledge_base/public/answers/show.html.erb
+msgid "Published %s"
+msgstr "Опубликовано %s"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/popover/kb_generic.jst.eco
 msgid "Published at"
@@ -8269,6 +8918,13 @@ msgid ""
 msgstr ""
 "Заголовки - В дополнение использовать для отслеживания заголовки \"In-Reply-"
 "To\" или \"References\"."
+<<<<<<< HEAD
+=======
+
+#: app/frontend/apps/mobile/modules/login/views/Login.vue
+msgid "Register"
+msgstr "Зарегистрироваться"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/login.jst.eco
 msgid "Register as a new customer"
@@ -8288,6 +8944,8 @@ msgstr "Обновить заявку"
 
 #: app/assets/javascripts/app/views/generic/login_preview.jst.eco
 #: app/assets/javascripts/app/views/login.jst.eco
+#: app/frontend/apps/mobile/modules/login/views/Login.vue
+#: app/models/form_schema/form/mobile/login.rb
 msgid "Remember me"
 msgstr "запомнить меня"
 
@@ -8313,8 +8971,17 @@ msgstr "Удаленно"
 #: app/assets/javascripts/app/views/object_manager/attribute/select.jst.eco
 #: app/assets/javascripts/app/views/profile/devices.jst.eco
 #: app/assets/javascripts/app/views/twitter/search_term.jst.eco
+#: app/frontend/shared/form/i18n/locales.ts
 msgid "Remove"
 msgstr "Удалить"
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "Remove all"
+msgstr "Удалить всё"
+
+#: app/frontend/shared/components/Form/fields/FieldEditor/useEditorActions.ts
+msgid "Remove formatting"
+msgstr "Удалить форматирование"
 
 #: app/assets/javascripts/app/controllers/_plugin/keyboard_shortcuts.coffee
 msgid "Removes any hyperlink"
@@ -8612,6 +9279,7 @@ msgid "STARTTLS"
 msgstr "STARTTLS"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Sat"
 msgstr "Сбт"
 
@@ -8619,6 +9287,7 @@ msgstr "Сбт"
 #: app/assets/javascripts/app/controllers/_ui_element/timer.coffee
 #: app/assets/javascripts/app/lib/app_post/business_hours.coffee
 #: app/assets/javascripts/app/views/calendar/index.jst.eco
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Saturday"
 msgstr "Суббота"
 
@@ -8628,12 +9297,14 @@ msgstr "Суббота"
 #: app/assets/javascripts/app/views/integration/github.jst.eco
 #: app/assets/javascripts/app/views/integration/gitlab.jst.eco
 #: app/assets/javascripts/app/views/integration/idoit.jst.eco
+#: app/assets/javascripts/app/views/integration/ldap_wizard.jst.eco
 #: app/assets/javascripts/app/views/integration/placetel.jst.eco
 #: app/assets/javascripts/app/views/integration/sipgate.jst.eco
 #: app/assets/javascripts/app/views/settings/ticket_auto_assignment.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/index.jst.eco
 #: app/assets/javascripts/app/views/widget/template.jst.eco
 #: app/assets/javascripts/app/views/widget/text_module.jst.eco
+#: app/frontend/apps/mobile/modules/account/views/AccountAvatar.vue
 msgid "Save"
 msgstr "Сохранить"
 
@@ -8711,6 +9382,8 @@ msgstr "Прокрутите вниз, чтобы увидеть новые со
 #: app/assets/javascripts/app/views/integration/idoit_object_selector.jst.eco
 #: app/assets/javascripts/app/views/knowledge_base/search_field_widget.jst.eco
 #: app/assets/javascripts/app/views/widget/text_module.jst.eco
+#: app/frontend/apps/mobile/modules/search/routes.ts
+#: app/frontend/shared/components/CommonInputSearch/CommonInputSearch.vue
 msgid "Search"
 msgstr "Поиск"
 
@@ -8728,10 +9401,29 @@ msgid "Search for users"
 msgstr "Поиск пользователей"
 
 #: app/assets/javascripts/app/controllers/_ui_element/autocompletion_ajax.coffee
+#: app/assets/javascripts/app/controllers/_ui_element/autocompletion_ajax_customer_organization.coffee
 #: app/assets/javascripts/app/controllers/widget/link/kb_answer.coffee
 #: app/assets/javascripts/app/views/generic/icon_picker.jst.eco
+<<<<<<< HEAD
 msgid "Search…"
 msgstr "Поиск…"
+=======
+#: app/frontend/apps/mobile/modules/search/views/SearchOverview.vue
+msgid "Search…"
+msgstr "Поиск…"
+
+#: db/seeds/object_manager_attributes.rb
+msgid "Secondary organizations"
+msgstr "Вторичные организации"
+
+#: app/models/user.rb
+msgid ""
+"Secondary organizations are only allowed when the primary organization is "
+"given."
+msgstr ""
+"Вторичные организации разрешены только в том случае, если указана первичная "
+"организация."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_manage/security.coffee
 #: app/assets/javascripts/app/views/agent_ticket_create.jst.eco
@@ -8764,10 +9456,13 @@ msgid ""
 msgstr ""
 "Просматривайте свои заявки в своем любимом календаре, добавив следующий URL-"
 "адрес в приложение календаря."
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
 msgid "Select"
 msgstr "Выбор"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_plugin/electron_events.coffee
 msgid "Select All"
@@ -8813,6 +9508,11 @@ msgstr "Отборщик"
 msgid "Selects the ticket number generator module."
 msgstr "Определяет способ формирования номера заявки."
 
+#: app/frontend/shared/components/Form/fields/FieldSelect/FieldSelectInput.vue
+#: app/frontend/shared/components/Form/fields/FieldTreeSelect/FieldTreeSelectInput.vue
+msgid "Select…"
+msgstr "Выберите…"
+
 #: app/assets/javascripts/app/views/channel/chat.jst.eco
 #: app/assets/javascripts/app/views/customer_chat/chat_window.jst.eco
 #: public/assets/chat/views/chat.eco
@@ -8832,17 +9532,6 @@ msgstr "Отправить Письма через"
 #: app/assets/javascripts/app/views/maintenance.jst.eco
 msgid "Send a message to all logged in users."
 msgstr "Отправьте сообщение всем зарегистрированным пользователям."
-
-#: db/seeds/settings.rb
-msgid "Send client stats"
-msgstr "Отправить статистику по клиенту"
-
-#: db/seeds/settings.rb
-msgid ""
-"Send client stats/error message to central server to improve the usability."
-msgstr ""
-"Отправить клиентскую статистику / сообщение об ошибке на центральный сервер "
-"для улучшения удобства использования."
 
 #: db/seeds/settings.rb
 msgid "Send postmaster mail if mail too large"
@@ -8895,6 +9584,7 @@ msgstr "Успешно отправлено!"
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
 #: app/assets/javascripts/app/controllers/report.coffee
 #: app/assets/javascripts/app/controllers/time_accounting.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Sep"
 msgstr "Сен"
 
@@ -8903,6 +9593,7 @@ msgid "Separate multiple values by ;"
 msgstr "Разделите несколько значений с помощью ;"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "September"
 msgstr "Сентябрь"
 
@@ -8942,10 +9633,13 @@ msgstr "Время ожидания сеанса"
 #: app/assets/javascripts/app/views/session.jst.eco db/seeds/permissions.rb
 msgid "Sessions"
 msgstr "Сеансы"
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/_ui_element/ticket_perform_action.coffee
 msgid "Set"
 msgstr "Установить"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/settings.rb
 msgid "Set agent limit"
@@ -9028,11 +9722,14 @@ msgstr ""
 #: app/assets/javascripts/app/views/integration/github.jst.eco
 #: app/assets/javascripts/app/views/integration/gitlab.jst.eco
 #: app/assets/javascripts/app/views/integration/idoit.jst.eco
-#: app/assets/javascripts/app/views/integration/ldap.jst.eco
 #: app/assets/javascripts/app/views/telegram/bot_add.jst.eco
 #: app/assets/javascripts/app/views/telegram/bot_edit.jst.eco
 msgid "Settings"
 msgstr "Параметры"
+
+#: app/assets/javascripts/app/views/integration/ldap.jst.eco
+msgid "Settings %s"
+msgstr "Параметры %s"
 
 #: app/assets/javascripts/app/controllers/getting_started/finish.coffee
 #: app/assets/javascripts/app/views/getting_started/finish.jst.eco
@@ -9099,6 +9796,17 @@ msgstr "Автоматически показывать чат"
 #: app/assets/javascripts/app/views/generic/ticket_list.jst.eco
 msgid "Show less"
 msgstr "Показывать меньше"
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/controllers/_plugin/keyboard_shortcuts.coffee
+msgid "Show next tab"
+msgstr "Показать следующую вкладку"
+
+#: app/assets/javascripts/app/controllers/_plugin/keyboard_shortcuts.coffee
+msgid "Show previous tab"
+msgstr "Показать предыдущую вкладку"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_channel/chat.coffee
 msgid "Show the chat when ready."
@@ -9143,10 +9851,13 @@ msgstr ""
 #: app/assets/javascripts/app/controllers/login.coffee
 #: app/assets/javascripts/app/views/generic/login_preview.jst.eco
 #: app/assets/javascripts/app/views/login.jst.eco
+#: app/frontend/apps/mobile/modules/login/routes.ts
+#: app/frontend/apps/mobile/modules/login/views/Login.vue
 msgid "Sign in"
 msgstr "Вход"
 
 #: app/assets/javascripts/app/controllers/logout.coffee
+#: app/frontend/apps/mobile/modules/account/views/AccountOverview.vue
 msgid "Sign out"
 msgstr "Выход"
 
@@ -9192,6 +9903,17 @@ msgid ""
 msgstr ""
 "Поскольку вы не ответили в течение последних %s минут, ваш разговор с "
 "<strong>%s</strong> был закрыт."
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
+msgid "Single selection field"
+msgstr "Поле выбора"
+
+#: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
+msgid "Single tree selection field"
+msgstr "Поле выбора отдельного дерева"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/integration/sipgate.jst.eco
 msgid "Sipgate"
@@ -9248,21 +9970,46 @@ msgstr ""
 #: app/assets/javascripts/app/controllers/password_reset_verify.coffee
 msgid "Something went wrong. Please contact your administrator."
 msgstr "Что-то пошло не так. Пожалуйста, свяжитесь с вашим администратором."
+<<<<<<< HEAD
+=======
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "Sorry, not all fields are filled out correctly."
+msgstr "К сожалению, не все поля заполнены корректно."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/cti/not_configured.jst.eco
 msgid "Sorry, there is currently no CTI backend enabled."
 msgstr ""
 "К сожалению, в настоящее время сервер (backend) компьютерной телефонии (CTI) "
 "не включен."
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/controllers/ticket_overview.coffee
+#: app/assets/javascripts/app/models/overview.coffee
+msgid "Sorting by"
+msgstr "Сортировка по"
+
+#: app/assets/javascripts/app/controllers/ticket_overview.coffee
+#: app/assets/javascripts/app/models/overview.coffee
+msgid "Sorting order"
+msgstr "Порядок сортировки"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/profile/notification.jst.eco
 msgid "Sounds"
 msgstr "Звуки"
 
+#: app/assets/javascripts/app/controllers/_integration/ldap.coffee
 #: app/assets/javascripts/app/views/translation/list.jst.eco
 #: app/assets/javascripts/app/views/translation/todo.jst.eco
 msgid "Source"
 msgstr "Оригинал"
+
+#: app/assets/javascripts/app/controllers/_integration/ldap.coffee
+msgid "Sources"
+msgstr "Источники"
 
 #: db/seeds/settings.rb
 msgid "Special character required"
@@ -9333,6 +10080,7 @@ msgstr ""
 #: app/views/mailer/ticket_create/zh-cn.html.erb
 #: app/views/mailer/ticket_create/zh-tw.html.erb
 #: app/views/slack/ticket_create/en.md.erb
+#: app/views/slack/ticket_create/fr.md.erb
 #: app/views/slack/ticket_create/pt-br.md.erb
 #: app/views/slack/ticket_create/zh-cn.md.erb
 #: app/views/slack/ticket_create/zh-tw.md.erb
@@ -9348,6 +10096,7 @@ msgstr "Серверная часть (backend) статистики"
 #: app/assets/javascripts/app/views/integration/idoit_object_result.jst.eco
 #: app/assets/javascripts/app/views/ticket_zoom/sidebar_idoit.jst.eco
 #: app/assets/javascripts/app/views/widget/http_log_show.jst.eco
+#: app/frontend/apps/mobile/modules/ticket/components/TicketList/TicketList.vue
 msgid "Status"
 msgstr "Статус"
 
@@ -9423,6 +10172,7 @@ msgstr "Тема"
 #: app/assets/javascripts/app/views/settings/switch.jst.eco
 #: app/assets/javascripts/app/views/settings/ticket_hook_position.jst.eco
 #: app/assets/javascripts/app/views/settings/ticket_number.jst.eco
+#: app/frontend/shared/form/i18n/locales.ts
 msgid "Submit"
 msgstr "Отправить"
 
@@ -9452,6 +10202,7 @@ msgid "Summer holiday"
 msgstr "летние выходные"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Sun"
 msgstr "Вск"
 
@@ -9459,6 +10210,7 @@ msgstr "Вск"
 #: app/assets/javascripts/app/controllers/_ui_element/timer.coffee
 #: app/assets/javascripts/app/lib/app_post/business_hours.coffee
 #: app/assets/javascripts/app/views/calendar/index.jst.eco
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Sunday"
 msgstr "Воскресенье"
 
@@ -9607,6 +10359,10 @@ msgstr "Текстовые модули"
 msgid "Text editing"
 msgstr "Редактирование текста"
 
+#: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
+msgid "Text field"
+msgstr "Текстовое поле"
+
 #: app/assets/javascripts/app/controllers/ticket_zoom/article_action/email_reply.coffee
 #: app/assets/javascripts/app/controllers/ticket_zoom/article_action/twitter_reply.coffee
 #: app/assets/javascripts/app/controllers/ticket_zoom/article_new.coffee
@@ -9639,7 +10395,11 @@ msgid "Text with enabled inline translations looks like"
 msgstr "Текст с включенными встроенными переводами выглядит так"
 
 #: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
+<<<<<<< HEAD
 msgid "Textarea"
+=======
+msgid "Textarea field"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 msgstr "Текстовое поле"
 
 #: app/assets/javascripts/app/views/channel/form.jst.eco
@@ -9655,6 +10415,13 @@ msgstr "Спасибо, что присоединились. Письмо отп
 #: app/controllers/user_access_token_controller.rb
 msgid "The API token could not be found."
 msgstr "Не удалось найти API-ключ."
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/views/knowledge_base/new_controller.coffee
+msgid "The Knowledge Base could not be created."
+msgstr "Не удалось создать базу знаний."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/controllers/users_controller.rb
 msgid "The MIME type of the full-size image is invalid."
@@ -9675,6 +10442,10 @@ msgstr "Размер файла Telegram превышает разрешенны
 #: app/assets/javascripts/app/views/getting_started/base.jst.eco
 msgid "The URL to this installation of Zammad."
 msgstr "URL этой установки Zammad."
+
+#: app/controllers/reports_controller.rb
+msgid "The active reporting profile could not be found."
+msgstr "Не удалось найти активный профиль отчетности."
 
 #: app/controllers/ticket_articles_controller.rb
 msgid "The article does not belong to the specified ticket."
@@ -9717,6 +10488,7 @@ msgstr ""
 #: app/assets/javascripts/app/controllers/_channel/twitter.coffee
 #: app/assets/javascripts/app/controllers/knowledge_base/content_can_be_published_dialog.coffee
 #: app/assets/javascripts/app/controllers/knowledge_base/editor_coordinator.coffee
+#: app/assets/javascripts/app/controllers/knowledge_base/public_menu_form.coffee
 #: app/assets/javascripts/app/controllers/knowledge_base/sidebar/attachments.coffee
 msgid "The changes could not be saved."
 msgstr "Не удалось сохранить изменения."
@@ -9736,6 +10508,19 @@ msgstr ""
 #: app/assets/javascripts/app/controllers/_plugin/maintenance.coffee
 msgid "The configuration of Zammad has changed, please reload your browser."
 msgstr "Настройки Zammad изменились, перезагрузите браузер."
+<<<<<<< HEAD
+=======
+
+#: app/frontend/shared/composables/useAppMaintenanceCheck.ts
+msgid ""
+"The configuration of Zammad has changed. Please reload at your earliest."
+msgstr ""
+"Настройки Zammad изменились. Пожалуйста, перезагрузите как можно раньше."
+
+#: app/frontend/shared/stores/application.ts
+msgid "The connection to the server was lost."
+msgstr "Соединение с сервером было потеряно."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/generic/object_import/index.jst.eco
 msgid ""
@@ -9779,6 +10564,13 @@ msgstr "Не удалось создать запись."
 #: lib/telegram.rb
 msgid "The file could not be retrieved from the bot."
 msgstr "Не удалось получить файл от бота."
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/lib/app_post/html5_upload.coffee
+msgid "The file could not be uploaded."
+msgstr "Не удалось загрузить файл."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/controllers/ticket_articles_controller.rb
 msgid "The file does not belong to the specified article."
@@ -9856,6 +10648,13 @@ msgstr "Не удалось сохранить проблему."
 #: app/assets/javascripts/app/lib/app_post/user_organization_autocompletion.coffee
 msgid "The object could not be created."
 msgstr "Не удалось создать объект."
+<<<<<<< HEAD
+=======
+
+#: app/controllers/links_controller.rb
+msgid "The object could not be found."
+msgstr "Не удалось найти объект."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_application_controller/_modal_generic_edit.coffee
 #: app/assets/javascripts/app/controllers/_channel/sms.coffee
@@ -9879,16 +10678,89 @@ msgstr "Страница не найдена"
 #: app/views/knowledge_base/public/not_found.html.erb
 msgid "The page you were looking for does not exist."
 msgstr "Страница, которую вы искали, не существует."
+<<<<<<< HEAD
+=======
+
+#: app/controllers/mentions_controller.rb
+msgid "The parameter 'mentionable_type' is invalid."
+msgstr "Недопустимый параметр «упоминаемый_тип» (mentionable_type)."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_profile/password.coffee
 #: app/assets/javascripts/app/controllers/password_reset_verify.coffee
 msgid "The password could not be set. Please contact your administrator."
 msgstr ""
 "Не удалось установить пароль. Пожалуйста, свяжитесь с вашим администратором."
+<<<<<<< HEAD
+=======
+
+#: app/controllers/ticket_articles_controller.rb
+msgid ""
+"The preview cannot be generated. The format is corrupted or not supported."
+msgstr ""
+"Невозможно сформировать предпросмотр. Формат является недопустимым или не "
+"поддерживается."
+
+#: app/controllers/import_freshdesk_controller.rb
+#: app/controllers/import_kayako_controller.rb
+#: app/controllers/import_otrs_controller.rb
+#: app/controllers/import_zendesk_controller.rb
+msgid "The provided URL is invalid."
+msgstr "Предоставленный URL-адрес недействителен."
+
+#: app/controllers/import_freshdesk_controller.rb
+#: app/controllers/import_kayako_controller.rb
+#: app/controllers/import_zendesk_controller.rb
+msgid "The provided credentials are invalid."
+msgstr "Предоставленные учетные данные недействительны."
+
+#: app/models/webhook.rb
+msgid "The provided endpoint is invalid, no hostname was specified."
+msgstr ""
+"Предоставленная конечная точка недействительна (endpoint), имя хоста не "
+"указано."
+
+#: app/models/webhook.rb
+msgid ""
+"The provided endpoint is invalid, no http or https protocol was specified."
+msgstr ""
+"Указанная конечная точка (endpoint) недействительна, не указан протокол http "
+"или https."
+
+#: app/models/webhook.rb
+msgid "The provided endpoint is invalid."
+msgstr "Указанная конечная точка (endpoint) недействительна."
+
+#: app/models/postmaster_filter.rb
+msgid "The provided match operator is missing or invalid."
+msgstr "Указанный оператор соответствия отсутствует или недействителен."
+
+#: app/controllers/application_controller/authenticates.rb
+#: app/controllers/integration/check_mk_controller.rb
+#: app/controllers/users_controller.rb
+msgid "The provided token is invalid."
+msgstr "Предоставленный ключ недействителен."
+
+#: lib/static_assets.rb
+msgid "The raw logo could not be read."
+msgstr "Исходный логотип не может быть прочитан."
+
+#: app/assets/javascripts/app/controllers/report.coffee
+msgid "The report could not be generated"
+msgstr "Не удалось сформировать отчет"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/knowledge_base/delete.coffee
 msgid "The request could not be processed."
 msgstr "Запрос не может быть обработан."
+<<<<<<< HEAD
+=======
+
+#: app/controllers/channels_twitter_controller.rb
+msgid "The required 'ExternalCredential' 'twitter' could not be found."
+msgstr ""
+"Требуемые «twitter» «Внешние_Учетные_данные» (ExternalCredential) не найдены."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: lib/idoit.rb
 msgid "The required field 'api_token' is missing from the config."
@@ -9898,6 +10770,45 @@ msgstr "Обязательное поле «API-ключ» (api_token) отсу�
 msgid "The required field 'endpoint' is missing from the config."
 msgstr ""
 "Обязательное поле «конечная точка» (endpoint) отсутствует в настройках."
+<<<<<<< HEAD
+=======
+
+#: app/models/postmaster_filter.rb
+msgid "The required match value is missing."
+msgstr "Отсутствует требуемое значение соответствия."
+
+#: lib/external_credential/facebook.rb
+msgid "The required parameter 'application_id' is missing."
+msgstr ""
+"Отсутствует обязательный параметр «идентификатор "
+"приложения» (application_id)."
+
+#: lib/external_credential/facebook.rb
+msgid "The required parameter 'application_secret' is missing."
+msgstr ""
+"Отсутствует обязательный параметр «Пароль приложения» (application_secret)."
+
+#: app/controllers/channels_sms_controller.rb
+msgid "The required parameter 'area' is missing."
+msgstr "Отсутствует обязательный параметр «Область» (area)."
+
+#: lib/external_credential/google.rb lib/external_credential/microsoft365.rb
+msgid "The required parameter 'client_id' is missing."
+msgstr "Отсутствует обязательный параметр «идентификатор клиента» (client_id)."
+
+#: lib/external_credential/google.rb lib/external_credential/microsoft365.rb
+msgid "The required parameter 'client_secret' is missing."
+msgstr "Отсутствует обязательный параметр «Пароль клиента» (client_secret)."
+
+#: lib/external_credential/twitter.rb
+msgid "The required parameter 'consumer_key' is missing."
+msgstr "Отсутствует обязательный параметр «Ключ потребителя» (consumer_key)."
+
+#: lib/external_credential/twitter.rb
+msgid "The required parameter 'consumer_secret' is missing."
+msgstr ""
+"Отсутствует обязательный параметр «пароль потребителя» (consumer_secret)."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/controllers/channels_twitter_controller.rb
 msgid ""
@@ -9912,10 +10823,61 @@ msgid "The required parameter 'current_user_id' is missing."
 msgstr ""
 "Отсутствует обязательный параметр "
 "«идентификатор_текущего_пользователя» (current_user_id)."
+<<<<<<< HEAD
+=======
+
+#: app/controllers/channels_twitter_controller.rb
+msgid "The required parameter 'for_user_id' is missing."
+msgstr ""
+"Отсутствует обязательный параметр "
+"«для_идентификатора_пользователя» (for_user_id)."
+
+#: lib/telegram.rb
+msgid "The required parameter 'group_id' is invalid."
+msgstr ""
+"Обязательный параметр «Идентификатор_группы» (group_id) является "
+"недопустимым."
+
+#: lib/telegram.rb
+msgid "The required parameter 'group_id' is missing."
+msgstr "Отсутствует обязательный параметр «Идентификатор_группы» (group_id)."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/controllers/users_controller.rb
 msgid "The required parameter 'id' is missing."
 msgstr "Отсутствует обязательный параметр «Идентификатор» (id)."
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/controllers/ticket_link_add.coffee
+msgid "The required parameter 'link_type' is missing."
+msgstr "Отсутствует обязательный параметр «тип ссылки» (link_type)."
+
+#: app/models/text_module.rb
+msgid "The required parameter 'locale' is missing."
+msgstr "Отсутствует обязательный параметр «Региональные_настройки» (locale)."
+
+#: lib/external_credential/twitter.rb
+msgid "The required parameter 'oauth_token' is missing."
+msgstr ""
+"Отсутствует обязательный параметр "
+"«Ключ_открытого_протокола_авторизации» (oauth_token)."
+
+#: lib/external_credential/twitter.rb
+msgid "The required parameter 'oauth_token_secret' is missing."
+msgstr ""
+"Отсутствует обязательный параметр "
+"«Пароль_ключа_открытого_протокола_авторизации» (oauth_token_secret)."
+
+#: app/controllers/channels_sms_controller.rb
+msgid "The required parameter 'options.adapter' is missing."
+msgstr ""
+"Отсутствует обязательный параметр «настройки.адаптер» (options.adapter)."
+
+#: app/controllers/channels_sms_controller.rb
+msgid "The required parameter 'params' is missing."
+msgstr "Отсутствует обязательный параметр «параметры» (params)."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/models/core_workflow/result.rb
 msgid "The required parameter 'payload->class_name' is missing."
@@ -9928,10 +10890,42 @@ msgid "The required parameter 'payload->screen' is missing."
 msgstr ""
 "Отсутствует обязательный параметр «полезная_нагрузка->экран» (payload-"
 ">screen)."
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/controllers/_profile/token_access.coffee
+msgid "The required parameter 'permission' is missing."
+msgstr "Отсутствует обязательный параметр «разрешение» (permission)."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/controllers/users_controller.rb
 msgid "The required parameter 'signup' is missing."
 msgstr "Отсутствует обязательный параметр «регистрация» (signup)."
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/controllers/ticket_link_add.coffee
+msgid "The required parameter 'ticket_number' is missing."
+msgstr "Отсутствует обязательный параметр «номер_заявки» (ticket_number)."
+
+#: app/controllers/channels_twitter_controller.rb
+msgid ""
+"The required value 'external_credential[:consumer_secret]' could not be "
+"found in the cache."
+msgstr ""
+"Не удалось найти требуемое значение «внешние_учетные_данные [:"
+"секрет_клиента]» (external_credential[:consumer_secret]) в кеше."
+
+#: app/policies/ticket_policy.rb
+msgid "The required value 'group_id' is missing."
+msgstr "Отсутствует необходимое значение «Идентификатор_группы» (group_id)."
+
+#: app/controllers/channels_twitter_controller.rb
+msgid "The required value external_credential could not be found in the cache."
+msgstr ""
+"Не удалось найти требуемое значение "
+"«внешние_учетные_данные» (external_credential) в кеше."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/controllers/users_controller.rb
 msgid "The resized image is invalid."
@@ -9949,6 +10943,21 @@ msgid ""
 msgstr ""
 "Настройки сервера не могут быть определены автоматически. Пожалуйста, "
 "настройте их вручную."
+<<<<<<< HEAD
+=======
+
+#: app/frontend/apps/mobile/modules/login/views/Login.vue
+msgid "The session is no longer valid. Please log in again."
+msgstr "Сессия больше недействительна. Пожалуйста, войдите снова."
+
+#: app/models/store/file.rb
+msgid "The setting 'storage_provider' was not configured."
+msgstr "Параметр «поставщик_хранилища» (storage_provider) не настроен."
+
+#: app/models/ticket/number.rb
+msgid "The setting 'ticket_number' was not configured."
+msgstr "Параметр «номер_заявки» (ticket_number) не был настроен."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/getting_started/admin.coffee
 msgid "The sign-in failed. Please contact the Support team."
@@ -9957,6 +10966,17 @@ msgstr "Не удалось выполнить вход. Пожалуйста, �
 #: app/assets/javascripts/app/controllers/ticket_zoom/article_view.coffee
 msgid "The signature was successfully verified."
 msgstr "Подпись успешно проверена."
+<<<<<<< HEAD
+=======
+
+#: app/controllers/tickets_controller.rb
+msgid "The source ticket could not be found."
+msgstr "Не удалось найти исходную заявку."
+
+#: app/controllers/tickets_controller.rb
+msgid "The target ticket number could not be found."
+msgstr "Не удалось найти номер целевой заявки."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/generic/object_import/import_try.jst.eco
 msgid "The test run was successful."
@@ -10050,10 +11070,21 @@ msgid ""
 msgstr ""
 "Откат этого удаления невозможен. Если вы уверены, что хотите продолжить, "
 "пожалуйста, введите «%s» в поле ввода."
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/controllers/knowledge_base/agent_controller.coffee
+msgid "There was no Knowledge Base created."
+msgstr "База знаний не создавалась."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_manage/security.coffee
 msgid "Third-party Applications"
 msgstr "Third-party Applications"
+
+#: lib/telegram.rb
+msgid "This bot already exists."
+msgstr "Эта бот уже существует."
 
 #: app/assets/javascripts/app/controllers/knowledge_base/reader_list_controller.coffee
 msgid "This category is empty"
@@ -10070,6 +11101,113 @@ msgstr ""
 #: app/assets/javascripts/app/controllers/_ui_element/holiday_selector.coffee
 msgid "This entry already exists!"
 msgstr "Эта запись уже существует!"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field can only contain alphabetical characters."
+msgstr "Это поле может содержать только алфавитные символы."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field can only contain letters and numbers."
+msgstr "Это поле может содержать только буквы и цифры."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field can only contain letters and spaces."
+msgstr "Это поле может содержать только буквы и пробелы."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field can't contain the value \"%s\"."
+msgstr "Это поле не может содержать значение \"%s\"."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field can't have less than %s entries."
+msgstr "В этом поле не может быть менее %s записи(-ей)."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field can't have more than %s entries."
+msgstr "В этом поле не может быть более %s записи(-ей)."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field doesn't contain an allowed value."
+msgstr "Это поле не содержит допустимого значения."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field doesn't correspond to the expected value."
+msgstr "Значение этого поля не соответствует ожидаемому."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field doesn't end with \"%s\"."
+msgstr "Это поле не заканчивается на \"%s\"."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field doesn't start with \"%s\"."
+msgstr "Это поле не начинается с \"%s\"."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field is required."
+msgstr "Это поле является обязательным."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field isn't a valid date, please use the format \"%s\"."
+msgstr "Это поле не является допустимой датой, используйте формат \"%s\"."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field must be of the type \"%s\"."
+msgstr "Это поле должно быть типа \"%s\"."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field must contain a number."
+msgstr "Это поле должно содержать число."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field must contain at least %s characters."
+msgstr "Это поле должно содержать не менее %s символов."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field must contain at least one character."
+msgstr "Это поле должно содержать хотя бы один символ."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field must contain between %s and %s characters."
+msgstr "Это поле должно содержать от %s до %s символа(-ов)."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field must have a value that is after %s."
+msgstr "Это поле должно иметь значение после %s."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field must have a value that is at least %s."
+msgstr "Это поле должно иметь значение не менее %s."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field must have a value that is at most %s."
+msgstr "Это поле должно иметь значение, не превышающее %s."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field must have a value that is before %s."
+msgstr "Это поле должно иметь значение до %s."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field must have a value that is between %s and %s."
+msgstr "Это поле должно иметь значение от %s до %s."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field must have a value that is in the future."
+msgstr "Это поле должно иметь значение в будущем времени."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field must have a value that is in the past."
+msgstr "Значение этого поля должно быть в прошлом времени."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field must not contain more than %s characters."
+msgstr "Это поле не должно содержать более %s символов."
+
+#: app/frontend/shared/form/i18n/locales.ts
+msgid "This field was configured incorrectly and can't be submitted."
+msgstr "Это поле настроено неправильно и не может быть передано."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/version.jst.eco
 msgid "This is Zammad version %s"
@@ -10127,10 +11265,13 @@ msgstr "Эта служба позволяет вам соединять %s с %
 #: app/assets/javascripts/app/controllers/_integration/exchange.coffee
 msgid "This service enables Zammad to connect with your Exchange server."
 msgstr "Эта служба позволяет Zammad соединиться с вашим сервером Exchange."
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/_integration/ldap.coffee
 msgid "This service enables Zammad to connect with your LDAP server."
 msgstr "Эта служба позволяет Zammad подключаться к вашему серверу LDAP."
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_integration/check_mk.coffee
 msgid ""
@@ -10171,10 +11312,13 @@ msgid ""
 msgstr ""
 "Эта подпись неактивна, она не будет включена в ответ. Изменить состояние <a "
 "href=\"#channels/email\">здесь</a>"
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/_application_controller/_modal_generic_history.coffee
 msgid "This ticket was merged into"
 msgstr "Эта заявка была объединена в"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/widget/mention.jst.eco
 msgid "This user has no access and will not receive notifications."
@@ -10188,6 +11332,7 @@ msgstr ""
 "количества неудачных попыток входа в систему."
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Thu"
 msgstr "Чтв"
 
@@ -10195,10 +11340,10 @@ msgstr "Чтв"
 #: app/assets/javascripts/app/controllers/_ui_element/timer.coffee
 #: app/assets/javascripts/app/lib/app_post/business_hours.coffee
 #: app/assets/javascripts/app/views/calendar/index.jst.eco
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Thursday"
 msgstr "Четверг"
 
-#: app/assets/javascripts/app/controllers/_application_controller/_modal_generic_history.coffee
 #: app/assets/javascripts/app/controllers/_manage/ticket.coffee
 #: app/assets/javascripts/app/controllers/_ui_element/_application_selector.coffee
 #: app/assets/javascripts/app/controllers/_ui_element/core_workflow_condition.coffee
@@ -10258,6 +11403,18 @@ msgstr "Увеличение номера заявки по дате"
 #: db/seeds/settings.rb
 msgid "Ticket Number ignore system_id"
 msgstr "Номер заявки игнорирует идентификатор системы (system_id)"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/apps/mobile/modules/home/views/Home.vue
+#: app/frontend/apps/mobile/modules/ticket/views/TicketOverview.vue
+msgid "Ticket Overview"
+msgstr "Представление заявки"
+
+#: app/frontend/apps/mobile/modules/ticket/routes.ts
+msgid "Ticket Overviews"
+msgstr "Представления заявок"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/models/sla.coffee
 msgid "Ticket Selector"
@@ -10286,6 +11443,13 @@ msgstr "Эскалация заявки"
 #: app/assets/javascripts/app/lib/mixins/ticket_mass_updatable.coffee
 msgid "Ticket failed to save: %s"
 msgstr "Заявку не удалось сохранить: %s"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/apps/mobile/modules/account/views/AccountOverview.vue
+msgid "Ticket notifications"
+msgstr "Уведомления о заявках"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_profile/notification.coffee
 msgid "Ticket reminder reached"
@@ -10307,13 +11471,18 @@ msgstr "Заявка |%s| была объединена с другой заяв
 msgid "Ticket |%s| will escalate soon!"
 msgstr "Заявка |%s| скоро эскалируется!"
 
+#: app/assets/javascripts/app/views/time_accounting/by_activity.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_ticket.jst.eco
+#: app/controllers/time_accountings_controller.rb
 msgid "Ticket#"
 msgstr "Заявка №"
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/ticket_link_add.coffee
 msgid "Ticket# is needed!"
 msgstr "Нужна заявка №!"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/models/ticket_article.coffee
 msgid "TicketID"
@@ -10325,6 +11494,7 @@ msgstr "Идентификатор заявки (TicketID)"
 #: app/assets/javascripts/app/views/import/kayako.jst.eco
 #: app/assets/javascripts/app/views/import/otrs.jst.eco
 #: app/assets/javascripts/app/views/import/zendesk.jst.eco
+#: app/frontend/apps/mobile/modules/search/plugins/ticket.ts
 msgid "Tickets"
 msgstr "Заявки"
 
@@ -10352,6 +11522,7 @@ msgstr "Заявки организации"
 msgid "Tickets of User"
 msgstr "Заявки пользователя"
 
+#: app/assets/javascripts/app/views/generic/calender_preview.jst.eco
 #: app/assets/javascripts/app/views/profile/out_of_office.jst.eco
 msgid "Till"
 msgstr "До"
@@ -10372,6 +11543,7 @@ msgstr "Учет времени"
 msgid "Time Accounting Selector"
 msgstr "Отборщик учета рабочего времени"
 
+#: app/assets/javascripts/app/views/time_accounting/by_activity.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_customer.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_organization.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_ticket.jst.eco
@@ -10418,7 +11590,10 @@ msgstr "Тайминг"
 #: app/assets/javascripts/app/views/knowledge_base/public_menu_form_item.jst.eco
 #: app/assets/javascripts/app/views/maintenance.jst.eco
 #: app/assets/javascripts/app/views/settings/form.jst.eco
+#: app/assets/javascripts/app/views/time_accounting/by_activity.jst.eco
 #: app/assets/javascripts/app/views/time_accounting/by_ticket.jst.eco
+#: app/controllers/time_accountings_controller.rb
+#: app/frontend/apps/mobile/modules/ticket/components/TicketList/TicketList.vue
 #: db/seeds/object_manager_attributes.rb lib/excel_sheet/ticket.rb
 msgid "Title"
 msgstr "Заголовок"
@@ -10488,6 +11663,7 @@ msgstr ""
 msgid "To work on Tickets."
 msgstr "Работа с заявками."
 
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 #: public/assets/chat/chat-no-jquery.coffee public/assets/chat/chat.coffee
 msgid "Today"
 msgstr "Сегодня"
@@ -10562,10 +11738,13 @@ msgstr "Перенести беседу в другой чат:"
 msgid "Translations"
 msgstr "Переводы / Языки"
 
+<<<<<<< HEAD
 #: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
 msgid "Tree Select"
 msgstr "Дерево выбора"
 
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 #: app/assets/javascripts/app/controllers/_integration/slack.coffee
 #: app/assets/javascripts/app/controllers/trigger.coffee
 msgid "Trigger"
@@ -10585,6 +11764,7 @@ msgid "Trying to reconnect…"
 msgstr "Попытка восстановить соединение…"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Tue"
 msgstr "Втр"
 
@@ -10592,6 +11772,7 @@ msgstr "Втр"
 #: app/assets/javascripts/app/controllers/_ui_element/timer.coffee
 #: app/assets/javascripts/app/lib/app_post/business_hours.coffee
 #: app/assets/javascripts/app/views/calendar/index.jst.eco
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Tuesday"
 msgstr "Вторник"
 
@@ -10679,7 +11860,12 @@ msgstr "URL"
 msgid "URL (AJAX endpoint)"
 msgstr "URL-адрес (конечная точка (endpoint) AJAX)"
 
+<<<<<<< HEAD
 #: app/controllers/first_steps_controller.rb db/seeds/overviews.rb
+=======
+#: app/controllers/first_steps_controller.rb
+#: app/frontend/apps/mobile/modules/home/views/Home.vue db/seeds/overviews.rb
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 msgid "Unassigned & Open Tickets"
 msgstr "Не назначенные и открытые заявки"
 
@@ -10781,6 +11967,7 @@ msgstr "Обновление выполнено успешно."
 #: app/assets/javascripts/app/models/email_address.coffee
 #: app/assets/javascripts/app/models/group.coffee
 #: app/assets/javascripts/app/models/job.coffee
+#: app/assets/javascripts/app/models/ldap_source.coffee
 #: app/assets/javascripts/app/models/macro.coffee
 #: app/assets/javascripts/app/models/object_manager_attribute.coffee
 #: app/assets/javascripts/app/models/overview.coffee
@@ -10814,6 +12001,7 @@ msgstr "Обновлено в"
 #: app/assets/javascripts/app/models/chat_sessions.coffee
 #: app/assets/javascripts/app/models/data_privacy_task.coffee
 #: app/assets/javascripts/app/models/job.coffee
+#: app/assets/javascripts/app/models/ldap_source.coffee
 #: app/assets/javascripts/app/models/organization.coffee
 #: app/assets/javascripts/app/models/overview.coffee
 #: app/assets/javascripts/app/models/postmaster_filter.coffee
@@ -10862,16 +12050,17 @@ msgstr "Использование"
 msgid "Usage of advanced features"
 msgstr "Использование расширенных функций"
 
-#: db/seeds/settings.rb
-msgid "Use client storage to cache data to enhance performance of application."
-msgstr ""
-"Используйте хранилище клиентов для кэширования данных для повышения "
-"производительности приложения."
-
 #: app/assets/javascripts/app/views/object_manager/attribute/multiselect.jst.eco
 #: app/assets/javascripts/app/views/object_manager/attribute/select.jst.eco
 msgid "Use custom option sort"
 msgstr "Использовать пользовательскую сортировку по параметрам"
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/controllers/_ui_element/object_manager_attribute.coffee
+msgid "Use double click to change level of the row."
+msgstr "Используйте двойной щелчок, чтобы изменить уровень строки."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/models/application.coffee
 msgid "Use one line per URI"
@@ -10896,6 +12085,15 @@ msgstr ""
 #: db/seeds/settings.rb
 msgid "Use the time of the very last customer article."
 msgstr "Использовать время самой последней статьи клиента."
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/controllers/_integration/ldap.coffee
+msgid "Use this switch to start synchronization of your ldap sources. "
+msgstr ""
+"Используйте этот переключатель, чтобы начать синхронизацию ваших источников "
+"LDAP. "
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_plugin/keyboard_shortcuts.coffee
 msgid "Used anywhere"
@@ -11000,12 +12198,21 @@ msgstr "Пользователь успешно разблокирован!"
 msgid "Username"
 msgstr "Логин"
 
+#: app/frontend/apps/mobile/modules/login/views/Login.vue
+#: app/models/form_schema/form/mobile/login.rb
+msgid "Username / Email"
+msgstr "Имя пользователя / Электронная почта"
+
 #: app/assets/javascripts/app/views/generic/login_preview.jst.eco
 #: app/assets/javascripts/app/views/login.jst.eco
 msgid "Username / email"
 msgstr "Логин / email"
 
-#: app/assets/javascripts/app/views/settings/proxy.jst.eco db/seeds/settings.rb
+#: app/assets/javascripts/app/views/settings/proxy.jst.eco
+msgid "Username for proxy connection"
+msgstr "Имя пользователя для подключения через прокси"
+
+#: db/seeds/settings.rb
 msgid "Username for proxy connection."
 msgstr "Имя пользователя для подключения через прокси."
 
@@ -11022,7 +12229,8 @@ msgstr "Имя пользователя для подключения через
 #: app/assets/javascripts/app/views/integration/exchange_summary.jst.eco
 #: app/assets/javascripts/app/views/integration/ldap_last_import.jst.eco
 #: app/assets/javascripts/app/views/integration/ldap_summary.jst.eco
-#: db/seeds/groups.rb db/seeds/permissions.rb
+#: app/frontend/apps/mobile/modules/search/plugins/user.ts db/seeds/groups.rb
+#: db/seeds/permissions.rb
 msgid "Users"
 msgstr "Пользователи"
 
@@ -11161,8 +12369,10 @@ msgstr "Вид от имени пользователя"
 #: app/views/mailer/ticket_update/zh-cn.html.erb
 #: app/views/mailer/ticket_update/zh-tw.html.erb
 #: app/views/mailer/ticket_update_merged_into/en.html.erb
+#: app/views/mailer/ticket_update_merged_into/fr.html.erb
 #: app/views/mailer/ticket_update_merged_into/ru.html.erb
 #: app/views/mailer/ticket_update_received_merge/en.html.erb
+#: app/views/mailer/ticket_update_received_merge/fr.html.erb
 #: app/views/mailer/ticket_update_received_merge/ru.html.erb
 msgid "View this in Zammad"
 msgstr "Перейти к заявке в Zammad"
@@ -11252,6 +12462,13 @@ msgstr ""
 #: app/assets/javascripts/app/views/cti/not_configured.jst.eco
 msgid "We support"
 msgstr "Мы поддерживаем"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/apps/mobile/modules/error/views/Error.vue
+msgid "We're sorry, but this page doesn't exist."
+msgstr "Сожалеем, но этой страницы не существует."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_plugin/user_signup_check.coffee
 msgid ""
@@ -11339,6 +12556,7 @@ msgid "Websocket port"
 msgstr "Порт веб-сокета"
 
 #: app/assets/javascripts/app/controllers/_ui_element/basedate.coffee
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Wed"
 msgstr "Срд"
 
@@ -11346,6 +12564,7 @@ msgstr "Срд"
 #: app/assets/javascripts/app/controllers/_ui_element/timer.coffee
 #: app/assets/javascripts/app/lib/app_post/business_hours.coffee
 #: app/assets/javascripts/app/views/calendar/index.jst.eco
+#: app/frontend/shared/components/Form/fields/FieldDate/FieldDateTimeInput.vue
 msgid "Wednesday"
 msgstr "Среда"
 
@@ -11571,9 +12790,31 @@ msgstr "Вы - |%s|."
 msgid "You are on waiting list position <strong>%s</strong>."
 msgstr "Вы находитесь в списке ожидания <strong>%s</strong>."
 
+<<<<<<< HEAD
 #: app/views/mailer/application.html.erb
 msgid "You are receiving this because you \"%s\"."
 msgstr "Вы получаете это, потому что вы \"%s\"."
+=======
+#: app/models/transaction/notification.rb
+msgid ""
+"You are receiving this because you are a member of the group of this ticket."
+msgstr "Вы получаете это, потому что являетесь членом группы этой заявки."
+
+#: app/models/transaction/notification.rb
+msgid ""
+"You are receiving this because you are out-of-office replacement for a "
+"participant of this ticket."
+msgstr ""
+"Вы получаете это, потому что вы вне офиса заменяете участника этой заявки."
+
+#: app/models/transaction/notification.rb
+msgid "You are receiving this because you are the owner of this ticket."
+msgstr "Вы получаете это, потому что являетесь владельцем этой заявки."
+
+#: app/models/transaction/notification.rb
+msgid "You are receiving this because you were mentioned in this ticket."
+msgstr "Вы получаете это, потому что были упомянуты в этой заявке."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/facebook/index.jst.eco
 #: app/assets/javascripts/app/views/google/index.jst.eco
@@ -11692,6 +12933,17 @@ msgstr "Вы можете ипользовать следующий скрипт
 #: app/assets/javascripts/app/views/customer_not_ticket_exists.jst.eco
 msgid "You currently don't have any tickets."
 msgstr "В настоящее время у вас нет заявок."
+<<<<<<< HEAD
+=======
+
+#: app/controllers/import_freshdesk_controller.rb
+msgid "You do not have administrator permission."
+msgstr "У вас нет прав администратора."
+
+#: app/frontend/shared/router/guards/before/permission.ts
+msgid "You don't have the necessary permissions to access this page."
+msgstr "У вас нет необходимых разрешений для доступа к этой странице."
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/karma_activities.rb
 msgid "You have answered a ticket within 12h"
@@ -11945,6 +13197,10 @@ msgstr "Пользовательский агент (User Agent) Zammad"
 
 #: app/assets/javascripts/app/views/generic/login_preview.jst.eco
 #: app/assets/javascripts/app/views/login.jst.eco
+<<<<<<< HEAD
+=======
+#: app/frontend/apps/mobile/modules/login/views/Login.vue
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 msgid ""
 "Zammad is currently in maintenance mode. Only administrators can log in. "
 "Please wait until the maintenance window is over."
@@ -12010,6 +13266,7 @@ msgstr "и"
 msgid "archived"
 msgstr "в архиве"
 
+<<<<<<< HEAD
 #: app/models/transaction/notification.rb
 msgid "are assigned"
 msgstr "назначенные"
@@ -12025,6 +13282,12 @@ msgstr "подписаны"
 #: app/models/transaction/notification.rb
 msgid "are the out-of-office replacement of the owner"
 msgstr "Являются внеофисной заменой владельцу"
+=======
+#: app/assets/javascripts/app/controllers/ticket_overview.coffee
+#: app/assets/javascripts/app/models/overview.coffee
+msgid "ascending"
+msgstr "по возрастанию"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/views/ticket_overview/batch_overlay.jst.eco
 msgid "assign tickets"
@@ -12033,6 +13296,14 @@ msgstr "назначить заявки"
 #: app/assets/javascripts/app/views/generic/datetime.jst.eco
 msgid "at"
 msgstr "в"
+
+#: app/assets/javascripts/app/lib/app_post/utils.coffee
+msgid "attached"
+msgstr "прикрепленный"
+
+#: app/assets/javascripts/app/lib/app_post/utils.coffee
+msgid "attachment"
+msgstr "вложение"
 
 #: app/assets/javascripts/app/controllers/_ui_element/core_workflow_perform.coffee
 msgid "auto select"
@@ -12055,10 +13326,6 @@ msgstr "между обновлениями агентов"
 msgid "busy"
 msgstr "занят"
 
-#: app/assets/javascripts/app/views/knowledge_base/_reader_answer_meta.jst.eco
-msgid "by"
-msgstr "от"
-
 #: app/assets/javascripts/app/controllers/_ui_element/core_workflow_condition.coffee
 msgid "changed to"
 msgstr "изменено на"
@@ -12067,6 +13334,7 @@ msgstr "изменено на"
 msgid "chat"
 msgstr "чат"
 
+#: app/assets/javascripts/app/views/object_manager/attribute/multi_tree_select.jst.eco
 #: app/assets/javascripts/app/views/object_manager/attribute/tree_select.jst.eco
 msgid "children"
 msgstr "потомки"
@@ -12166,9 +13434,18 @@ msgstr "По умолчанию"
 msgid "delete"
 msgstr "удалить"
 
+#: app/assets/javascripts/app/controllers/ticket_overview.coffee
+#: app/assets/javascripts/app/models/overview.coffee
+msgid "descending"
+msgstr "по убыванию"
+
 #: app/assets/javascripts/app/views/customer_chat/chat_window.jst.eco
 msgid "disconnect"
 msgstr "отключиться"
+
+#: app/assets/javascripts/app/controllers/cti.coffee
+msgid "does not exist"
+msgstr "не существует"
 
 #: app/assets/javascripts/app/views/import/freshdesk.jst.eco
 #: app/assets/javascripts/app/views/import/kayako.jst.eco
@@ -12203,10 +13480,33 @@ msgstr "т.е."
 #: app/assets/javascripts/app/views/generic/drox.jst.eco
 msgid "edit"
 msgstr "редактировать"
+<<<<<<< HEAD
+=======
+
+#: app/frontend/apps/mobile/composables/useEditedBy.ts
+msgid "edited %s"
+msgstr "отредактировано %s"
+
+#: app/frontend/apps/mobile/composables/useEditedBy.ts
+msgid "edited %s by %s"
+msgstr "отредактировано %s пользователем %s"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: db/seeds/ticket_article_types.rb
 msgid "email"
 msgstr "email"
+
+#: app/assets/javascripts/app/controllers/_application_controller/_modal_generic_history.coffee
+msgid "email sent to '%s'"
+msgstr "письмо отправлено на '%s'"
+
+#: app/assets/javascripts/app/lib/app_post/utils.coffee
+msgid "enclosed"
+msgstr "приложенный"
+
+#: app/assets/javascripts/app/lib/app_post/utils.coffee
+msgid "enclosure"
+msgstr "приложение"
 
 #: app/assets/javascripts/app/models/ticket.coffee
 msgid "escalated"
@@ -12313,6 +13613,54 @@ msgstr "Ссылки iCalendar от Google будут загружаться о�
 msgid "in %s"
 msgstr "в %s"
 
+#: app/frontend/shared/i18n/dates.ts
+msgid "in %s days"
+msgstr "через %s дней"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "in %s hours"
+msgstr "через %s часа(-ов)"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "in %s minutes"
+msgstr "через %s минут(ы)"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "in %s months"
+msgstr "через %s месяц(а/ев)"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "in %s weeks"
+msgstr "через %s недель(-и)"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "in %s years"
+msgstr "через %s года/лет"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "in 1 day"
+msgstr "через 1 день"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "in 1 hour"
+msgstr "через 1 час"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "in 1 minute"
+msgstr "через 1 минуту"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "in 1 month"
+msgstr "через 1 месяц"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "in 1 week"
+msgstr "через 1 неделю"
+
+#: app/frontend/shared/i18n/dates.ts
+msgid "in 1 year"
+msgstr "через 1 год"
+
 #: app/assets/javascripts/app/views/generic/sla_times.jst.eco
 msgid "in hours"
 msgstr "в часах"
@@ -12399,14 +13747,18 @@ msgstr "соответствовать одному модулю"
 
 #: app/assets/javascripts/app/views/data_privacy/preview.jst.eco
 #: app/assets/javascripts/app/views/generic/application_selector.jst.eco
-msgid "matches"
-msgstr "совпадает"
+msgid "matches found"
+msgstr "совпадения найдены"
 
 #: app/assets/javascripts/app/views/cti/caller_log.jst.eco
 #: app/assets/javascripts/app/views/cti/caller_log_avatar.jst.eco
 #: app/assets/javascripts/app/views/navigation/menu_cti_ringing.jst.eco
 msgid "maybe"
 msgstr "может быть"
+
+#: app/frontend/apps/mobile/composables/useEditedBy.ts
+msgid "me"
+msgstr "мне"
 
 #: db/seeds/ticket_state_types.rb db/seeds/ticket_states.rb
 msgid "merged"
@@ -12462,10 +13814,6 @@ msgid "none"
 msgstr "нет"
 
 #: app/assets/javascripts/app/controllers/cti.coffee
-msgid "not exist"
-msgstr "не существует"
-
-#: app/assets/javascripts/app/controllers/cti.coffee
 msgid "not reached"
 msgstr "не достигнут"
 
@@ -12486,6 +13834,13 @@ msgstr "не переведены"
 msgid "note"
 msgstr "заметка"
 
+<<<<<<< HEAD
+=======
+#: app/assets/javascripts/app/controllers/_application_controller/_modal_generic_history.coffee
+msgid "notification sent to '%s'"
+msgstr "уведомление отправлено '%s'"
+
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 #: app/assets/javascripts/app/controllers/knowledge_base/content_can_be_published_form.coffee
 msgid "now"
 msgstr "сейчас"
@@ -12581,6 +13936,7 @@ msgstr "справа"
 msgid "ringing"
 msgstr "вызов"
 
+#: app/assets/javascripts/app/views/object_manager/attribute/multi_tree_select.jst.eco
 #: app/assets/javascripts/app/views/object_manager/attribute/tree_select.jst.eco
 msgid "row"
 msgstr "строка"
@@ -12597,10 +13953,13 @@ msgstr "Выбрать"
 #: app/assets/javascripts/app/views/ticket_zoom/article_new.jst.eco
 msgid "select attachment…"
 msgstr "выберите вложение…"
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/_application_controller/_modal_generic_history.coffee
 msgid "sent to"
 msgstr "отправлено в"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/assets/javascripts/app/controllers/_ui_element/core_workflow_perform.coffee
 msgid "set fixed to"
@@ -12633,7 +13992,9 @@ msgstr "показывать"
 
 #: app/assets/javascripts/app/views/generic/object_search/item_organization_members.jst.eco
 #: app/assets/javascripts/app/views/organization_profile/object.jst.eco
+#: app/assets/javascripts/app/views/user_profile/object.jst.eco
 #: app/assets/javascripts/app/views/widget/organization.jst.eco
+#: app/assets/javascripts/app/views/widget/user.jst.eco
 msgid "show more"
 msgstr "показать больше"
 
@@ -12691,9 +14052,21 @@ msgid "telegram personal-message"
 msgstr "личное сообщение telegram"
 
 #: app/assets/javascripts/app/controllers/_application_controller/_modal_generic_history.coffee
+msgid "this ticket was merged into ticket %s"
+msgstr "эта заявка была объединена с заявкой %s"
+
+#: app/frontend/apps/mobile/components/Organization/OrganizationItem.vue
+#: app/frontend/apps/mobile/components/User/UserItem.vue
 #: lib/calendar_subscriptions/tickets.rb
 msgid "ticket"
 msgstr "заявка"
+<<<<<<< HEAD
+=======
+
+#: app/assets/javascripts/app/controllers/_application_controller/_modal_generic_history.coffee
+msgid "ticket %s was merged into this ticket"
+msgstr "заявка %s была объединена с этой заявкой"
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: lib/calendar_subscriptions/tickets.rb
 msgid "ticket escalation"
@@ -12714,10 +14087,13 @@ msgstr "до (родственник)"
 #: db/seeds/settings.rb
 msgid "timestamp - e. g. \"2018-08-30 14:30\""
 msgstr "метка времени - например, «30.08.2018 14:30»"
+<<<<<<< HEAD
 
 #: app/assets/javascripts/app/controllers/_ui_element/ticket_perform_action.coffee
 msgid "to"
 msgstr "по"
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
 #: app/views/knowledge_base/public/not_found.html.erb
 msgid "to go to the homepage."
@@ -12768,10 +14144,13 @@ msgstr "вверх"
 msgid "updated"
 msgstr "обновлен"
 
+<<<<<<< HEAD
 #: app/assets/javascripts/app/controllers/_application_controller/_modal_generic_history.coffee
 msgid "was merged into this ticket"
 msgstr "была объединен в эту заявку"
 
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 #: db/seeds/ticket_article_types.rb
 msgid "web"
 msgstr "веб"
@@ -12845,6 +14224,153 @@ msgid "∅ Waiting time today"
 msgstr "∅ Сегодня время ожидания"
 
 #, fuzzy
+<<<<<<< HEAD
+=======
+#~| msgid "Accounted Time"
+#~ msgid "Accounted time"
+#~ msgstr "Учетное время"
+
+#~ msgid "Defines the LDAP config."
+#~ msgstr "Определяет настройки LDAP."
+
+#~ msgid "LDAP config"
+#~ msgstr "Настройки легковесного протокола доступа к каталогам (LDAP)"
+
+#~ msgid "This service enables Zammad to connect with your LDAP server."
+#~ msgstr "Эта служба позволяет Zammad подключаться к вашему серверу LDAP."
+
+#~ msgid "Link type is needed!"
+#~ msgstr "Нужен тип связи!"
+
+#~ msgid "Minimum of one permission is needed!"
+#~ msgstr "Требуется минимум одно разрешение!"
+
+#~ msgid "Missing 'for_user_id' in payload!"
+#~ msgstr "В полезной нагрузке отсутствует 'for_user_id'!"
+
+#~ msgid "PREVIEW"
+#~ msgstr "ПРЕДПРОСМОТР"
+
+#~ msgid "Ticket# is needed!"
+#~ msgstr "Нужна заявка №!"
+
+#~ msgid "Send client stats"
+#~ msgstr "Отправить статистику по клиенту"
+
+#~ msgid ""
+#~ "Send client stats/error message to central server to improve the "
+#~ "usability."
+#~ msgstr ""
+#~ "Отправить клиентскую статистику / сообщение об ошибке на центральный "
+#~ "сервер для улучшения удобства использования."
+
+#~ msgid "Cannot upload file"
+#~ msgstr "Не удается загрузить файл"
+
+#~ msgid "Could not find active reporting profile."
+#~ msgstr "Не удалось найти активный профиль отчетности."
+
+#~ msgid "Could not find external_credential 'twitter'!"
+#~ msgstr "Не удалось найти external_credential 'twitter'!"
+
+#~ msgid "Could not find external_credential in cache!"
+#~ msgstr "Не удалось найти external_credential в кеше!"
+
+#~ msgid "Could not find object!"
+#~ msgstr "Не удалось найти объект!"
+
+#~ msgid "Could not find source ticket!"
+#~ msgstr "Не удалось найти исходную заявку!"
+
+#~ msgid "Could not find target ticket number!"
+#~ msgstr "Не удалось найти целевой номер заявки!"
+
+#~ msgid "Could not read raw logo!"
+#~ msgstr "Не удалось прочитать необработанный логотип!"
+
+#~ msgid "Couldn't create Knowledge Base"
+#~ msgstr "Не удалось создать Базу знаний"
+
+#~ msgid "Couldn't save changes"
+#~ msgstr "Не удалось сохранить изменения"
+
+#~ msgid "Group can't be blank"
+#~ msgstr "Группа не может быть пустой"
+
+#~ msgid "Select..."
+#~ msgstr "Выбор..."
+
+#~ msgid "Group by Direction"
+#~ msgstr "Группировать по направлению"
+
+#~ msgid "Next in tab"
+#~ msgstr "Далее на вкладке"
+
+#~ msgid "Order"
+#~ msgstr "Сортировка"
+
+#~ msgid "Order by Direction"
+#~ msgstr "Сортировать по направлению"
+
+#~ msgid "Hello Home!!!"
+#~ msgstr "Здравствуй главная!!!"
+
+#~ msgid "Min. one match rule needed!"
+#~ msgstr "Требуется минимум одно правило соответствия!"
+
+#~ msgid "No filter."
+#~ msgstr "Без фильтра."
+
+#~ msgid "Set"
+#~ msgstr "Установить"
+
+#~ msgid "to"
+#~ msgstr "по"
+
+#~ msgid "Bot already exists!"
+#~ msgstr "Бот уже существует!"
+
+#~ msgid "Cannot generate report"
+#~ msgstr "Не удается создать отчет"
+
+#~ msgid "Configure Base"
+#~ msgstr "Настроить базу"
+
+#~ msgid "Got no locale"
+#~ msgstr "Нет доступных языков"
+
+#~ msgid "Group invalid!"
+#~ msgstr "Недействительная группа!"
+
+#~ msgid "Group needed!"
+#~ msgstr "Требуется группа!"
+
+#~ msgid "Client storage"
+#~ msgstr "Клиентское хранилище"
+
+#~ msgid "Defines if i-doit (http://www.i-doit) is enabled or not."
+#~ msgstr "Определяет, включен i-doit (http://www.i-doit) или нет."
+
+#~ msgid ""
+#~ "Use client storage to cache data to enhance performance of application."
+#~ msgstr ""
+#~ "Используйте хранилище клиентов для кэширования данных для повышения "
+#~ "производительности приложения."
+
+#~ msgid "This ticket was merged into"
+#~ msgstr "Эта заявка была объединена в"
+
+#~ msgid "Datetime"
+#~ msgstr "Дата и время"
+
+#~ msgid "Browser too old!"
+#~ msgstr "Браузер слишком старый!"
+
+#~ msgid "by"
+#~ msgstr "от"
+
+#, fuzzy
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 #~ msgid "Response Time"
 #~ msgstr "Время первого ответа"
 

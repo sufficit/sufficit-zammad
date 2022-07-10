@@ -364,7 +364,7 @@ curl http://localhost/api/v1/users/email_verify -v -u #{login}:#{password} -H "C
     raise Exceptions::UnprocessableEntity, __('No token!') if !params[:token]
 
     user = User.signup_verify_via_token(params[:token], current_user)
-    raise Exceptions::UnprocessableEntity, __('Invalid token!') if !user
+    raise Exceptions::UnprocessableEntity, __('The provided token is invalid.') if !user
 
     current_user_set(user)
 
@@ -775,7 +775,9 @@ curl http://localhost/api/v1/users/avatar -v -u #{login}:#{password} -H "Content
       return
     end
 
-    if ActiveStorage::Variant::WEB_IMAGE_CONTENT_TYPES.exclude?(file_full[:mime_type])
+    web_image_content_types = Rails.application.config.active_storage.web_image_content_types
+
+    if web_image_content_types.exclude?(file_full[:mime_type])
       render json: { error: __('The MIME type of the full-size image is invalid.') }, status: :unprocessable_entity
       return
     end
@@ -787,7 +789,7 @@ curl http://localhost/api/v1/users/avatar -v -u #{login}:#{password} -H "Content
       return
     end
 
-    if ActiveStorage::Variant::WEB_IMAGE_CONTENT_TYPES.exclude?(file_resize[:mime_type])
+    if web_image_content_types.exclude?(file_resize[:mime_type])
       render json: { error: __('The MIME type of the resized image is invalid.') }, status: :unprocessable_entity
       return
     end
@@ -916,7 +918,6 @@ curl http://localhost/api/v1/users/avatar -v -u #{login}:#{password} -H "Content
     user.save!
 
     if params[:invite].present?
-      sleep 5 if ENV['REMOTE_URL'].present?
       token = Token.create(action: 'PasswordReset', user_id: user.id)
       NotificationFactory::Mailer.notification(
         template: 'user_invite',

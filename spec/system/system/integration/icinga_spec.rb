@@ -3,14 +3,14 @@
 require 'rails_helper'
 
 RSpec.describe 'Manage > Integration > Icinga', type: :system do
-  let(:icinga_sender) { 'some@othersender.com' }
+  let(:icinga_sender)     { 'some@othersender.com' }
   let(:icinga_auto_close) { 'no' }
 
   before do
     visit 'system/integration/icinga'
 
     # enable icinga
-    check 'setting-switch', { allow_label_click: true }
+    check 'setting-switch', allow_label_click: true
   end
 
   context 'for icinga config' do
@@ -58,7 +58,7 @@ RSpec.describe 'Manage > Integration > Icinga', type: :system do
     context 'when disabled with changed config' do
       before do
         # disable icinga
-        uncheck 'setting-switch', { allow_label_click: true }
+        uncheck 'setting-switch', allow_label_click: true
       end
 
       let(:icinga_sender) { 'icinga@monitoring.example.com' }

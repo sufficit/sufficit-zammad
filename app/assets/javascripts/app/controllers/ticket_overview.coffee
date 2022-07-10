@@ -958,6 +958,9 @@ class Table extends App.Controller
     for ticket in tickets
       ticketListShow.push App.Ticket.find(ticket.id)
     @overview = App.Overview.find(overview.id)
+
+    @removePopovers()
+
     @table.update(
       overviewAttributes: @convertOverviewAttributesToArray(@overview.view.s)
       objects:            ticketListShow
@@ -966,6 +969,8 @@ class Table extends App.Controller
       orderBy:            @overview.order.by
       orderDirection:     @overview.order.direction
     )
+
+    @renderPopovers()
 
   render: (data) =>
     return if !data
@@ -1342,7 +1347,7 @@ class App.OverviewSettings extends App.ControllerModal
     },
     {
       name:      'order::by'
-      display:   __('Order')
+      display:   __('Sorting by')
       tag:       'selectTicketAttributes'
       default:   @overview.order.by
       null:      false
@@ -1351,18 +1356,23 @@ class App.OverviewSettings extends App.ControllerModal
     },
     {
       name:      'order::direction'
-      display:   __('Order by Direction')
+      display:   __('Sorting order')
       tag:       'select'
       default:   @overview.order.direction
       null:      false
       translate: true
       options:
+<<<<<<< HEAD
         ASC:  __('up')
         DESC: __('down')
+=======
+        ASC:  __('ascending')
+        DESC: __('descending')
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
     },
     {
       name:       'group_by'
-      display:    __('Group by')
+      display:    __('Grouping by')
       tag:        'select'
       default:    @overview.group_by
       null:       true
@@ -1372,14 +1382,19 @@ class App.OverviewSettings extends App.ControllerModal
     },
     {
       name:    'group_direction'
-      display: __('Group by Direction')
+      display: __('Grouping order')
       tag:     'select'
       default: @overview.group_direction
       null:    false
       translate: true
       options:
+<<<<<<< HEAD
         ASC:   __('up')
         DESC:  __('down')
+=======
+        ASC:   __('ascending')
+        DESC:  __('descending')
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
     },)
 
     controller = new App.ControllerForm(

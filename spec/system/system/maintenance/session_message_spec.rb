@@ -3,9 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe 'System > Maintenance - Session Message', type: :system do
-  let(:agent) { User.find_by(login: 'agent1@example.com') }
+  let(:agent)                 { User.find_by(login: 'agent1@example.com') }
   let(:session_message_title) { 'Testing <b>Session Message Title</b>' }
-  let(:session_message_text) { "message <b>1äöüß</b> Session Message Title\n\n\nhttps://zammad.org" }
+  let(:session_message_text)  { "message <b>1äöüß</b> Session Message Title\n\n\nhttps://zammad.org" }
 
   def check_sesion_message_content(title, text)
     expect(page).to have_text(title)
@@ -33,15 +33,11 @@ RSpec.describe 'System > Maintenance - Session Message', type: :system do
       end
 
       using_session(:second_browser) do
-        modal_ready
-
-        within '.modal-dialog' do
+        in_modal do
           check_sesion_message_content(session_message_title, session_message_text)
 
-          click 'div.modal-header .js-close'
+          click '.js-close'
         end
-
-        modal_disappear
       end
 
       within :active_content do
@@ -59,15 +55,13 @@ RSpec.describe 'System > Maintenance - Session Message', type: :system do
       within :active_content do
         fill_in 'head', with: "#{message_title} #2"
         find('.js-Message .js-textarea[data-name="message"]').send_keys("#{message_text} #2")
-        check 'reload', { allow_label_click: true }
+        check 'reload', allow_label_click: true
 
         click '.js-Message button.js-submit'
       end
 
       using_session(:second_browser) do
-        modal_ready
-
-        within '.modal-dialog' do
+        in_modal do
           check_sesion_message_content(message_title, message_text)
 
           expect(page).to have_text('Continue session')

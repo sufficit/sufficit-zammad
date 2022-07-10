@@ -5,6 +5,13 @@ require_relative 'boot'
 require 'rails/all'
 require_relative 'issue_2656_workaround_for_rails_issue_33600'
 
+# Temporary Hack: skip vite build if ENABLE_EXPERIMENTAL_MOBILE_FRONTEND is not set.
+# This must be called before ViteRuby is loaded by Bundler.
+# TODO: Remove when this switch is not needed any more.
+if ENV['ENABLE_EXPERIMENTAL_MOBILE_FRONTEND'] != 'true'
+  ENV['VITE_RUBY_SKIP_ASSETS_PRECOMPILE_EXTENSION'] = 'true'
+end
+
 # DO NOT REMOVE THIS LINE - see issue #2037
 Bundler.setup
 
@@ -12,9 +19,14 @@ Bundler.setup
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# EmailAddress gem clashes with EmailAddress model.
+# https://github.com/afair/email_address#namespace-conflict-resolution
+EmailAddressValidator = EmailAddress
+Object.send(:remove_const, :EmailAddress)
+
 # Only load gems for asset compilation if they are needed to avoid
 #   having unneeded runtime dependencies like NodeJS.
-if ARGV.include?('assets:precompile') || Rails.groups.exclude?('production')
+if ArgvHelper.argv.include?('assets:precompile') || Rails.groups.exclude?('production')
   Bundler.load.current_dependencies.select do |dep|
     require dep.name if dep.groups.include?(:assets)
   end
@@ -23,9 +35,10 @@ end
 module Zammad
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.0
+    config.load_defaults 6.1
 
     Rails.autoloaders.each do |autoloader|
+      autoloader.ignore            "#{config.root}/app/frontend"
       autoloader.do_not_eager_load "#{config.root}/lib/core_ext"
       autoloader.collapse          "#{config.root}/lib/omniauth"
       autoloader.inflector.inflect(
@@ -47,7 +60,7 @@ module Zammad
 
     # zeitwerk:check will only check preloaded paths. To make sure that also lib/ gets validated,
     #   add it to the eager_load_paths only if zeitwerk:check is running.
-    config.eager_load_paths += %W[#{config.root}/lib] if ARGV[0].eql? 'zeitwerk:check'
+    config.eager_load_paths += %W[#{config.root}/lib] if ArgvHelper.argv[0].eql? 'zeitwerk:check'
 
     config.active_job.queue_adapter = :delayed_job
 
@@ -71,9 +84,6 @@ module Zammad
                                      else
                                        :file
                                      end
-
-    # Rails 6.1 returns false when the enqueuing is aborted.
-    config.active_job.return_false_on_aborted_enqueue = true
 
     # default preferences by permission
     config.preferences_default_by_permission = {

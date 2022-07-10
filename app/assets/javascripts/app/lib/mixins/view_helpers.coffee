@@ -89,6 +89,10 @@ App.ViewHelpers =
   Ti: (item, args...) ->
     App.i18n.translateInline(item, args...)
 
+  # define translation plain helper
+  Tp: (item, args...) ->
+    App.i18n.translatePlain(item, args...)
+
   # define translation for date helper
   Tdate: (item, args...) ->
     App.i18n.translateDate(item, args...)
@@ -212,6 +216,7 @@ App.ViewHelpers =
       # text
       'text/plain': 'file-text'
       'text/rtf': 'file-text'
+      'text/calendar': 'file-calendar'
       # archives
       'application/gzip': 'file-archive'
       'application/zip': 'file-archive'

@@ -32,8 +32,6 @@ RSpec.describe KnowledgeBase::PermissionsUpdate do
         it 'does not update when re-adding an existing permission' do
           described_class.new(object).update! role_editor => 'reader'
 
-          travel 1.minute
-
           expect { described_class.new(object).update! role_editor => 'reader' }
             .not_to change(object, :updated_at)
         end
@@ -73,8 +71,6 @@ RSpec.describe KnowledgeBase::PermissionsUpdate do
           before do
             described_class.new(category).update! role_editor => 'editor'
             category.reload
-
-            travel 1.minute
           end
 
           it 'removes identical permissions on descendant roles' do
@@ -100,8 +96,6 @@ RSpec.describe KnowledgeBase::PermissionsUpdate do
             described_class.new(child_category).update! role_editor => 'editor'
             category.reload
             child_category.reload
-
-            travel 1.minute
           end
 
           it 'removes conflicting permissions on descendant roles' do
@@ -127,8 +121,6 @@ RSpec.describe KnowledgeBase::PermissionsUpdate do
           before do
             described_class.new(category).update! role_editor => 'none'
             category.reload
-
-            travel 1.minute
           end
 
           it 'removing permission opens up access to descendants' do
@@ -171,7 +163,7 @@ RSpec.describe KnowledgeBase::PermissionsUpdate do
   describe '#update_using_params!' do
     subject(:updater) { described_class.new(category) }
 
-    let(:role) { create(:role, permission_names: %w[knowledge_base.editor]) }
+    let(:role)     { create(:role, permission_names: %w[knowledge_base.editor]) }
     let(:category) { create(:knowledge_base_category) }
 
     it 'calls update! with given roles' do

@@ -157,6 +157,7 @@ window.onload = function() {
     "city": "",
     "country": "",
     "organization_id": 6,
+    "organization_ids": [7,8],
     "department": "",
     "note": "",
     "role_ids": [
@@ -233,6 +234,65 @@ window.onload = function() {
     result = App.Ticket.selector(ticket, setting['condition']);
     assert.equal(result, false, result);
   };
+
+  var testIsNull = function (assert, key, value, ticket) {
+    setting = {
+      "condition": {
+        [key]: {
+          "operator": "is",
+          "value": null
+        },
+      }
+    };
+    result = App.Ticket.selector(ticket, setting['condition']);
+    assert.equal(result, false, result);
+
+    setting = {
+      "condition": {
+        [key]: {
+          "operator": "is not",
+          "value": null
+        },
+      }
+    };
+    result = App.Ticket.selector(ticket, setting['condition']);
+    assert.equal(result, true, result);
+  };
+
+  var testIsUndefined = function (assert, key, value, ticket) {
+    setting = {
+      "condition": {
+        [key]: {
+          "operator": "is",
+          "value": undefined
+        },
+      }
+    };
+    result = App.Ticket.selector(ticket, setting['condition']);
+    assert.equal(result, false, result);
+
+    setting = {
+      "condition": {
+        [key]: {
+          "operator": "is not",
+          "value": undefined
+        },
+      }
+    };
+    result = App.Ticket.selector(ticket, setting['condition']);
+    assert.equal(result, true, result);
+  };
+
+  var testSelectorUndefined = function (assert, ticket) {
+    result = App.Ticket.selector(ticket, undefined);
+    assert.equal(result, true, result);
+  };
+
+  var testSelectorNull = function (assert, ticket) {
+    result = App.Ticket.selector(ticket, null);
+    assert.equal(result, true, result);
+  };
+
 
   var testPreConditionUser = function (assert, key, specificValue, ticket, session) {
     App.Session.set(6);
@@ -685,6 +745,20 @@ window.onload = function() {
    * ------------------------------------------------------------------------
    */
 
+  QUnit.test("selector is undefined", assert => {
+    ticket = new App.Ticket();
+    ticket.load(ticketData);
+
+    testSelectorUndefined(assert, ticket);
+  });
+
+  QUnit.test("selector is null", assert => {
+    ticket = new App.Ticket();
+    ticket.load(ticketData);
+
+    testSelectorNull(assert, ticket);
+  });
+
   QUnit.test("ticket number", assert => {
     ticket = new App.Ticket();
     ticket.load(ticketData);
@@ -736,6 +810,20 @@ window.onload = function() {
     ticket.load(ticketData);
 
     testIs(assert, 'ticket.state_id', ['4'], ticket, sessionData);
+  });
+
+  QUnit.test("ticket state_id -> null", assert => {
+    ticket = new App.Ticket();
+    ticket.load(ticketData);
+
+    testIsNull(assert, 'ticket.state_id', null, ticket, sessionData);
+  });
+
+  QUnit.test("ticket state_id -> undefined", assert => {
+    ticket = new App.Ticket();
+    ticket.load(ticketData);
+
+    testIsNull(assert, 'ticket.state_id', undefined, ticket, sessionData);
   });
 
   QUnit.test("ticket pending_time", assert => {
@@ -1115,4 +1203,12 @@ window.onload = function() {
     testPreConditionUser(assert, 'ticket.mention_user_ids', '6', ticket, sessionData);
   });
 
+  QUnit.test("test multi organization support for current_user.organization_id", assert => {
+    ticket = new App.Ticket();
+    ticket.load(ticketData);
+    testPreConditionOrganization(assert, 'ticket.organization_id', '6', ticket, sessionData);
+
+    ticket.organization_id = 7;
+    testPreConditionOrganization(assert, 'ticket.organization_id', '7', ticket, sessionData);
+  });
 }

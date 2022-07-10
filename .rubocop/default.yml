@@ -3,10 +3,11 @@
 
 require:
   - rubocop-faker
+  - rubocop-graphql
+  - rubocop-inflector
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
-  - rubocop-inflector
   - ../config/initializers/inflections.rb
   - ./rubocop_zammad.rb
 
@@ -171,6 +172,10 @@ Rails/HasAndBelongsToMany:
 #  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#has-many-through'
   Enabled: false
 
+Rails/I18nLocaleTexts:
+  Description: 'Enforces use of I18n and locale files instead of locale specific strings.'
+  Enabled: false
+
 Rails/MatchRoute:
   Description: >-
                   Don't use `match` to define any routes unless there is a need to map multiple request types
@@ -250,6 +255,10 @@ Style/RedundantBegin:
   Description: 'This cop checks for redundant `begin` blocks.'
   Enabled: false
 
+Style/FetchEnvVar:
+  Description: 'This cop suggests `ENV.fetch` for the replacement of `ENV[]`.'
+  Enabled: false
+
 Rails/EnvironmentVariableAccess:
   Description: 'This cop looks for direct access to environment variables through the ENV variable within the application code.'
   Enabled: true
@@ -260,6 +269,27 @@ Rails/Output:
     - "lib/tasks/**/*"
   Include:
     - "**/*_spec.rb"
+
+GraphQL/OrderedArguments:
+  Enabled: false
+
+GraphQL/OrderedFields:
+  Enabled: false
+
+# Our models can have many fields, and we should not enforce a different GraphQL structure just for the sake of it.
+GraphQL/ExtractType:
+  Enabled: false
+
+GraphQL/ExtractInputType:
+  MaxArguments: 3
+  # Run cop only for mutations: https://github.com/DmitryTsepelev/rubocop-graphql/issues/47
+  Include:
+    - 'app/graphql/gql/mutations/**/*.rb'
+
+# Enforcing field descriptions for all model fields will be too verbose/redundant.
+GraphQL/FieldDescription:
+  Exclude:
+    - "app/graphql/gql/types/**/*"
 
 # RSpec tests
 Style/NumericPredicate:
@@ -297,12 +327,21 @@ Layout/MultilineMethodCallIndentation:
 Lint/UnusedMethodArgument:
   AllowUnusedKeywordArguments: true
 
+RSpec/DescribeMethod:
+  # We want to be able to split tests into subfolders, where several cases are grouped together.
+  Description: 'Checks that the second argument to the top level describe is the tested method name.'
+  Enabled: false
+
 RSpec/NestedGroups:
   Max: 6
 
 RSpec/Rails/AvoidSetupHook:
   Exclude:
     - "test/**/*"
+
+RSpec/AlignLeftLetBrace:
+  Description: 'Checks that left braces for adjacent single line lets are aligned.'
+  Enabled: true
 
 Zammad/PreferNegatedIfOverUnless:
   Exclude:
@@ -344,4 +383,4 @@ Zammad/ExistsDbStrategy:
   Include:
     - "spec/**/*.rb"
   Exclude:
-    - spec/support/capybara/common_actions.rb
+    - "spec/support/capybara/*.rb"

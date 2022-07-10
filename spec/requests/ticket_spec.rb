@@ -49,7 +49,7 @@ RSpec.describe 'Ticket', type: :request do
       post '/api/v1/tickets', params: params, as: :json
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json_response).to be_a_kind_of(Hash)
-      expect(json_response['error_human']).to eq('Group can\'t be blank')
+      expect(json_response['error_human']).to eq("The required value 'group_id' is missing.")
     end
 
     it 'does ticket create with agent - wrong group (01.02)' do
@@ -825,7 +825,7 @@ RSpec.describe 'Ticket', type: :request do
       expect(json_response['error']).to eq('Not authorized')
     end
 
-    it 'does ticket with correct ticket id (02.04)' do
+    it 'does ticket with correct ticket id (02.04)', performs_jobs: true do
       title = "ticket with corret ticket id testagent#{SecureRandom.uuid}"
       ticket = create(
         :ticket,
@@ -884,7 +884,7 @@ RSpec.describe 'Ticket', type: :request do
       expect(article_json_response['sender_id']).to eq(Ticket::Article::Sender.lookup(name: 'Agent').id)
       expect(article_json_response['type_id']).to eq(Ticket::Article::Type.lookup(name: 'note').id)
 
-      Scheduler.worker(true)
+      perform_enqueued_jobs
       get "/api/v1/tickets/search?query=#{CGI.escape(title)}", params: {}, as: :json
       expect(response).to have_http_status(:ok)
       expect(json_response).to be_a_kind_of(Hash)
@@ -1230,7 +1230,7 @@ RSpec.describe 'Ticket', type: :request do
       expect(json_response['error']).to eq('Not authorized')
     end
 
-    it 'does ticket with correct ticket id (03.05)' do
+    it 'does ticket with correct ticket id (03.05)', performs_jobs: true do
       title = "ticket with corret ticket id testme#{SecureRandom.uuid}"
       ticket = create(
         :ticket,
@@ -1279,7 +1279,7 @@ RSpec.describe 'Ticket', type: :request do
       expect(article_json_response['sender_id']).to eq(Ticket::Article::Sender.lookup(name: 'Customer').id)
       expect(article_json_response['type_id']).to eq(Ticket::Article::Type.lookup(name: 'note').id)
 
-      Scheduler.worker(true)
+      perform_enqueued_jobs
       get "/api/v1/tickets/search?query=#{CGI.escape(title)}", params: {}, as: :json
       expect(response).to have_http_status(:ok)
       expect(json_response).to be_a_kind_of(Hash)
@@ -1828,70 +1828,60 @@ RSpec.describe 'Ticket', type: :request do
         content_type: 'text/html',
         ticket_id:    ticket.id,
       )
-      Store.add(
-        object:        'Ticket::Article',
-        o_id:          article.id,
-        data:          'content_file1_normally_should_be_an_image',
-        filename:      'some_file1.jpg',
-        preferences:   {
-          'Content-Type'        => 'image/jpeg',
-          'Mime-Type'           => 'image/jpeg',
-          'Content-ID'          => '15.274327094.140938@zammad.example.com',
-          'Content-Disposition' => 'inline',
-        },
-        created_by_id: 1,
-      )
-      Store.add(
-        object:        'Ticket::Article',
-        o_id:          article.id,
-        data:          'content_file2_normally_should_be_an_image',
-        filename:      'some_file2.jpg',
-        preferences:   {
-          'Content-Type'        => 'image/jpeg',
-          'Mime-Type'           => 'image/jpeg',
-          'Content-ID'          => '15.274327094.140938.2@zammad.example.com',
-          'Content-Disposition' => 'inline',
-        },
-        created_by_id: 1,
-      )
-      Store.add(
-        object:        'Ticket::Article',
-        o_id:          article.id,
-        data:          'content_file3_normally_should_be_an_image',
-        filename:      'some_file3.jpg',
-        preferences:   {
-          'Content-Type' => 'image/jpeg',
-          'Mime-Type'    => 'image/jpeg',
-          'Content-ID'   => '15.274327094.140938.3@zammad.example.com',
-        },
-        created_by_id: 1,
-      )
-      Store.add(
-        object:        'Ticket::Article',
-        o_id:          article.id,
-        data:          'content_file4_normally_should_be_an_image',
-        filename:      'some_file4.jpg',
-        preferences:   {
-          'Content-Type' => 'image/jpeg',
-          'Mime-Type'    => 'image/jpeg',
-          'Content-ID'   => '15.274327094.140938.4@zammad.example.com',
-        },
-        created_by_id: 1,
-      )
-      Store.add(
-        object:        'Ticket::Article',
-        o_id:          article.id,
-        data:          'content_file1_normally_should_be_an_pdf',
-        filename:      'Rechnung_RE-2018-200.pdf',
-        preferences:   {
-          'Content-Type'        => 'application/octet-stream; name="Rechnung_RE-2018-200.pdf"',
-          'Mime-Type'           => 'application/octet-stream',
-          'Content-ID'          => '8AB0BEC88984EE4EBEF643C79C8E0346@zammad.example.com',
-          'Content-Description' => 'Rechnung_RE-2018-200.pdf',
-          'Content-Disposition' => 'attachment',
-        },
-        created_by_id: 1,
-      )
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article.id,
+             data:        'content_file1_normally_should_be_an_image',
+             filename:    'some_file1.jpg',
+             preferences: {
+               'Content-Type'        => 'image/jpeg',
+               'Mime-Type'           => 'image/jpeg',
+               'Content-ID'          => '15.274327094.140938@zammad.example.com',
+               'Content-Disposition' => 'inline',
+             })
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article.id,
+             data:        'content_file2_normally_should_be_an_image',
+             filename:    'some_file2.jpg',
+             preferences: {
+               'Content-Type'        => 'image/jpeg',
+               'Mime-Type'           => 'image/jpeg',
+               'Content-ID'          => '15.274327094.140938.2@zammad.example.com',
+               'Content-Disposition' => 'inline',
+             })
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article.id,
+             data:        'content_file3_normally_should_be_an_image',
+             filename:    'some_file3.jpg',
+             preferences: {
+               'Content-Type' => 'image/jpeg',
+               'Mime-Type'    => 'image/jpeg',
+               'Content-ID'   => '15.274327094.140938.3@zammad.example.com',
+             })
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article.id,
+             data:        'content_file4_normally_should_be_an_image',
+             filename:    'some_file4.jpg',
+             preferences: {
+               'Content-Type' => 'image/jpeg',
+               'Mime-Type'    => 'image/jpeg',
+               'Content-ID'   => '15.274327094.140938.4@zammad.example.com',
+             })
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article.id,
+             data:        'content_file1_normally_should_be_an_pdf',
+             filename:    'Rechnung_RE-2018-200.pdf',
+             preferences: {
+               'Content-Type'        => 'application/octet-stream; name="Rechnung_RE-2018-200.pdf"',
+               'Mime-Type'           => 'application/octet-stream',
+               'Content-ID'          => '8AB0BEC88984EE4EBEF643C79C8E0346@zammad.example.com',
+               'Content-Description' => 'Rechnung_RE-2018-200.pdf',
+               'Content-Disposition' => 'attachment',
+             })
 
       authenticated_as(customer)
       get "/api/v1/ticket_split?ticket_id=#{ticket.id}&article_id=#{article.id}&form_id=new_form_id123", params: {}, as: :json
@@ -1937,46 +1927,40 @@ RSpec.describe 'Ticket', type: :request do
         content_type: 'text/plain',
         ticket_id:    ticket.id,
       )
-      Store.add(
-        object:        'Ticket::Article',
-        o_id:          article.id,
-        data:          'content_file1_normally_should_be_an_image',
-        filename:      'some_file1.jpg',
-        preferences:   {
-          'Content-Type'        => 'image/jpeg',
-          'Mime-Type'           => 'image/jpeg',
-          'Content-ID'          => '15.274327094.140938@zammad.example.com',
-          'Content-Disposition' => 'inline',
-        },
-        created_by_id: 1,
-      )
-      Store.add(
-        object:        'Ticket::Article',
-        o_id:          article.id,
-        data:          'content_file1_normally_should_be_an_image',
-        filename:      'some_file2.jpg',
-        preferences:   {
-          'Content-Type'        => 'image/jpeg',
-          'Mime-Type'           => 'image/jpeg',
-          'Content-ID'          => '15.274327094.140938.2@zammad.example.com',
-          'Content-Disposition' => 'inline',
-        },
-        created_by_id: 1,
-      )
-      Store.add(
-        object:        'Ticket::Article',
-        o_id:          article.id,
-        data:          'content_file1_normally_should_be_an_pdf',
-        filename:      'Rechnung_RE-2018-200.pdf',
-        preferences:   {
-          'Content-Type'        => 'application/octet-stream; name="Rechnung_RE-2018-200.pdf"',
-          'Mime-Type'           => 'application/octet-stream',
-          'Content-ID'          => '8AB0BEC88984EE4EBEF643C79C8E0346@zammad.example.com',
-          'Content-Description' => 'Rechnung_RE-2018-200.pdf',
-          'Content-Disposition' => 'attachment',
-        },
-        created_by_id: 1,
-      )
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article.id,
+             data:        'content_file1_normally_should_be_an_image',
+             filename:    'some_file1.jpg',
+             preferences: {
+               'Content-Type'        => 'image/jpeg',
+               'Mime-Type'           => 'image/jpeg',
+               'Content-ID'          => '15.274327094.140938@zammad.example.com',
+               'Content-Disposition' => 'inline',
+             })
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article.id,
+             data:        'content_file1_normally_should_be_an_image',
+             filename:    'some_file2.jpg',
+             preferences: {
+               'Content-Type'        => 'image/jpeg',
+               'Mime-Type'           => 'image/jpeg',
+               'Content-ID'          => '15.274327094.140938.2@zammad.example.com',
+               'Content-Disposition' => 'inline',
+             })
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article.id,
+             data:        'content_file1_normally_should_be_an_pdf',
+             filename:    'Rechnung_RE-2018-200.pdf',
+             preferences: {
+               'Content-Type'        => 'application/octet-stream; name="Rechnung_RE-2018-200.pdf"',
+               'Mime-Type'           => 'application/octet-stream',
+               'Content-ID'          => '8AB0BEC88984EE4EBEF643C79C8E0346@zammad.example.com',
+               'Content-Description' => 'Rechnung_RE-2018-200.pdf',
+               'Content-Disposition' => 'attachment',
+             })
 
       authenticated_as(agent)
       get "/api/v1/ticket_split?ticket_id=#{ticket.id}&article_id=#{article.id}&form_id=new_form_id123", params: {}, as: :json
@@ -2031,7 +2015,7 @@ RSpec.describe 'Ticket', type: :request do
       expect(response).to have_http_status(:ok)
       expect(json_response).to be_a_kind_of(Hash)
       expect(json_response['result']).to eq('failed')
-      expect(json_response['message']).to eq('Could not find target ticket number!')
+      expect(json_response['message']).to eq('The target ticket number could not be found.')
 
       put "/api/v1/ticket_merge/#{ticket3.id}/#{ticket1.number}", params: {}, as: :json
       expect(response).to have_http_status(:forbidden)
@@ -2254,9 +2238,9 @@ RSpec.describe 'Ticket', type: :request do
 
   describe 'stats' do
     let(:ticket1) { create(:ticket, customer: customer, organization: organization, group: ticket_group) }
-    let(:ticket2) { create(:ticket, customer: customer, organization: organization, group: ticket_group) }
-    let(:ticket3) { create(:ticket, customer: customer, organization: organization, group: ticket_group) }
-    let(:customer) { create(:customer, organization: organization) }
+    let(:ticket2)      { create(:ticket, customer: customer, organization: organization, group: ticket_group) }
+    let(:ticket3)      { create(:ticket, customer: customer, organization: organization, group: ticket_group) }
+    let(:customer)     { create(:customer, organization: organization) }
     let(:organization) { create(:organization, shared: false) }
 
     before do
@@ -2288,7 +2272,7 @@ RSpec.describe 'Ticket', type: :request do
     subject(:ticket) { create(:ticket, state_name: 'closed') }
 
     let(:admin) { create(:admin, groups: [ticket.group]) }
-    let(:agent) { create(:agent, groups: [ticket.group]) }
+    let(:agent)    { create(:agent, groups: [ticket.group]) }
     let(:customer) { ticket.customer }
 
     describe 'reopening a ticket' do
@@ -2390,7 +2374,7 @@ RSpec.describe 'Ticket', type: :request do
     subject(:ticket) { create(:ticket, customer: customer_authorized) }
 
     let(:organization_authorized) { create(:organization) }
-    let(:customer_authorized) { create(:customer, organization: organization_authorized) }
+    let(:customer_authorized)     { create(:customer, organization: organization_authorized) }
 
     let(:organization_unauthorized) { create(:organization) }
     let(:customer_unauthorized) { create(:customer, organization: organization_unauthorized) }
@@ -2437,6 +2421,28 @@ RSpec.describe 'Ticket', type: :request do
       context 'as unauthorized customer', authenticated_as: -> { customer_unauthorized } do
         include_examples 'has no access'
       end
+    end
+  end
+
+  describe 'Assign user to multiple organizations #1573' do
+    let(:organizations) { create_list(:organization, 3) }
+    let(:customer)      { create(:customer, organization: organizations[0], organizations: organizations[1..]) }
+    let(:ticket1)       { create(:ticket, customer: customer, organization: organizations[0], group: Group.first) }
+    let(:ticket2)       { create(:ticket, customer: customer, organization: organizations[1], group: Group.first) }
+
+    before do
+      ticket1 && ticket2
+    end
+
+    it 'does return multi organization tickets' do
+      authenticated_as(agent)
+      post '/api/v1/ticket_stats', params: { organization_id: customer.all_organization_ids, user_id: customer.id }, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response)
+        .to be_a_kind_of(Hash)
+        .and include('user' => hash_including('open_ids' => [ticket2.id, ticket1.id]))
+        .and include('organization' => hash_including('open_ids' => [ticket2.id, ticket1.id]))
     end
   end
 end

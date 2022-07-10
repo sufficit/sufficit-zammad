@@ -60,7 +60,7 @@ RSpec.describe 'Manage > Groups', type: :system do
     it 'is possible to reset the assignment timeout of a group' do
       find('td', text: 'Users').click
 
-      within '.modal-dialog' do
+      in_modal do
         fill_in 'Assignment Timeout', with: '30'
 
         # Needed for chrome, when element is outside viewport.
@@ -73,7 +73,7 @@ RSpec.describe 'Manage > Groups', type: :system do
 
       find('td', text: 'Users').click
 
-      within '.modal-dialog' do
+      in_modal do
         fill_in 'Assignment Timeout', with: ''
 
         # Needed for chrome, when element is outside viewport.
@@ -82,6 +82,22 @@ RSpec.describe 'Manage > Groups', type: :system do
         click_button
       end
       expect(Group.find_by(name: 'Users').assignment_timeout).to be_nil
+    end
+  end
+
+  context 'Issue 4129 - Tooltips are not displayed correctly' do
+    before do
+      visit '/#manage/groups'
+    end
+
+    it 'renders tooltips correctly' do
+      find('td', text: 'Users').click
+
+      in_modal do
+        find('div.select[data-attribute-name="follow_up_possible"] .js-helpMessage').hover
+
+        expect(page).to have_css('div.tooltip')
+      end
     end
   end
 end

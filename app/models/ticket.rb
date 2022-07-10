@@ -4,7 +4,6 @@ class Ticket < ApplicationModel
   include CanBeImported
   include HasActivityStreamLog
   include ChecksClientNotification
-  include ChecksLatestChangeObserved
   include CanCsvImport
   include ChecksHtmlSanitized
   include HasHistory
@@ -484,7 +483,7 @@ get count of tickets and tickets which match on selector
       if !current_user || access == 'ignore'
         ticket_count = Ticket.distinct.where(query, *bind_params).joins(tables).count
         tickets = Ticket.distinct.where(query, *bind_params).joins(tables).limit(limit)
-        return [ticket_count, tickets]
+        next [ticket_count, tickets]
       end
 
       tickets = "TicketPolicy::#{access.camelize}Scope".constantize
@@ -493,13 +492,11 @@ get count of tickets and tickets which match on selector
                                                        .where(query, *bind_params)
                                                        .joins(tables)
 
-      return [tickets.count, tickets.limit(limit)]
+      next [tickets.count, tickets.limit(limit)]
     rescue ActiveRecord::StatementInvalid => e
       Rails.logger.error e
       raise ActiveRecord::Rollback
-
     end
-    []
   end
 
 =begin
@@ -707,7 +704,7 @@ condition example
 
           query += "#{attribute} IN (?)"
           user = User.find_by(id: current_user_id)
-          bind_params.push user.organization_id
+          bind_params.push user.all_organization_ids
         else
           # rubocop:disable Style/IfInsideElse
           if selector['value'].nil?
@@ -1381,7 +1378,7 @@ result
 
     customer = User.find_by(id: customer_id)
     return true if !customer
-    return true if organization_id == customer.organization_id
+    return true if organization_id.present? && customer.organization_id?(organization_id)
 
     self.organization_id = customer.organization_id
     true
@@ -1513,7 +1510,7 @@ result
         Mail::AddressList.new(recipient_email).addresses.each do |address|
           recipient_email = address.address
           email_address_validation = EmailAddressValidation.new(recipient_email)
-          break if recipient_email.present? && email_address_validation.valid_format?
+          break if recipient_email.present? && email_address_validation.valid?
         end
       rescue
         if recipient_email.present?
@@ -1526,7 +1523,7 @@ result
       end
 
       email_address_validation = EmailAddressValidation.new(recipient_email)
-      next if !email_address_validation.valid_format?
+      next if !email_address_validation.valid?
 
       # do not send notification if system address
       next if EmailAddress.exists?(email: recipient_email.downcase)
@@ -1705,7 +1702,7 @@ result
     )
 
     attachments_inline.each do |attachment|
-      Store.add(
+      Store.create!(
         object:      'Ticket::Article',
         o_id:        message.id,
         data:        attachment[:data],

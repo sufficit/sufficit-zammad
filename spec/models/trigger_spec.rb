@@ -123,17 +123,15 @@ RSpec.describe Trigger, type: :model do
               UserInfo.current_user_id = 1
               ticket_article = create(:ticket_article, ticket: ticket)
 
-              Store.add(
-                object:        'Ticket::Article',
-                o_id:          ticket_article.id,
-                data:          'dGVzdCAxMjM=',
-                filename:      'some_file.pdf',
-                preferences:   {
-                  'Content-Type': 'image/pdf',
-                  'Content-ID':   'image/pdf@01CAB192.K8H512Y9',
-                },
-                created_by_id: 1,
-              )
+              create(:store,
+                     object:      'Ticket::Article',
+                     o_id:        ticket_article.id,
+                     data:        'dGVzdCAxMjM=',
+                     filename:    'some_file.pdf',
+                     preferences: {
+                       'Content-Type': 'image/pdf',
+                       'Content-ID':   'image/pdf@01CAB192.K8H512Y9',
+                     })
             end
 
             include_examples 'add attachment to new article'
@@ -160,17 +158,15 @@ RSpec.describe Trigger, type: :model do
               UserInfo.current_user_id = 1
               ticket_article = create(:ticket_article, ticket: ticket)
 
-              Store.add(
-                object:        'Ticket::Article',
-                o_id:          ticket_article.id,
-                data:          'dGVzdCAxMjM=',
-                filename:      'some_file.pdf',
-                preferences:   {
-                  'Content-Type': 'image/pdf',
-                  'Content-ID':   'image/pdf@01CAB192.K8H512Y9',
-                },
-                created_by_id: 1,
-              )
+              create(:store,
+                     object:      'Ticket::Article',
+                     o_id:        ticket_article.id,
+                     data:        'dGVzdCAxMjM=',
+                     filename:    'some_file.pdf',
+                     preferences: {
+                       'Content-Type': 'image/pdf',
+                       'Content-ID':   'image/pdf@01CAB192.K8H512Y9',
+                     })
             end
 
             include_examples 'does not add attachment to new article'
@@ -235,7 +231,7 @@ RSpec.describe Trigger, type: :model do
         it 'fires (without altering ticket state)' do
           expect { Channel::EmailParser.new.process({}, raw_email) }
             .to change(Ticket, :count).by(1)
-            .and change { Ticket::Article.count }.by(2)
+            .and change(Ticket::Article, :count).by(2)
 
           expect(Ticket.last.state.name).to eq('new')
         end
@@ -249,7 +245,7 @@ RSpec.describe Trigger, type: :model do
         it 'fires (without altering ticket state)' do
           expect { Channel::EmailParser.new.process({}, raw_email) }
             .to change(Ticket, :count).by(1)
-            .and change { Ticket::Article.count }.by(2)
+            .and change(Ticket::Article, :count).by(2)
 
           expect(Ticket.last.state.name).to eq('new')
 
@@ -352,12 +348,12 @@ RSpec.describe Trigger, type: :model do
           create(:smime_certificate, fixture: customer_email_address)
         end
 
-        let(:system_email_address) { 'smime1@example.com' }
+        let(:system_email_address)   { 'smime1@example.com' }
         let(:customer_email_address) { 'smime2@example.com' }
 
         let(:email_address) { create(:email_address, email: system_email_address) }
 
-        let(:group) { create(:group, email_address: email_address) }
+        let(:group)    { create(:group, email_address: email_address) }
         let(:customer) { create(:customer, email: customer_email_address) }
 
         let(:security_preferences) { Ticket::Article.last.preferences[:security] }
@@ -481,7 +477,7 @@ RSpec.describe Trigger, type: :model do
 
               it 'does not fire' do
                 expect { TransactionDispatcher.commit }
-                  .to change(Ticket::Article, :count).by(0)
+                  .not_to change(Ticket::Article, :count)
               end
             end
           end
@@ -499,7 +495,7 @@ RSpec.describe Trigger, type: :model do
 
               it 'does not fire' do
                 expect { TransactionDispatcher.commit }
-                  .to change(Ticket::Article, :count).by(0)
+                  .not_to change(Ticket::Article, :count)
               end
             end
           end
@@ -520,7 +516,7 @@ RSpec.describe Trigger, type: :model do
 
                 it 'does not fire' do
                   expect { TransactionDispatcher.commit }
-                    .to change(Ticket::Article, :count).by(0)
+                    .not_to change(Ticket::Article, :count)
                 end
               end
             end
@@ -539,7 +535,7 @@ RSpec.describe Trigger, type: :model do
 
                 it 'does not fire' do
                   expect { TransactionDispatcher.commit }
-                    .to change(Ticket::Article, :count).by(0)
+                    .not_to change(Ticket::Article, :count)
                 end
               end
             end
@@ -616,6 +612,20 @@ RSpec.describe Trigger, type: :model do
           end
         end
       end
+
+      # https://github.com/zammad/zammad/issues/3991
+      context 'when article contains a mention' do
+        let!(:article) do
+          create(:ticket_article,
+                 ticket: ticket,
+                 body:   '<a href="http:/#user/profile/1" data-mention-user-id="1" rel="nofollow noreferrer noopener" target="_blank" title="http:/#user/profile/1">Test Admin Agent</a> test<br>')
+        end
+
+        it 'fires correctly' do
+          expect { TransactionDispatcher.commit }
+            .to change { ticket.reload.articles.count }.by(1)
+        end
+      end
     end
 
     context 'with condition execution_time.calendar_id' do
@@ -686,7 +696,7 @@ RSpec.describe Trigger, type: :model do
         end
 
         it 'does not trigger because of the last article is created my system address' do
-          expect { TransactionDispatcher.commit }.to change { ticket.reload.articles.count }.by(0)
+          expect { TransactionDispatcher.commit }.not_to change { ticket.reload.articles.count }
           expect(Ticket::Article.where(ticket: ticket).last.subject).not_to eq('foo last sender')
           expect(Ticket::Article.where(ticket: ticket).last.to).not_to eq(system_address.email)
         end
@@ -701,7 +711,7 @@ RSpec.describe Trigger, type: :model do
         end
 
         it 'does not trigger because of the last article is created my system address' do
-          expect { TransactionDispatcher.commit }.to change { ticket.reload.articles.count }.by(0)
+          expect { TransactionDispatcher.commit }.not_to change { ticket.reload.articles.count }
           expect(Ticket::Article.where(ticket: ticket).last.subject).not_to eq('foo last sender')
           expect(Ticket::Article.where(ticket: ticket).last.to).not_to eq(system_address.email)
         end
@@ -932,7 +942,7 @@ RSpec.describe Trigger, type: :model do
     end
   end
 
-  describe 'multiselect triggers', db_strategy: :reset do
+  describe 'multiselect triggers', db_strategy: :reset, mariadb: true do
 
     let(:attribute_name) { 'multiselect' }
 
@@ -964,9 +974,9 @@ RSpec.describe Trigger, type: :model do
       end
 
       let(:trigger_values) { %w[a b c] }
-      let(:group) { create(:group) }
-      let(:owner) { create(:admin, group_ids: [group.id]) }
-      let!(:ticket) { create(:ticket, group: group,) }
+      let(:group)          { create(:group) }
+      let(:owner)          { create(:admin, group_ids: [group.id]) }
+      let!(:ticket)        { create(:ticket, group: group,) }
 
       before do
         ticket.update_attribute(attribute_name, ticket_multiselect_values)

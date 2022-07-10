@@ -8,10 +8,10 @@ RSpec.describe ::Sequencer::Sequence::Import::Kayako::Case, sequencer: :sequence
 
   context 'when importing cases from Kayako' do
 
-    let(:group) { create :group }
-    let(:owner) { create :agent, group_ids: [group.id] }
+    let(:group)        { create :group }
+    let(:owner)        { create :agent, group_ids: [group.id] }
     let(:organization) { create :organization }
-    let(:customer) { create :customer, organization: organization }
+    let(:customer)     { create :customer, organization: organization }
 
     let(:resource) do
       {
@@ -248,7 +248,7 @@ RSpec.describe ::Sequencer::Sequence::Import::Kayako::Case, sequencer: :sequence
       end
 
       it 'updates first article for already existing ticket' do
-        expect { process(process_payload) }.to change(Ticket::Article, :count).by(0)
+        expect { process(process_payload) }.not_to change(Ticket::Article, :count)
       end
     end
 

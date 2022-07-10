@@ -109,10 +109,10 @@ RSpec.describe Calendar, type: :model do
 
     context 'when called explicitly after creation' do
       it 'writes #public_holidays to the cache (valid for 1 day)' do
-        expect(Cache.read("CalendarIcal::#{calendar.id}")).to be_nil
+        expect(Rails.cache.read("CalendarIcal::#{calendar.id}")).to be_nil
 
         expect { calendar.sync }
-          .to change { Cache.read("CalendarIcal::#{calendar.id}") }
+          .to change { Rails.cache.read("CalendarIcal::#{calendar.id}") }
           .to(calendar.attributes.slice('public_holidays', 'ical_url').symbolize_keys)
       end
 
@@ -142,7 +142,7 @@ RSpec.describe Calendar, type: :model do
 
         it 'does not create a background job for escalation rebuild' do
           expect { calendar.sync }
-            .not_to change { Delayed::Job.count }
+            .not_to change(Delayed::Job, :count)
         end
       end
 

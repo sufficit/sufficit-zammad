@@ -3,6 +3,7 @@
 require 'test_helper'
 
 class ElasticsearchTest < ActiveSupport::TestCase
+  include BackgroundJobsHelper
   include SearchindexHelper
 
   setup do
@@ -75,7 +76,7 @@ class ElasticsearchTest < ActiveSupport::TestCase
     )
 
     # execute background jobs to index created/changed objects
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     SearchIndexBackend.refresh
 
   end
@@ -129,7 +130,7 @@ class ElasticsearchTest < ActiveSupport::TestCase
       updated_by_id: 1,
       created_by_id: 1,
     )
-    Store.add(
+    Store.create!(
       object:        'Ticket::Article',
       o_id:          article1.id,
       data:          File.binread(Rails.root.join('test/data/elasticsearch/es-normal.txt')),
@@ -163,7 +164,7 @@ class ElasticsearchTest < ActiveSupport::TestCase
     ticket1.destroy!
 
     # execute background jobs
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     SearchIndexBackend.refresh
 
     ticket1 = Ticket.create!(
@@ -191,7 +192,7 @@ class ElasticsearchTest < ActiveSupport::TestCase
 
     # add attachments which should get index / .txt
     # "some normal text66"
-    Store.add(
+    Store.create!(
       object:        'Ticket::Article',
       o_id:          article1.id,
       data:          File.binread(Rails.root.join('test/data/elasticsearch/es-normal.txt')),
@@ -202,7 +203,7 @@ class ElasticsearchTest < ActiveSupport::TestCase
 
     # add attachments which should get index / .pdf
     # "Zammad Test77"
-    Store.add(
+    Store.create!(
       object:        'Ticket::Article',
       o_id:          article1.id,
       data:          File.binread(Rails.root.join('test/data/elasticsearch/es-pdf1.pdf')),
@@ -213,7 +214,7 @@ class ElasticsearchTest < ActiveSupport::TestCase
 
     # add attachments which should get index / .box
     # "Old programmers never die test99"
-    Store.add(
+    Store.create!(
       object:        'Ticket::Article',
       o_id:          article1.id,
       data:          File.binread(Rails.root.join('test/data/elasticsearch/es-box1.box')),
@@ -224,7 +225,7 @@ class ElasticsearchTest < ActiveSupport::TestCase
 
     # add to big attachment which should not get index
     # "some too big text88"
-    Store.add(
+    Store.create!(
       object:        'Ticket::Article',
       o_id:          article1.id,
       data:          File.binread(Rails.root.join('test/data/elasticsearch/es-too-big.txt')),
@@ -285,7 +286,7 @@ class ElasticsearchTest < ActiveSupport::TestCase
     )
 
     # execute background jobs
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     SearchIndexBackend.refresh
 
     # search as @agent
@@ -423,7 +424,7 @@ class ElasticsearchTest < ActiveSupport::TestCase
     )
 
     # execute background jobs
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     SearchIndexBackend.refresh
 
     # search for tags
@@ -502,7 +503,7 @@ class ElasticsearchTest < ActiveSupport::TestCase
     assert_not(result[0], 'record 1')
 
     # cleanup
-    Rake::Task['searchindex:drop'].execute
+    Rake::Task['zammad:searchindex:drop'].execute
   end
 
 end

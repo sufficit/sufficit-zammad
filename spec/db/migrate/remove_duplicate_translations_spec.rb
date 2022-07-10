@@ -9,8 +9,13 @@ RSpec.describe RemoveDuplicateTranslations, type: :db_migration do
   end
 
   context 'when having unsynchronized entries with duplicates' do
+<<<<<<< HEAD
     let!(:unrelated_entry_one) { create_translation({ source: 'unknown entry', target: 'unknown translation', is_synchronized_from_codebase: false }) }
     let!(:unrelated_entry_two) { create_translation({ source: 'unknown entry', target: 'unknown translation', is_synchronized_from_codebase: false }) }
+=======
+    let!(:unrelated_entry_one)   { create_translation({ source: 'unknown entry', target: 'unknown translation', is_synchronized_from_codebase: false }) }
+    let!(:unrelated_entry_two)   { create_translation({ source: 'unknown entry', target: 'unknown translation', is_synchronized_from_codebase: false }) }
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
     let!(:unrelated_entry_three) { create_translation({ source: 'unknown entry', target: 'unknown translation', is_synchronized_from_codebase: false }) }
 
     before do

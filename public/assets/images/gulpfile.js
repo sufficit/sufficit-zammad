@@ -3,21 +3,39 @@ var gutil = require('gulp-util');
 var rename = require('gulp-rename');
 var svgstore = require('gulp-svgstore');
 var svgmin = require('gulp-svgmin');
-var cheerio = require('gulp-cheerio');
+var cheerio = require('cheerio');
+var gcheerio = require('gulp-cheerio');
 var through2 = require('through2');
+var path = require('path');
 
 var iconsource = 'icons/*.svg'
 
-gulp.task('svgstore', function () {
-  return gulp
+function build(cb) {
+  gulp
     .src(iconsource)
     .pipe(rename({prefix: 'icon-'}))
-    .pipe(svgmin({
-      js2svg: {
-        pretty: true
+    .pipe(svgmin(function getOptions(file){
+      var prefix = path.basename(
+        file.relative,
+        path.extname(file.relative)
+      );
+      return {
+        plugins: [
+          {
+            removeViewBox: false,
+            removeTitle: false,
+            cleanupIDs: {
+              prefix: prefix + '-',
+              minify: true
+            }
+          },
+        ],
+        js2svg: {
+          pretty: true,
+        },
       }
     }))
-    .pipe(cheerio({
+    .pipe(gcheerio({
       run: function ($) {
           // remove green-screen color
           $('[fill="#50E3C2"]').removeAttr('fill').parents('[fill="none"]').removeAttr('fill');
@@ -29,9 +47,11 @@ gulp.task('svgstore', function () {
     }))
     .pipe(svgstore())
     .pipe(through2.obj(function (file, encoding, cb) {
-      var $ = file.cheerio;
-      var data = $('svg > symbol').map(function () {
-        var viewBox = $(this).attr('viewBox').split(" ")
+      // Side effect: generate app/assets/stylesheets/svg-dimensions.css with
+      //  information about the available icon sizes.
+      var $ = cheerio.load(file.contents)
+      var data = $('svg > symbol').map(function (_i, tag) {
+        var viewBox = tag.attribs.viewbox.split(" ")
         return [
           '.'+ $(this).attr('id') + ' {' +
             ' width: ' + viewBox[2] + 'px;' +
@@ -41,17 +61,17 @@ gulp.task('svgstore', function () {
       }).get();
       var cssFile = new gutil.File({
           path: '../../../app/assets/stylesheets/svg-dimensions.css',
-          contents: new Buffer(data.join("\n"))
+          contents: Buffer.from(data.join("\n"))
       });
       this.push(cssFile);
       this.push(file);
       cb();
     }))
     .pipe(gulp.dest('./'));
-});
+  cb();
+}
 
-gulp.task('watch', function () {
-  gulp.watch(iconsource, ['svgstore']);
-});
-
-gulp.task('default', ['svgstore', 'watch']);
+exports.default = function() {
+  gulp.watch(iconsource, build)
+}
+exports.build = build

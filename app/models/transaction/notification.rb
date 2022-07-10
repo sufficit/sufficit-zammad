@@ -62,14 +62,22 @@ class Transaction::Notification
         next if !mention_user.group_access?(ticket.group_id, 'read')
 
         possible_recipients.push mention_user
+<<<<<<< HEAD
         recipients_reason[mention_user.id] = __('are subscribed')
+=======
+        recipients_reason[mention_user.id] = __('You are receiving this because you were mentioned in this ticket.')
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
       end
     end
 
     # apply owner
     if ticket.owner_id != 1
       possible_recipients.push ticket.owner
+<<<<<<< HEAD
       recipients_reason[ticket.owner_id] = __('are assigned')
+=======
+      recipients_reason[ticket.owner_id] = __('You are receiving this because you are the owner of this ticket.')
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
     end
 
     # apply out of office agents
@@ -98,7 +106,11 @@ class Transaction::Notification
       recipients_and_channels.push result
       next if recipients_reason[user.id]
 
+<<<<<<< HEAD
       recipients_reason[user.id] = __('are in group')
+=======
+      recipients_reason[user.id] = __('You are receiving this because you are a member of the group of this ticket.')
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
     end
 
     # send notifications
@@ -349,15 +361,16 @@ class Transaction::Notification
 
     return if !replacements.add?(replacement)
 
+<<<<<<< HEAD
     reasons[replacement.id] = __('are the out-of-office replacement of the owner')
+=======
+    reasons[replacement.id] = __('You are receiving this because you are out-of-office replacement for a participant of this ticket.')
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
   end
 
   def possible_recipients_of_group(group_id)
-    cache = Cache.read("Transaction::Notification.group_access.full::#{group_id}")
-    return cache if cache
-
-    possible_recipients = User.group_access(group_id, 'full').sort_by(&:login)
-    Cache.write("Transaction::Notification.group_access.full::#{group_id}", possible_recipients, expires_in: 20.seconds)
-    possible_recipients
+    Rails.cache.fetch("User/notification/possible_recipients_of_group/#{group_id}", expires_in: 20.seconds) do
+      User.group_access(group_id, 'full').sort_by(&:login)
+    end
   end
 end

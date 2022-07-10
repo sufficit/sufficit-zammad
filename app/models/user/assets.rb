@@ -42,10 +42,7 @@ returns
       data[ app_model ][ id ] = local_attributes
 
       # get linked accounts
-      local_attributes['accounts'] = {}
-      key = "User::authorizations::#{id}"
-      local_accounts = Cache.read(key)
-      if !local_accounts
+      local_attributes['accounts'] = Rails.cache.fetch("User/authorizations/#{cache_key_with_version}") do
         local_accounts = {}
         authorizations = self.authorizations()
         authorizations.each do |authorization|
@@ -54,9 +51,8 @@ returns
             username: authorization[:username]
           }
         end
-        Cache.write(key, local_accounts)
+        local_accounts
       end
-      local_attributes['accounts'] = local_accounts
 
       # get roles
       local_attributes['role_ids']&.each do |role_id|
@@ -79,7 +75,7 @@ returns
       end
 
       # get organizations
-      local_attributes['organization_ids']&.each do |organization_id|
+      Array(local_attributes['organization_ids'])[0, 3].each do |organization_id|
         next if data[:Organization] && data[:Organization][organization_id]
 
         organization = Organization.lookup(id: organization_id)

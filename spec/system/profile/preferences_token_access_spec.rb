@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe 'Profile > Token Access', type: :system do
-  let(:label) { 'Some App Token' }
+  let(:label)          { 'Some App Token' }
   let(:checkbox_input) { 'input[value="ticket.agent"]' }
-  let(:expiry_date) { '05/15/2024' }
-  let(:token_list) { find('.js-tokenList') }
+  let(:expiry_date)    { '05/15/2024' }
+  let(:token_list)     { find('.js-tokenList') }
 
   shared_examples 'having an error notification message' do
     it 'has error notification message' do
@@ -22,29 +22,34 @@ RSpec.describe 'Profile > Token Access', type: :system do
       visit 'profile/token_access'
 
       within :active_content do
-        find('.content.active .js-create').click
+        find('.js-create').click
+      end
 
-        within '.modal' do
-          fill_in 'label', with: label
-          checkbox = find(checkbox_input, visible: :all)
-          checkbox.check allow_label_click: true
-          find('.js-datepicker').fill_in with: expiry_date
-          send_keys(:tab)
-          click_button
-        end
+      # modal closes but it is swiftly replaced by another modal
+      in_modal disappears: false do
+        fill_in 'label', with: label
+        checkbox = find(checkbox_input, visible: :all)
+        checkbox.check allow_label_click: true
+        find('.js-datepicker').fill_in with: expiry_date
+        send_keys(:tab)
+        click_button
       end
     end
 
     context 'with expire date' do
       it 'generates a new personal token' do
-        expect(page).to have_selector('.form-control.input.js-select')
-          .and have_text('Your New Personal Access Token')
+        in_modal do
+          expect(page).to have_selector('.form-control.input.js-select')
+            .and have_text('Your New Personal Access Token')
+        end
       end
 
       it 'shows active report profile' do
-        within :active_content do
+        in_modal do
           click_button
+        end
 
+        within :active_content do
           expect(token_list).to have_text(label)
             .and have_text(expiry_date)
         end
@@ -55,14 +60,18 @@ RSpec.describe 'Profile > Token Access', type: :system do
       let(:expiry_date) { nil }
 
       it 'generates a new personal token' do
-        expect(page).to have_selector('.form-control.input.js-select')
-          .and have_text('Your New Personal Access Token')
+        in_modal do
+          expect(page).to have_selector('.form-control.input.js-select')
+            .and have_text('Your New Personal Access Token')
+        end
       end
 
       it 'shows active report profile' do
-        within :active_content do
+        in_modal do
           click_button
+        end
 
+        within :active_content do
           expect(token_list).to have_text(label)
         end
       end
@@ -75,22 +84,24 @@ RSpec.describe 'Profile > Token Access', type: :system do
 
       within :active_content do
         find('.content.active .js-create').click
+      end
 
-        within '.modal' do
-          fill_in 'label', with: label
-          send_keys(:tab)
-        end
+      in_modal disappears: false do
+        fill_in 'label', with: label
+        send_keys(:tab)
       end
     end
 
     context 'without label' do
-      let(:label) { nil }
+      let(:label)         { nil }
       let(:error_message) { 'Need label!' }
 
       before do
-        checkbox = find(checkbox_input, visible: :all)
-        checkbox.check allow_label_click: true
-        click_button
+        in_modal disappears: false do
+          checkbox = find(checkbox_input, visible: :all)
+          checkbox.check allow_label_click: true
+          click_button
+        end
       end
 
       it_behaves_like 'having an error notification message'
@@ -98,7 +109,7 @@ RSpec.describe 'Profile > Token Access', type: :system do
 
     context 'without permission' do
       let(:label) { nil }
-      let(:error_message) { 'Minimum of one permission is needed!' }
+      let(:error_message) { "The required parameter 'permission' is missing." }
 
       before { click_button }
 
@@ -128,7 +139,7 @@ RSpec.describe 'Profile > Token Access', type: :system do
       token_delete_button = find('.js-tokenList tr .js-delete')
       token_delete_button.click
 
-      within '.modal' do
+      in_modal do
         click_button
       end
 

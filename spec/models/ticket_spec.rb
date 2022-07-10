@@ -69,6 +69,36 @@ RSpec.describe Ticket, type: :model do
             .to match_array([2, tickets.to_a])
         end
       end
+
+      context 'when customer has multiple organizations' do
+        let(:organization1) { create(:organization) }
+        let(:organization2) { create(:organization) }
+        let(:organization3) { create(:organization) }
+        let(:customer)      { create(:customer, organization: organization1, organizations: [organization2, organization3]) }
+        let(:ticket1)       { create(:ticket, customer: customer, organization: organization1) }
+        let(:ticket2)       { create(:ticket, customer: customer, organization: organization2) }
+        let(:ticket3)       { create(:ticket, customer: customer, organization: organization3) }
+
+        before do
+          ticket1 && ticket2 && ticket3
+        end
+
+        context 'when current user organization is used' do
+          let(:condition) do
+            {
+              'ticket.organization_id' => {
+                operator:      'is', # is not
+                pre_condition: 'current_user.organization_id',
+              },
+            }
+          end
+
+          it 'returns the customer tickets' do
+            expect(described_class.selectors(condition, limit: 100, access: 'full', current_user: customer))
+              .to match_array([3, include(ticket1, ticket2, ticket3)])
+          end
+        end
+      end
     end
   end
 
@@ -78,7 +108,7 @@ RSpec.describe Ticket, type: :model do
 
       context 'when source ticket has Links' do
         let(:linked_tickets) { create_list(:ticket, 3) }
-        let(:links) { linked_tickets.map { |l| create(:link, from: ticket, to: l) } }
+        let(:links)          { linked_tickets.map { |l| create(:link, from: ticket, to: l) } }
 
         it 'reassigns all links to the target ticket after merge' do
           expect { ticket.merge_to(ticket_id: target_ticket.id, user_id: 1) }
@@ -739,17 +769,15 @@ RSpec.describe Ticket, type: :model do
               UserInfo.current_user_id = 1
               ticket_article = create(:ticket_article, ticket: ticket)
 
-              Store.add(
-                object:        'Ticket::Article',
-                o_id:          ticket_article.id,
-                data:          'dGVzdCAxMjM=',
-                filename:      'some_file.pdf',
-                preferences:   {
-                  'Content-Type': 'image/pdf',
-                  'Content-ID':   'image/pdf@01CAB192.K8H512Y9',
-                },
-                created_by_id: 1,
-              )
+              create(:store,
+                     object:      'Ticket::Article',
+                     o_id:        ticket_article.id,
+                     data:        'dGVzdCAxMjM=',
+                     filename:    'some_file.pdf',
+                     preferences: {
+                       'Content-Type': 'image/pdf',
+                       'Content-ID':   'image/pdf@01CAB192.K8H512Y9',
+                     })
             end
 
             include_examples 'add attachment to new article'
@@ -777,17 +805,15 @@ RSpec.describe Ticket, type: :model do
               UserInfo.current_user_id = 1
               ticket_article = create(:ticket_article, ticket: ticket)
 
-              Store.add(
-                object:        'Ticket::Article',
-                o_id:          ticket_article.id,
-                data:          'dGVzdCAxMjM=',
-                filename:      'some_file.pdf',
-                preferences:   {
-                  'Content-Type': 'image/pdf',
-                  'Content-ID':   'image/pdf@01CAB192.K8H512Y9',
-                },
-                created_by_id: 1,
-              )
+              create(:store,
+                     object:      'Ticket::Article',
+                     o_id:        ticket_article.id,
+                     data:        'dGVzdCAxMjM=',
+                     filename:    'some_file.pdf',
+                     preferences: {
+                       'Content-Type': 'image/pdf',
+                       'Content-ID':   'image/pdf@01CAB192.K8H512Y9',
+                     })
             end
 
             include_examples 'does not add attachment to new article'
@@ -1012,7 +1038,7 @@ RSpec.describe Ticket, type: :model do
         end
 
         context 'to an agent not belonging to ticket.group' do
-          let(:agent) { create(:agent, groups: [other_group]) }
+          let(:agent)       { create(:agent, groups: [other_group]) }
           let(:other_group) { create(:group) }
 
           it 'resets to default user (id: 1) instead' do
@@ -1070,6 +1096,7 @@ RSpec.describe Ticket, type: :model do
           before { original_owner.roles = [create(:role)] }
 
           it 'resets to default user (id: 1)' do
+            Rails.cache.clear
             expect { create(:ticket_article, ticket: ticket) }
               .to change { ticket.reload.owner }.to(User.first)
           end
@@ -1174,7 +1201,7 @@ RSpec.describe Ticket, type: :model do
     describe '#escalation_at' do
       before { travel_to(Time.current) } # freeze time
 
-      let(:sla) { create(:sla, calendar: calendar, first_response_time: 60, response_time: 180, solution_time: 240) }
+      let(:sla)      { create(:sla, calendar: calendar, first_response_time: 60, response_time: 180, solution_time: 240) }
       let(:calendar) { create(:calendar, :'24/7') }
 
       context 'with no SLAs in the system' do
@@ -1243,7 +1270,7 @@ RSpec.describe Ticket, type: :model do
 
       context 'when within last (relative)' do
         let(:first_response_time) { 5 }
-        let(:sla) { create(:sla, calendar: calendar, first_response_time: first_response_time) }
+        let(:sla)                 { create(:sla, calendar: calendar, first_response_time: first_response_time) }
         let(:within_condition) do
           { 'ticket.escalation_at'=>{ 'operator' => 'within last (relative)', 'value' => '30', 'range' => 'minute' } }
         end
@@ -1278,7 +1305,7 @@ RSpec.describe Ticket, type: :model do
 
       context 'when till (relative)' do
         let(:first_response_time) { 5 }
-        let(:sla) { create(:sla, calendar: calendar, first_response_time: first_response_time) }
+        let(:sla)                 { create(:sla, calendar: calendar, first_response_time: first_response_time) }
         let(:condition) do
           { 'ticket.escalation_at'=>{ 'operator' => 'till (relative)', 'value' => '30', 'range' => 'minute' } }
         end
@@ -1313,7 +1340,7 @@ RSpec.describe Ticket, type: :model do
 
       context 'when from (relative)' do
         let(:first_response_time) { 5 }
-        let(:sla) { create(:sla, calendar: calendar, first_response_time: first_response_time) }
+        let(:sla)                 { create(:sla, calendar: calendar, first_response_time: first_response_time) }
         let(:condition) do
           { 'ticket.escalation_at'=>{ 'operator' => 'from (relative)', 'value' => '30', 'range' => 'minute' } }
         end
@@ -1348,7 +1375,7 @@ RSpec.describe Ticket, type: :model do
 
       context 'when within next (relative)' do
         let(:first_response_time) { 5 }
-        let(:sla) { create(:sla, calendar: calendar, first_response_time: first_response_time) }
+        let(:sla)                 { create(:sla, calendar: calendar, first_response_time: first_response_time) }
         let(:within_condition) do
           { 'ticket.escalation_at'=>{ 'operator' => 'within next (relative)', 'value' => '30', 'range' => 'minute' } }
         end
@@ -1385,7 +1412,7 @@ RSpec.describe Ticket, type: :model do
     describe '#first_response_escalation_at' do
       before { travel_to(Time.current) } # freeze time
 
-      let(:sla) { create(:sla, calendar: calendar, first_response_time: 60, response_time: 180, solution_time: 240) }
+      let(:sla)      { create(:sla, calendar: calendar, first_response_time: 60, response_time: 180, solution_time: 240) }
       let(:calendar) { create(:calendar, :'24/7') }
 
       context 'with no SLAs in the system' do
@@ -1417,7 +1444,7 @@ RSpec.describe Ticket, type: :model do
     describe '#update_escalation_at' do
       before { travel_to(Time.current) } # freeze time
 
-      let(:sla) { create(:sla, calendar: calendar, first_response_time: 60, response_time: 180, solution_time: 240) }
+      let(:sla)      { create(:sla, calendar: calendar, first_response_time: 60, response_time: 180, solution_time: 240) }
       let(:calendar) { create(:calendar, :'24/7') }
 
       context 'with no SLAs in the system' do
@@ -1457,7 +1484,7 @@ RSpec.describe Ticket, type: :model do
     describe '#close_escalation_at' do
       before { travel_to(Time.current) } # freeze time
 
-      let(:sla) { create(:sla, calendar: calendar, first_response_time: 60, response_time: 180, solution_time: 240) }
+      let(:sla)      { create(:sla, calendar: calendar, first_response_time: 60, response_time: 180, solution_time: 240) }
       let(:calendar) { create(:calendar, :'24/7') }
 
       context 'with no SLAs in the system' do
@@ -1622,7 +1649,7 @@ RSpec.describe Ticket, type: :model do
       end
     end
 
-    describe 'Cti::CallerId syncing:' do
+    describe 'Cti::CallerId syncing:', performs_jobs: true do
       subject(:ticket) { build(:ticket) }
 
       before { allow(Cti::CallerId).to receive(:build) }
@@ -1631,8 +1658,7 @@ RSpec.describe Ticket, type: :model do
         expect(Cti::CallerId).to receive(:build).with(ticket)
 
         ticket.save
-        TransactionDispatcher.commit
-        Scheduler.worker(true)
+        perform_enqueued_jobs commit_transaction: true
       end
     end
 
@@ -1640,8 +1666,8 @@ RSpec.describe Ticket, type: :model do
       subject(:ticket) { create(:ticket, customer: customer) }
 
       let(:customer) { create(:customer, organization: organization) }
-      let(:organization) { create(:organization) }
-      let(:other_customer) { create(:customer, organization: other_organization) }
+      let(:organization)       { create(:organization) }
+      let(:other_customer)     { create(:customer, organization: other_organization) }
       let(:other_organization) { create(:organization) }
 
       context 'on creation' do
@@ -1770,8 +1796,8 @@ RSpec.describe Ticket, type: :model do
         it 'adds attachments to the Store{::File,::Provider::DB} tables' do
           expect { ticket }
             .to change(Store, :count).by(2)
-            .and change { Store::File.count }.by(2)
-            .and change { Store::Provider::DB.count }.by(2)
+            .and change(Store::File, :count).by(2)
+            .and change(Store::Provider::DB, :count).by(2)
         end
 
         context 'and subsequently destroyed' do
@@ -1780,8 +1806,8 @@ RSpec.describe Ticket, type: :model do
 
             expect { ticket.destroy }
               .to change(Store, :count).by(-2)
-              .and change { Store::File.count }.by(-2)
-              .and change { Store::Provider::DB.count }.by(-2)
+              .and change(Store::File, :count).by(-2)
+              .and change(Store::Provider::DB, :count).by(-2)
           end
         end
 
@@ -1793,8 +1819,8 @@ RSpec.describe Ticket, type: :model do
           it 'adds duplicate attachments to the Store table only' do
             expect { duplicate }
               .to change(Store, :count).by(2)
-              .and change { Store::File.count }.by(0)
-              .and change { Store::Provider::DB.count }.by(0)
+              .and not_change(Store::File, :count)
+              .and not_change(Store::Provider::DB, :count)
           end
 
           context 'when only the duplicate ticket is destroyed' do
@@ -1803,8 +1829,8 @@ RSpec.describe Ticket, type: :model do
 
               expect { duplicate.destroy }
                 .to change(Store, :count).by(-2)
-                .and change { Store::File.count }.by(0)
-                .and change { Store::Provider::DB.count }.by(0)
+                .and not_change(Store::File, :count)
+                .and not_change(Store::Provider::DB, :count)
             end
 
             it 'deletes all related attachments' do
@@ -1812,15 +1838,15 @@ RSpec.describe Ticket, type: :model do
 
               expect { ticket.destroy }
                 .to change(Store, :count).by(-2)
-                .and change { Store::File.count }.by(-2)
-                .and change { Store::Provider::DB.count }.by(-2)
+                .and change(Store::File, :count).by(-2)
+                .and change(Store::Provider::DB, :count).by(-2)
             end
           end
         end
       end
     end
 
-    describe 'Ticket lifecycle order-of-operations:' do
+    describe 'Ticket lifecycle order-of-operations:', performs_jobs: true do
       subject!(:ticket) { create(:ticket) }
 
       let!(:agent) { create(:agent, groups: [group]) }
@@ -1838,7 +1864,7 @@ RSpec.describe Ticket, type: :model do
         expect { TransactionDispatcher.commit }
           .to change { ticket.reload.group }.to(group)
 
-        expect { Scheduler.worker(true) }
+        expect { perform_enqueued_jobs }
           .to change { NotificationFactory::Mailer.already_sent?(ticket, agent, 'email') }.to(1)
       end
     end
@@ -1898,7 +1924,7 @@ RSpec.describe Ticket, type: :model do
   end
 
   describe 'Mentions:', sends_notification_emails: true do
-    context 'when notifications' do
+    context 'when notifications', performs_jobs: true do
       let(:prefs_matrix_no_mentions) do
         { 'notification_config' =>
                                    { 'matrix' =>
@@ -1927,24 +1953,22 @@ RSpec.describe Ticket, type: :model do
                                      'group_ids' => [create(:group).id, create(:group).id, create(:group).id] } }
       end
 
-      let(:mention_group) { create(:group) }
-      let(:no_access_group) { create(:group) }
+      let(:mention_group)      { create(:group) }
+      let(:no_access_group)    { create(:group) }
       let(:user_only_mentions) { create(:agent, groups: [mention_group], preferences: prefs_matrix_only_mentions) }
       let(:user_read_mentions) { create(:agent, groups: [mention_group], preferences: prefs_matrix_only_mentions_groups) }
-      let(:user_no_mentions) { create(:agent, groups: [mention_group], preferences: prefs_matrix_no_mentions) }
-      let(:ticket) { create(:ticket, group: mention_group, owner: user_no_mentions) }
+      let(:user_no_mentions)   { create(:agent, groups: [mention_group], preferences: prefs_matrix_no_mentions) }
+      let(:ticket)             { create(:ticket, group: mention_group, owner: user_no_mentions) }
 
       it 'does inform mention user about the ticket update' do
         create(:mention, mentionable: ticket, user: user_only_mentions)
         create(:mention, mentionable: ticket, user: user_read_mentions)
         create(:mention, mentionable: ticket, user: user_no_mentions)
-        TransactionDispatcher.commit
-        Scheduler.worker(true)
+        perform_enqueued_jobs commit_transaction: true
 
         check_notification do
           ticket.update(priority: Ticket::Priority.find_by(name: '3 high'))
-          TransactionDispatcher.commit
-          Scheduler.worker(true)
+          perform_enqueued_jobs commit_transaction: true
           sent(
             template: 'ticket_update',
             user:     user_no_mentions,
@@ -1962,13 +1986,11 @@ RSpec.describe Ticket, type: :model do
 
       it 'does not inform mention user about the ticket update' do
         ticket
-        TransactionDispatcher.commit
-        Scheduler.worker(true)
+        perform_enqueued_jobs commit_transaction: true
 
         check_notification do
           ticket.update(priority: Ticket::Priority.find_by(name: '3 high'))
-          TransactionDispatcher.commit
-          Scheduler.worker(true)
+          perform_enqueued_jobs commit_transaction: true
           sent(
             template: 'ticket_update',
             user:     user_no_mentions,
@@ -1989,8 +2011,7 @@ RSpec.describe Ticket, type: :model do
           ticket = create(:ticket, owner: user_no_mentions, group: mention_group)
           create(:mention, mentionable: ticket, user: user_read_mentions)
           create(:mention, mentionable: ticket, user: user_only_mentions)
-          TransactionDispatcher.commit
-          Scheduler.worker(true)
+          perform_enqueued_jobs commit_transaction: true
           sent(
             template: 'ticket_create',
             user:     user_no_mentions,
@@ -2009,8 +2030,7 @@ RSpec.describe Ticket, type: :model do
       it 'does not inform mention user about ticket creation' do
         check_notification do
           create(:ticket, owner: user_no_mentions, group: mention_group)
-          TransactionDispatcher.commit
-          Scheduler.worker(true)
+          perform_enqueued_jobs commit_transaction: true
           sent(
             template: 'ticket_create',
             user:     user_no_mentions,
@@ -2031,8 +2051,7 @@ RSpec.describe Ticket, type: :model do
           ticket = create(:ticket, group: no_access_group)
           create(:mention, mentionable: ticket, user: user_read_mentions)
           create(:mention, mentionable: ticket, user: user_only_mentions)
-          TransactionDispatcher.commit
-          Scheduler.worker(true)
+          perform_enqueued_jobs commit_transaction: true
           not_sent(
             template: 'ticket_create',
             user:     user_read_mentions,
@@ -2047,9 +2066,9 @@ RSpec.describe Ticket, type: :model do
 
     context 'selectors' do
       let(:mention_group) { create(:group) }
-      let(:ticket_mentions) { create(:ticket, group: mention_group) }
-      let(:ticket_normal) { create(:ticket, group: mention_group) }
-      let(:user_mentions) { create(:agent, groups: [mention_group]) }
+      let(:ticket_mentions)  { create(:ticket, group: mention_group) }
+      let(:ticket_normal)    { create(:ticket, group: mention_group) }
+      let(:user_mentions)    { create(:agent, groups: [mention_group]) }
       let(:user_no_mentions) { create(:agent, groups: [mention_group]) }
 
       before do
@@ -2157,13 +2176,11 @@ RSpec.describe Ticket, type: :model do
 
   describe '.search_index_attribute_lookup_file_oversized?' do
     subject!(:store) do
-      Store.add(
-        object:        'SomeObject',
-        o_id:          1,
-        data:          'a' * ((1024**2) * 2.4), # with 2.4 mb
-        filename:      'test.TXT',
-        created_by_id: 1,
-      )
+      create(:store,
+             object:   'SomeObject',
+             o_id:     1,
+             data:     'a' * ((1024**2) * 2.4), # with 2.4 mb
+             filename: 'test.TXT')
     end
 
     context 'when total payload is ok' do
@@ -2186,13 +2203,11 @@ RSpec.describe Ticket, type: :model do
   describe '.search_index_attribute_lookup_file_ignored?' do
     context 'when attachment is indexable' do
       subject!(:store_with_indexable_extention) do
-        Store.add(
-          object:        'SomeObject',
-          o_id:          1,
-          data:          'some content',
-          filename:      'test.TXT',
-          created_by_id: 1,
-        )
+        create(:store,
+               object:   'SomeObject',
+               o_id:     1,
+               data:     'some content',
+               filename: 'test.TXT')
       end
 
       it 'return false' do
@@ -2202,13 +2217,11 @@ RSpec.describe Ticket, type: :model do
 
     context 'when attachment is no indexable' do
       subject!(:store_without_indexable_extention) do
-        Store.add(
-          object:        'SomeObject',
-          o_id:          1,
-          data:          'some content',
-          filename:      'test.BIN',
-          created_by_id: 1,
-        )
+        create(:store,
+               object:   'SomeObject',
+               o_id:     1,
+               data:     'some content',
+               filename: 'test.BIN')
       end
 
       it 'return true' do
@@ -2222,36 +2235,30 @@ RSpec.describe Ticket, type: :model do
 
     let(:search_index_attribute_lookup) do
       article1 = create(:ticket_article, ticket: ticket)
-      Store.add(
-        object:        'Ticket::Article',
-        o_id:          article1.id,
-        data:          'some content',
-        filename:      'some_file.bin',
-        preferences:   {
-          'Content-Type' => 'text/plain',
-        },
-        created_by_id: 1,
-      )
-      Store.add(
-        object:        'Ticket::Article',
-        o_id:          article1.id,
-        data:          'a' * ((1024**2) * 2.4), # with 2.4 mb
-        filename:      'some_file.pdf',
-        preferences:   {
-          'Content-Type' => 'image/pdf',
-        },
-        created_by_id: 1,
-      )
-      Store.add(
-        object:        'Ticket::Article',
-        o_id:          article1.id,
-        data:          'a' * ((1024**2) * 5.8), # with 5,8 mb
-        filename:      'some_file.txt',
-        preferences:   {
-          'Content-Type' => 'text/plain',
-        },
-        created_by_id: 1,
-      )
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article1.id,
+             data:        'some content',
+             filename:    'some_file.bin',
+             preferences: {
+               'Content-Type' => 'text/plain',
+             })
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article1.id,
+             data:        'a' * ((1024**2) * 2.4), # with 2.4 mb
+             filename:    'some_file.pdf',
+             preferences: {
+               'Content-Type' => 'image/pdf',
+             })
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article1.id,
+             data:        'a' * ((1024**2) * 5.8), # with 5,8 mb
+             filename:    'some_file.txt',
+             preferences: {
+               'Content-Type' => 'text/plain',
+             })
       create(:ticket_article, ticket: ticket, body: 'a' * ((1024**2) * 1.2)) # body with 1,2 mb
       create(:ticket_article, ticket: ticket)
       ticket.search_index_attribute_lookup

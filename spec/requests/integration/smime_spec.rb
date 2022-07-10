@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Integration SMIME', type: :request do
 
-  let(:admin) { create(:admin) }
+  let(:admin)         { create(:admin) }
   let(:email_address) { 'smime1@example.com' }
 
   before do
@@ -16,7 +16,7 @@ RSpec.describe 'Integration SMIME', type: :request do
     let(:endpoint) { '/api/v1/integration/smime/certificate' }
 
     let(:certificate_path) do
-      Rails.root.join("spec/fixtures/smime/#{email_address}.crt")
+      Rails.root.join("spec/fixtures/files/smime/#{email_address}.crt")
     end
     let(:certificate_string) do
       File.read(certificate_path)
@@ -78,13 +78,13 @@ RSpec.describe 'Integration SMIME', type: :request do
     context 'POST requests' do
 
       let(:private_path) do
-        Rails.root.join("spec/fixtures/smime/#{email_address}.key")
+        Rails.root.join("spec/fixtures/files/smime/#{email_address}.key")
       end
 
       let(:private_string) { File.read(private_path) }
 
       let(:secret) do
-        File.read(Rails.root.join("spec/fixtures/smime/#{email_address}.secret")).strip
+        File.read(Rails.root.join("spec/fixtures/files/smime/#{email_address}.secret")).strip
       end
 
       let!(:certificate) { create(:smime_certificate, fixture: email_address) }
@@ -138,7 +138,7 @@ RSpec.describe 'Integration SMIME', type: :request do
     context 'POST requests' do
 
       let(:system_email_address) { create(:email_address, email: email_address) }
-      let(:group) { create(:group, email_address: system_email_address) }
+      let(:group)                { create(:group, email_address: system_email_address) }
 
       let(:search_query) do
         {

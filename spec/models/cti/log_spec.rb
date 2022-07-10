@@ -6,7 +6,7 @@ RSpec.describe Cti::Log do
   subject(:user) { create(:user, roles: Role.where(name: 'Agent'), phone: phone) }
 
   let(:phone) { '' }
-  let(:log) { create(:'cti/log') }
+  let(:log)   { create(:'cti/log') }
 
   describe '.log' do
     it 'returns a hash with :list and :assets keys' do
@@ -41,7 +41,7 @@ RSpec.describe Cti::Log do
     context 'when Log records have arrays of CallerId attributes in #preferences[:to] / #preferences[:from]' do
       subject!(:cti_log) { create(:'cti/log', preferences: { from: [caller_id] }) }
 
-      let(:caller_id) { create(:caller_id) }
+      let(:caller_id)   { create(:caller_id) }
       let(:caller_user) { User.find_by(id: caller_id.user_id) }
 
       it 'returns a hash of the CallerId Users and their assets in the :assets key' do
@@ -251,16 +251,16 @@ RSpec.describe Cti::Log do
       end
     end
 
-    context 'for preferences.from verification' do
+    context 'for preferences.from verification', performs_jobs: true do
       subject(:log) do
         described_class.process(attributes)
       end
 
       let(:customer_of_ticket) { create(:customer) }
       let(:ticket_sample) do
-        create(:ticket_article, created_by_id: customer_of_ticket.id, body: 'some text 0123457')
-        TransactionDispatcher.commit
-        Scheduler.worker(true)
+        ticket_article = create(:ticket_article, created_by_id: customer_of_ticket.id, body: 'some text 0123457')
+        perform_enqueued_jobs commit_transaction: true
+        ticket_article
       end
       let(:caller_id) { '0123456' }
       let(:attributes) do
@@ -325,7 +325,7 @@ RSpec.describe Cti::Log do
       context 'with related maybe and known customer' do
         let(:caller_id) { '0123457' }
         let!(:customer) { create(:customer, phone: '0123457') }
-        let!(:ticket) { ticket_sample }
+        let!(:ticket)   { ticket_sample }
 
         it 'gives caller information' do
           expect(log.preferences[:from].count).to eq(1)
@@ -485,8 +485,8 @@ RSpec.describe Cti::Log do
       )
     end
 
-    let!(:agent1) { create(:agent, phone: '01234599') }
-    let!(:customer2) { create(:customer, phone: '') }
+    let!(:agent1)          { create(:agent, phone: '01234599') }
+    let!(:customer2)       { create(:customer, phone: '') }
     let!(:ticket_article1) { create(:ticket_article, created_by_id: customer2.id, body: 'some text 01234599') }
 
     context 'with agent1 (known), customer1 (known) and customer2 (maybe)' do

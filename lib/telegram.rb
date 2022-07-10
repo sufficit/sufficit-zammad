@@ -66,16 +66,16 @@ returns
     bot = Telegram.check_token(token)
 
     if !channel && Telegram.bot_duplicate?(bot['id'])
-      raise Exceptions::UnprocessableEntity, __('Bot already exists!')
+      raise Exceptions::UnprocessableEntity, __('This bot already exists.')
     end
 
     if params[:group_id].blank?
-      raise Exceptions::UnprocessableEntity, __('Group needed!')
+      raise Exceptions::UnprocessableEntity, __("The required parameter 'group_id' is missing.")
     end
 
     group = Group.find_by(id: params[:group_id])
     if !group
-      raise Exceptions::UnprocessableEntity, __('Group invalid!')
+      raise Exceptions::UnprocessableEntity, __("The required parameter 'group_id' is invalid.")
     end
 
     # generate random callback token
@@ -461,7 +461,7 @@ returns
         object: 'Ticket::Article',
         o_id:   article.id,
       )
-      Store.add(
+      Store.create!(
         object:      'Ticket::Article',
         o_id:        article.id,
         data:        document_result.body,
@@ -502,7 +502,7 @@ returns
 
       # get video type
       type = video[:mime_type].gsub(%r{(.+/)}, '')
-      Store.add(
+      Store.create!(
         object:      'Ticket::Article',
         o_id:        article.id,
         data:        video_result.body,
@@ -533,7 +533,7 @@ returns
         object: 'Ticket::Article',
         o_id:   article.id,
       )
-      Store.add(
+      Store.create!(
         object:      'Ticket::Article',
         o_id:        article.id,
         data:        document_result.body,
@@ -574,7 +574,7 @@ returns
           object: 'Ticket::Article',
           o_id:   article.id,
         )
-        Store.add(
+        Store.create!(
           object:      'Ticket::Article',
           o_id:        article.id,
           data:        document_result.body,
@@ -619,7 +619,7 @@ returns
             width:     params.dig(:channel_post, :document, :thumb, :width),
             height:    params.dig(:channel_post, :document, :thumb, :height)
           }.compact
-        }.delete_if { |_, v| v.blank? },
+        }.compact_blank!,
         video:      {
           duration:  params.dig(:channel_post, :video, :duration),
           width:     params.dig(:channel_post, :video, :width),
@@ -633,7 +633,7 @@ returns
             width:     params.dig(:channel_post, :video, :thumb, :width),
             height:    params.dig(:channel_post, :video, :thumb, :height)
           }.compact
-        }.delete_if { |_, v| v.blank? },
+        }.compact_blank!,
         voice:      {
           duration:  params.dig(:channel_post, :voice, :duration),
           mime_type: params.dig(:channel_post, :voice, :mime_type),
@@ -655,7 +655,7 @@ returns
             height:    params.dig(:channel_post, :sticker, :thumb, :height),
             file_path: params.dig(:channel_post, :sticker, :thumb, :file_path)
           }.compact
-        }.delete_if { |_, v| v.blank? },
+        }.compact_blank!,
         chat:       {
           id:         params.dig(:channel_post, :chat, :id),
           first_name: params.dig(:channel_post, :chat, :title),
@@ -673,7 +673,7 @@ returns
         message_id: params.dig(:channel_post, :message_id),
         text:       params.dig(:channel_post, :text),
         photo:      (params[:channel_post][:photo].map { |photo| { file_id: photo[:file_id], file_size: photo[:file_size], width: photo[:width], height: photo[:height] } } if params.dig(:channel_post, :photo))
-      }.delete_if { |_, v| v.blank? }
+      }.compact_blank!
       params.delete(:channel_post) # discard unused :channel_post hash
     end
 

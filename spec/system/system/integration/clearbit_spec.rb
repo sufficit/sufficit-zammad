@@ -3,15 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe 'Manage > Integration > Clearbit', type: :system do
-  let(:api_key) { 'some_api_key' }
-  let(:source) { 'source1' }
+  let(:api_key)     { 'some_api_key' }
+  let(:source)      { 'source1' }
   let(:destination) { 'destination1' }
 
   before do
     visit 'system/integration/clearbit'
 
     # enable clearbit
-    check 'setting-switch', { allow_label_click: true }
+    check 'setting-switch', allow_label_click: true
   end
 
   context 'for clearbit config' do
@@ -71,7 +71,7 @@ RSpec.describe 'Manage > Integration > Clearbit', type: :system do
     context 'when disabled with changed config' do
       before do
         # disable clearbit
-        uncheck 'setting-switch', { allow_label_click: true }
+        uncheck 'setting-switch', allow_label_click: true
       end
 
       let(:api_key) { '-empty-' }

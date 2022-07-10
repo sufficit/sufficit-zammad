@@ -267,7 +267,7 @@ subsequently in a separate step.
       # store package
       if !data[:reinstall]
         package_db = Package.create(meta)
-        Store.add(
+        Store.create!(
           object:        'Package',
           o_id:          package_db.id,
           data:          package.to_json,
@@ -293,7 +293,6 @@ subsequently in a separate step.
       package_db.save
     end
 
-    # prebuild assets
     package_db
   end
 
@@ -382,6 +381,9 @@ execute all pending package migrations at once
       package   = JSON.parse(json_file)
       Package::Migration.migrate(package['name'])
     end
+
+    # sync package po files
+    Translation.sync
   end
 
   def self._get_bin(name, version)

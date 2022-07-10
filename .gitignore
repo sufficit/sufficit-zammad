@@ -41,9 +41,6 @@
 /config/locales-*.yml
 /config/translations/*.yml
 
-# NPM / Yarn
-/node_modules
-
 # logfiles and tempfiles
 /log
 /public/assets/*.*
@@ -61,19 +58,9 @@
 /public/assets/doorkeeper
 
 # images
-/public/assets/images/*
-/public/assets/images/yarn.lock
 /public/assets/images/node_modules
-!/public/assets/images/*.sh
-!/public/assets/images/Dockerfile
-!/public/assets/images/package.json
-!/public/assets/images/gulpfile.js
-!/public/assets/images/icons/
-!/public/assets/images/avatar-bg.png
-!/public/assets/images/chat-demo-avatar.png
-!/public/assets/images/eyedropper.gif
-!/public/assets/images/icons.svg
-!/public/assets/images/logo.svg
+# Ignore generated hashed file names.
+/public/assets/images/????????????????????????????????.*
 
 # Third-Party ------------------------------------------------------------------
 
@@ -100,3 +87,20 @@
 
 # Backup files
 *~
+
+# Vite Ruby
+/public/vite
+/public/vite-dev
+
+# Node
+**/node_modules
+yarn-error.log
+.yarn/cache
+
+# Storybook
+.storybook/storybook-static
+
+# Cypress
+.cypress/screenshots/*
+.cypress/videos/*
+.cypress/**/__diff_output__/**

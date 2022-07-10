@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'System > Objects', type: :system do
+RSpec.describe 'System > Objects', type: :system, mariadb: true do
 
   context 'when trying to create invalid attributes' do
     RSpec.shared_examples 'cannot create new object attribute' do |name, error_message|
@@ -13,7 +13,7 @@ RSpec.describe 'System > Objects', type: :system do
         end
 
         it "fails with '#{error_message}'" do
-          within '.modal' do
+          in_modal do
             fill_in 'name', with: name || 'fallback'
             fill_in 'display', with: 'Not allowed'
             click '.js-submit'
@@ -36,7 +36,7 @@ RSpec.describe 'System > Objects', type: :system do
     end
 
     it 'has the position feild with no default value' do
-      within '.modal' do
+      in_modal do
         expect(page).to have_field('position', with: '')
       end
     end
@@ -49,18 +49,20 @@ RSpec.describe 'System > Objects', type: :system do
 
     it 'discards the changes again' do
       page.find('.js-new').click
-      within '.modal' do
+
+      in_modal do
         fill_in 'name', with: 'new_field'
         fill_in 'display', with: 'New field'
         click '.js-submit'
       end
+
       click '.js-discard'
       expect(page).to have_no_css('.js-discard')
     end
   end
 
   context 'when creating and removing a field with migration', db_strategy: :reset do
-    RSpec.shared_examples 'create and remove field with migration' do |data_type|
+    shared_examples 'create and remove field with migration' do |data_type|
       context "for data_type '#{data_type}'" do
         before do
           visit '/#system/object_manager'
@@ -69,12 +71,14 @@ RSpec.describe 'System > Objects', type: :system do
         it 'creates and removes the field correctly' do
           # Create
           page.find('.js-new').click
-          within '.modal' do
+
+          in_modal do
             fill_in 'name', with: 'new_field'
             fill_in 'display', with: 'New field'
             select data_type, from: 'data_type'
             click '.js-submit'
           end
+
           expect(page).to have_text('New field')
           expect(page).to have_text('Database Update Required')
           click '.js-execute', wait: 7.minutes
@@ -83,15 +87,20 @@ RSpec.describe 'System > Objects', type: :system do
 
           # Update
           click 'tbody tr:last-child'
-          within '.modal' do
+
+          in_modal do
             fill_in 'display', with: 'New field updated'
             click '.js-submit'
           end
+
           expect(page).to have_text('New field updated')
           expect(page).to have_text('Database Update Required')
           click '.js-execute', wait: 7.minutes
           expect(page).to have_text('please reload your browser')
-          click '.modal-content button.js-submit'
+
+          in_modal do
+            click '.js-submit'
+          end
 
           # Delete
           click 'tbody tr:last-child .js-delete'
@@ -104,12 +113,12 @@ RSpec.describe 'System > Objects', type: :system do
       end
     end
 
-    ['Text', 'Select', 'Integer', 'Datetime', 'Date', 'Boolean', 'Tree Select'].each do |data_type|
+    ['Text field', 'Single selection field', 'Integer field', 'Date & time field', 'Date field', 'Boolean field', 'Single tree selection field'].each do |data_type|
       include_examples 'create and remove field with migration', data_type
     end
 
     context 'with Multiselect' do
-      include_examples 'create and remove field with migration', 'Multiselect'
+      include_examples 'create and remove field with migration', 'Multiple selection field'
     end
   end
 
@@ -128,17 +137,22 @@ RSpec.describe 'System > Objects', type: :system do
       page.refresh
       click 'tbody tr:last-child'
 
-      # Add two new attributes to the field.
-      2.times do |i|
-        click '.modal tbody tr:last-child .js-addRow'
-        find('.modal tbody tr:last-child .js-key').fill_in(with: "new tree option #{i}")
+      in_modal do
+        # Add two new attributes to the field.
+        2.times do |i|
+          click 'tbody tr:last-child .js-addRow'
+          find('tbody tr:last-child .js-key').fill_in(with: "new tree option #{i}")
+        end
+        click '.js-submit'
       end
-      click '.js-submit'
 
       expect(page).to have_text('Database Update Required')
       click '.js-execute', wait: 7.minutes
       expect(page).to have_text('please reload your browser')
-      click '.modal-content button.js-submit'
+
+      in_modal do
+        click 'button.js-submit'
+      end
 
       # Check that the attributes were correctly saved.
       expect(ObjectManager::Attribute.last.data_option[:options][-2..]).to eq([{ 'name' => 'new tree option 0', 'value' => 'new tree option 0' }, { 'name' => 'new tree option 1', 'value' => 'new tree option 1' }])
@@ -170,8 +184,8 @@ RSpec.describe 'System > Objects', type: :system do
 
   context 'when checking field sorting', db_strategy: :reset do
     # lexicographically ordered list of option strings
-    let(:options) { %w[0 000.000 1 100.100 100.200 2 200.100 200.200 3 ä b n ö p sr ß st t ü v] }
-    let(:options_hash) { options.reverse.to_h { |o| [o, o] } }
+    let(:options)           { %w[0 000.000 1 100.100 100.200 2 200.100 200.200 3 ä b n ö p sr ß st t ü v] }
+    let(:options_hash)      { options.reverse.to_h { |o| [o, o] } }
     let(:cutomsort_options) { ['0', '1', '2', '3', 'v', 'ü', 't', 'st', 'ß', 'sr', 'p', 'ö', 'n', 'b', 'ä', '200.200', '200.100', '100.200', '100.100', '000.000'] }
 
     before do
@@ -205,7 +219,7 @@ RSpec.describe 'System > Objects', type: :system do
 
       context 'with customsort' do
         let(:options_hash) { options.reverse.collect { |o| { name: o, value: o } } }
-        let(:data_option) { { options: options_hash, default: 0, customsort: 'on' } }
+        let(:data_option)      { { options: options_hash, default: 0, customsort: 'on' } }
         let(:expected_options) { options.reverse } # preserves sorting from backend
 
         it_behaves_like 'preserving the sorting correctly'
@@ -226,28 +240,23 @@ RSpec.describe 'System > Objects', type: :system do
 
         before do
           # use drag and drop to reverse sort the options
-          within '.modal form' do
-            within '.js-dataMap table.js-Table .table-sortable' do
-              rows = all('tr.input-data-row td.table-draggable')
-              target = rows.last
-              pos = rows.size - 1
-              rows.each do |row|
-                next if pos <= 0
+          in_modal do
+            wait.until_constant do
+              find('tbody.table-sortable')
+                .evaluate_script("$(this).sortable('instance').ready")
+            end
 
+            within '.js-dataMap table.js-Table .table-sortable' do
+              rows        = all('tr.input-data-row td.table-draggable .icon')
+              target      = rows.last
+              rows.each do |row|
                 row.drag_to target
-                pos -= 1
               end
             end
+
             click_button 'Submit'
           end
 
-          click '.js-execute', wait: 7.minutes
-          # expect(page).to have_text('please reload your browser')
-          click '.modal-content button.js-submit'
-
-          refresh
-
-          visit '/#system/object_manager'
           click 'tbody tr:last-child td:first-child'
         end
 
@@ -285,9 +294,9 @@ RSpec.describe 'System > Objects', type: :system do
   context 'when checking selection options removal', db_strategy: :reset do
 
     let(:options) { %w[äöü cat delete dog ß].index_with { |x| "#{x.capitalize} Display" } }
-    let(:options_no_dog) { options.except('dog') }
+    let(:options_no_dog)           { options.except('dog') }
     let(:options_no_dog_no_delete) { options_no_dog.except('delete') }
-    let(:screens) { { 'create_middle' => { 'ticket.agent'=>{ 'shown' => true, 'required' => false, 'item_class' => 'column' } }, 'edit' => { 'ticket.agent'=>{ 'shown' => true, 'required' => false } } } }
+    let(:screens)                  { { 'create_middle' => { 'ticket.agent'=>{ 'shown' => true, 'required' => false, 'item_class' => 'column' } }, 'edit' => { 'ticket.agent'=>{ 'shown' => true, 'required' => false } } } }
 
     let(:object_attribute) do
       attribute = create(:object_manager_attribute_select, data_option: { options: options, default: 0 }, screens: screens, position: 999)
@@ -310,14 +319,17 @@ RSpec.describe 'System > Objects', type: :system do
       # Remove 'delete' and 'dog' options from field via GUI to make sure that the :historical_options attribute is saved.
       visit '/#system/object_manager'
       click 'tbody tr:last-child'
-      within '.modal' do
+      in_modal do
         2.times { find('tr:nth-child(3) .icon-trash').click }
         click '.js-submit'
       end
       expect(page).to have_text('Database Update Required')
       click '.js-execute', wait: 7.minutes
       expect(page).to have_text('please reload your browser')
-      click '.modal-content button.js-submit'
+
+      in_modal do
+        click '.js-submit'
+      end
 
       # Make sure option is still available in already saved ticket, even though the option was removed from the object attribute.
       # This is done via the :historical_options.
@@ -378,7 +390,7 @@ RSpec.describe 'System > Objects', type: :system do
       # set meta information
       fill_in 'Name', with: 'tree1'
       fill_in 'Display', with: 'tree1'
-      page.find('select[name=data_type]').select('Tree Select')
+      page.find('select[name=data_type]').select('Single tree selection field')
 
       # create 3 childs
       first_add_child = page.first('div.js-addChild')
@@ -432,7 +444,7 @@ RSpec.describe 'System > Objects', type: :system do
       fill_in 'Name', with: 'select1'
       find('input[name=display]').set('select1')
 
-      page.find('select[name=data_type]').select('Select')
+      page.find('select[name=data_type]').select('Single selection field')
 
       page.first('div.js-add').click
       page.first('div.js-add').click
@@ -460,7 +472,7 @@ RSpec.describe 'System > Objects', type: :system do
       fill_in 'Name', with: 'multiselect1'
       find('input[name=display]').set('multiselect1')
 
-      page.find('select[name=data_type]').select('Multiselect')
+      page.find('select[name=data_type]').select('Multiple selection field')
 
       page.first('div.js-add').click
       page.first('div.js-add').click
@@ -488,7 +500,7 @@ RSpec.describe 'System > Objects', type: :system do
       fill_in 'Name', with: 'bool1'
       find('input[name=display]').set('bool1')
 
-      page.find('select[name=data_type]').select('Boolean')
+      page.find('select[name=data_type]').select('Boolean field')
       page.find('.js-valueFalse').set('HELL NOO')
       page.find('.js-submit').click
 
@@ -504,7 +516,7 @@ RSpec.describe 'System > Objects', type: :system do
       fill_in 'Name', with: 'bool1'
       find('input[name=display]').set('Bool 1')
 
-      page.find('select[name=data_type]').select('Boolean')
+      page.find('select[name=data_type]').select('Boolean field')
       choose('data_option::default', option: 'true')
       page.find('.js-submit').click
 
@@ -526,12 +538,12 @@ RSpec.describe 'System > Objects', type: :system do
       in_modal disappears: false do
         fill_in 'Name', with: 'integer1'
         fill_in 'Display', with: 'Integer1'
-        page.find('select[name=data_type]').select('Integer')
+        page.find('select[name=data_type]').select('Integer field')
       end
     end
 
     it 'verifies max value does not go above limit' do
-      in_modal disappears: false do
+      in_modal do
         fill_in 'Maximal', with: '999999999999'
 
         page.find('.js-submit').click
@@ -541,7 +553,7 @@ RSpec.describe 'System > Objects', type: :system do
     end
 
     it 'verifies max value does not go below limit' do
-      in_modal disappears: false do
+      in_modal do
         fill_in 'Maximal', with: '-999999999999'
 
         page.find('.js-submit').click
@@ -572,7 +584,7 @@ RSpec.describe 'System > Objects', type: :system do
     end
 
     it 'verifies min value does not go above limit' do
-      in_modal disappears: false do
+      in_modal do
         fill_in 'Minimal', with: '999999999999'
 
         page.find('.js-submit').click
@@ -582,7 +594,7 @@ RSpec.describe 'System > Objects', type: :system do
     end
 
     it 'verifies min value does not go below limit' do
-      in_modal disappears: false do
+      in_modal do
         fill_in 'Minimal', with: '-999999999999'
 
         page.find('.js-submit').click
@@ -612,7 +624,7 @@ RSpec.describe 'System > Objects', type: :system do
     end
 
     it 'verifies min value must be lower than max' do
-      in_modal disappears: false do
+      in_modal do
         fill_in 'Minimal', with: '128'
         fill_in 'Maximal', with: '-128'
 
@@ -635,17 +647,21 @@ RSpec.describe 'System > Objects', type: :system do
     end
 
     it 'date attribute' do
-      page.find('select[name=data_type]').select('Date')
-      fill_in 'Default time diff (hours)', with: ''
+      in_modal do
+        page.find('select[name=data_type]').select('Date field')
+        fill_in 'Default time diff (hours)', with: ''
 
-      expect { page.find('.js-submit').click }.to change(ObjectManager::Attribute, :count).by(1)
+        expect { page.find('.js-submit').click }.to change(ObjectManager::Attribute, :count).by(1)
+      end
     end
 
     it 'datetime attribute' do
-      page.find('select[name=data_type]').select('Datetime')
-      fill_in 'Default time diff (minutes)', with: ''
+      in_modal do
+        page.find('select[name=data_type]').select('Date & time field')
+        fill_in 'Default time diff (minutes)', with: ''
 
-      expect { page.find('.js-submit').click }.to change(ObjectManager::Attribute, :count).by(1)
+        expect { page.find('.js-submit').click }.to change(ObjectManager::Attribute, :count).by(1)
+      end
     end
   end
 
@@ -654,12 +670,13 @@ RSpec.describe 'System > Objects', type: :system do
       visit '/#system/object_manager'
       page.find('.js-new').click
 
-      page.find('select[name=data_type]').select data_type
-      fill_in 'Name', with: attribute_name
-      find('input[name=display]').set attribute_name
+      in_modal disappears: false do
+        page.find('select[name=data_type]').select data_type
+        fill_in 'Name', with: attribute_name
+        find('input[name=display]').set attribute_name
+      end
     end
 
-    let(:attribute) { ObjectManager::Attribute.find_by(name: attribute_name) }
     let(:data_options) do
       {
         '1' => 'one',
@@ -670,16 +687,20 @@ RSpec.describe 'System > Objects', type: :system do
       }
     end
 
+    def find_attribute
+      ObjectManager::Attribute.find_by(name: attribute_name)
+    end
+
     shared_examples 'having a custom sort option' do
       it 'has a custom option checkbox' do
-        within '.modal-dialog form' do
+        in_modal do
           expect(page).to have_field('data_option::customsort', type: 'checkbox', visible: :all)
         end
       end
 
       context 'a context' do
         before do
-          within '.modal-dialog form' do
+          in_modal disappears: false do
             within 'tr.input-add-row' do
               5.times.each { first('div.js-add').click }
             end
@@ -697,47 +718,44 @@ RSpec.describe 'System > Objects', type: :system do
 
         context 'with custom checkbox checked' do
           it 'saves a customsort data option attribute' do
-            within '.modal-dialog form' do
+            in_modal do
               check 'data_option::customsort', allow_label_click: true
               click_button
             end
 
             # Update Database
             click 'div.js-execute'
-            # Reload browser
-            refresh
-
-            expect(attribute['data_option']).to include('customsort' => 'on')
+            wait.until { find_attribute }
+            expect(find_attribute['data_option']['customsort']).to eq('on')
           end
         end
 
         context 'with custom checkbox unchecked' do
           it 'does not have a customsort data option attribute' do
-            within '.modal-dialog form' do
+            in_modal do
               uncheck 'data_option::customsort', allow_label_click: true
               click_button
             end
 
             # Update Database
             click 'div.js-execute'
-            # Reload browser
-            refresh
 
-            expect(attribute['data_option']).not_to include('customsort' => 'on')
+            wait.until { find_attribute }
+            expect(find_attribute['data_option']['customsort']).to be_nil
           end
         end
       end
     end
 
     context 'when attribute is multiselect' do
-      let(:data_type) { 'Multiselect' }
+      let(:data_type) { 'Multiple selection field' }
       let(:attribute_name) { 'multiselect_test' }
 
       it_behaves_like 'having a custom sort option'
     end
 
     context 'when attribute is select' do
-      let(:data_type) { 'Select' }
+      let(:data_type) { 'Single selection field' }
       let(:attribute_name) { 'select_test' }
 
       it_behaves_like 'having a custom sort option'

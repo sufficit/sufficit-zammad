@@ -4,7 +4,7 @@ class CreateBase < ActiveRecord::Migration[4.2]
   def up
 
     # clear old caches to start from scratch
-    Cache.clear
+    Rails.cache.clear
 
     create_table :sessions do |t|
       t.string :session_id,  null: false
@@ -530,6 +530,7 @@ class CreateBase < ActiveRecord::Migration[4.2]
       t.string :error_message,                          null: true
       t.string :status,                                 null: true
       t.boolean :active,                                null: false, default: false
+      t.string :timeplan,                 limit: 2500,  null: true
       t.integer :updated_by_id,                         null: false
       t.integer :created_by_id,                         null: false
       t.timestamps limit: 3, null: false
@@ -783,5 +784,18 @@ class CreateBase < ActiveRecord::Migration[4.2]
     add_index :core_workflows, [:name], unique: true
     add_foreign_key :core_workflows, :users, column: :created_by_id
     add_foreign_key :core_workflows, :users, column: :updated_by_id
+
+    create_table :ldap_sources do |t|
+      t.string :name,                     limit: 100, null: false
+      t.text   :preferences,              limit: 5.megabytes + 1, null: true
+      t.integer :prio,                    null: false
+      t.boolean :active,                  null: false, default: true
+      t.integer :updated_by_id,           null: false
+      t.integer :created_by_id,           null: false
+      t.timestamps limit: 3, null: false
+    end
+    add_index :ldap_sources, [:name], unique: true
+    add_foreign_key :ldap_sources, :users, column: :created_by_id
+    add_foreign_key :ldap_sources, :users, column: :updated_by_id
   end
 end

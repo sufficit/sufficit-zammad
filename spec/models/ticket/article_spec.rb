@@ -34,7 +34,7 @@ RSpec.describe Ticket::Article, type: :model do
 
     describe 'Setting of ticket_define_email_from' do
       subject(:article) do
-        create(:ticket_article, sender_name: 'Agent', type_name: 'email')
+        create(:ticket_article, created_by: created_by, sender_name: 'Agent', type_name: 'email')
       end
 
       context 'when AgentName' do
@@ -42,9 +42,22 @@ RSpec.describe Ticket::Article, type: :model do
           Setting.set('ticket_define_email_from', 'AgentName')
         end
 
-        it 'sets the from based on the setting' do
-          expect(article.reload.from).to eq("\"#{article.created_by.firstname} #{article.created_by.lastname}\" <#{article.ticket.group.email_address.email}>")
+        context 'with real sender' do
+          let(:created_by) { create(:user) }
+
+          it 'sets the from to the realname of the user' do
+            expect(article.reload.from).to eq("\"#{article.created_by.firstname} #{article.created_by.lastname}\" <#{article.ticket.group.email_address.email}>")
+          end
         end
+
+        context 'with no real sender (e.g. trigger or scheduler)' do
+          let(:created_by) { User.find(1) }
+
+          it 'sets the from to realname of the mail address)' do
+            expect(article.reload.from).to eq("\"#{article.ticket.group.email_address.realname}\" <#{article.ticket.group.email_address.email}>")
+          end
+        end
+
       end
     end
 
@@ -331,7 +344,7 @@ RSpec.describe Ticket::Article, type: :model do
       end
     end
 
-    describe 'Cti::Log syncing:' do
+    describe 'Cti::Log syncing:', performs_jobs: true do
       context 'with existing Log records' do
         context 'for an incoming call from an unknown number' do
           let!(:log) { create(:'cti/log', :with_preferences, from: '491111222222', direction: 'in') }
@@ -345,8 +358,7 @@ RSpec.describe Ticket::Article, type: :model do
             it 'does not modify any Log records (because CallerIds from article bodies have #level "maybe")' do
               expect do
                 article.save
-                TransactionDispatcher.commit
-                Scheduler.worker(true)
+                perform_enqueued_jobs commit_transaction: true
               end.not_to change { log.reload.attributes }
             end
           end
@@ -354,32 +366,31 @@ RSpec.describe Ticket::Article, type: :model do
       end
     end
 
-    describe 'Auto-setting of outgoing Twitter article attributes (via bg jobs):', use_vcr: :with_oauth_headers, required_envs: %w[TWITTER_CONSUMER_KEY TWITTER_CONSUMER_SECRET TWITTER_OAUTH_TOKEN TWITTER_OAUTH_TOKEN_SECRET] do
+    describe 'Auto-setting of outgoing Twitter article attributes (via bg jobs):', performs_jobs: true, use_vcr: :with_oauth_headers, required_envs: %w[TWITTER_CONSUMER_KEY TWITTER_CONSUMER_SECRET TWITTER_OAUTH_TOKEN TWITTER_OAUTH_TOKEN_SECRET] do
       subject!(:twitter_article) { create(:twitter_article, sender_name: 'Agent') }
 
       let(:channel) { Channel.find(twitter_article.ticket.preferences[:channel_id]) }
-      let(:run_bg_jobs) { -> { Scheduler.worker(true) } }
 
       it 'sets #from to sender’s Twitter handle' do
-        expect(&run_bg_jobs)
+        expect { perform_enqueued_jobs }
           .to change { twitter_article.reload.from }
           .to('@ZammadTesting')
       end
 
       it 'sets #to to recipient’s Twitter handle' do
-        expect(&run_bg_jobs)
+        expect { perform_enqueued_jobs }
           .to change { twitter_article.reload.to }
           .to('') # Tweet in VCR cassette is addressed to no one
       end
 
       it 'sets #message_id to tweet ID (https://twitter.com/_/status/<id>)' do
-        expect(&run_bg_jobs)
+        expect { perform_enqueued_jobs }
           .to change { twitter_article.reload.message_id }
           .to('1410130368498372609')
       end
 
       it 'sets #preferences with tweet metadata' do
-        expect(&run_bg_jobs)
+        expect { perform_enqueued_jobs }
           .to change { twitter_article.reload.preferences }
           .to(hash_including('twitter', 'links'))
 
@@ -392,31 +403,31 @@ RSpec.describe Ticket::Article, type: :model do
       end
 
       it 'does not change #cc' do
-        expect(&run_bg_jobs).not_to change { twitter_article.reload.cc }
+        expect { perform_enqueued_jobs }.not_to change { twitter_article.reload.cc }
       end
 
       it 'does not change #subject' do
-        expect(&run_bg_jobs).not_to change { twitter_article.reload.subject }
+        expect { perform_enqueued_jobs }.not_to change { twitter_article.reload.subject }
       end
 
       it 'does not change #content_type' do
-        expect(&run_bg_jobs).not_to change { twitter_article.reload.content_type }
+        expect { perform_enqueued_jobs }.not_to change { twitter_article.reload.content_type }
       end
 
       it 'does not change #body' do
-        expect(&run_bg_jobs).not_to change { twitter_article.reload.body }
+        expect { perform_enqueued_jobs }.not_to change { twitter_article.reload.body }
       end
 
       it 'does not change #sender' do
-        expect(&run_bg_jobs).not_to change { twitter_article.reload.sender }
+        expect { perform_enqueued_jobs }.not_to change { twitter_article.reload.sender }
       end
 
       it 'does not change #type' do
-        expect(&run_bg_jobs).not_to change { twitter_article.reload.type }
+        expect { perform_enqueued_jobs }.not_to change { twitter_article.reload.type }
       end
 
       it 'sets appropriate status attributes on the ticket’s channel' do
-        expect(&run_bg_jobs)
+        expect { perform_enqueued_jobs }
           .to change { channel.reload.attributes }
           .to hash_including(
             'status_in'    => nil,
@@ -438,7 +449,7 @@ RSpec.describe Ticket::Article, type: :model do
           end
 
           it 'sets appropriate status attributes on the new channel' do
-            expect(&run_bg_jobs)
+            expect { perform_enqueued_jobs }
               .to change { new_channel.reload.attributes }
               .to hash_including(
                 'status_in'    => nil,
@@ -519,44 +530,38 @@ RSpec.describe Ticket::Article, type: :model do
                                   type:         Ticket::Article::Type.find_by(name: 'email'),
                                   content_type: 'text/html',
                                   body:         '<img src="cid:15.274327094.140938@zammad.example.com"> some text',)
-          Store.add(
-            object:        'Ticket::Article',
-            o_id:          article_parent.id,
-            data:          'content_file1_normally_should_be_an_image',
-            filename:      'some_file1.jpg',
-            preferences:   {
-              'Content-Type'        => 'image/jpeg',
-              'Mime-Type'           => 'image/jpeg',
-              'Content-ID'          => '15.274327094.140938@zammad.example.com',
-              'Content-Disposition' => 'inline',
-            },
-            created_by_id: 1,
-          )
-          Store.add(
-            object:        'Ticket::Article',
-            o_id:          article_parent.id,
-            data:          'content_file2_normally_should_be_an_image',
-            filename:      'some_file2.jpg',
-            preferences:   {
-              'Content-Type'        => 'image/jpeg',
-              'Mime-Type'           => 'image/jpeg',
-              'Content-ID'          => '15.274327094.140938_not_reffered@zammad.example.com',
-              'Content-Disposition' => 'inline',
-            },
-            created_by_id: 1,
-          )
-          Store.add(
-            object:        'Ticket::Article',
-            o_id:          article_parent.id,
-            data:          'content_file3_normally_should_be_an_image',
-            filename:      'some_file3.jpg',
-            preferences:   {
-              'Content-Type'        => 'image/jpeg',
-              'Mime-Type'           => 'image/jpeg',
-              'Content-Disposition' => 'attached',
-            },
-            created_by_id: 1,
-          )
+          create(:store,
+                 object:      'Ticket::Article',
+                 o_id:        article_parent.id,
+                 data:        'content_file1_normally_should_be_an_image',
+                 filename:    'some_file1.jpg',
+                 preferences: {
+                   'Content-Type'        => 'image/jpeg',
+                   'Mime-Type'           => 'image/jpeg',
+                   'Content-ID'          => '15.274327094.140938@zammad.example.com',
+                   'Content-Disposition' => 'inline',
+                 })
+          create(:store,
+                 object:      'Ticket::Article',
+                 o_id:        article_parent.id,
+                 data:        'content_file2_normally_should_be_an_image',
+                 filename:    'some_file2.jpg',
+                 preferences: {
+                   'Content-Type'        => 'image/jpeg',
+                   'Mime-Type'           => 'image/jpeg',
+                   'Content-ID'          => '15.274327094.140938_not_reffered@zammad.example.com',
+                   'Content-Disposition' => 'inline',
+                 })
+          create(:store,
+                 object:      'Ticket::Article',
+                 o_id:        article_parent.id,
+                 data:        'content_file3_normally_should_be_an_image',
+                 filename:    'some_file3.jpg',
+                 preferences: {
+                   'Content-Type'        => 'image/jpeg',
+                   'Mime-Type'           => 'image/jpeg',
+                   'Content-Disposition' => 'attached',
+                 })
           article_new = create(:ticket_article)
           UserInfo.current_user_id = 1
 
@@ -576,46 +581,40 @@ RSpec.describe Ticket::Article, type: :model do
                                   type:         Ticket::Article::Type.find_by(name: 'email'),
                                   content_type: 'text/html',
                                   body:         '<img src="cid:15.274327094.140938@zammad.example.com"> some text',)
-          Store.add(
-            object:        'Ticket::Article',
-            o_id:          article_parent.id,
-            data:          'content_file1_normally_should_be_an_image',
-            filename:      'some_file1.jpg',
-            preferences:   {
-              'Content-Type'        => 'image/jpeg',
-              'Mime-Type'           => 'image/jpeg',
-              'Content-ID'          => '15.274327094.140938@zammad.example.com',
-              'Content-Disposition' => 'inline',
-            },
-            created_by_id: 1,
-          )
-          Store.add(
-            object:        'Ticket::Article',
-            o_id:          article_parent.id,
-            data:          'content_file2_normally_should_be_an_image',
-            filename:      'some_file2.jpg',
-            preferences:   {
-              'Content-Type'        => 'image/jpeg',
-              'Mime-Type'           => 'image/jpeg',
-              'Content-ID'          => '15.274327094.140938_not_reffered@zammad.example.com',
-              'Content-Disposition' => 'inline',
-            },
-            created_by_id: 1,
-          )
+          create(:store,
+                 object:      'Ticket::Article',
+                 o_id:        article_parent.id,
+                 data:        'content_file1_normally_should_be_an_image',
+                 filename:    'some_file1.jpg',
+                 preferences: {
+                   'Content-Type'        => 'image/jpeg',
+                   'Mime-Type'           => 'image/jpeg',
+                   'Content-ID'          => '15.274327094.140938@zammad.example.com',
+                   'Content-Disposition' => 'inline',
+                 })
+          create(:store,
+                 object:      'Ticket::Article',
+                 o_id:        article_parent.id,
+                 data:        'content_file2_normally_should_be_an_image',
+                 filename:    'some_file2.jpg',
+                 preferences: {
+                   'Content-Type'        => 'image/jpeg',
+                   'Mime-Type'           => 'image/jpeg',
+                   'Content-ID'          => '15.274327094.140938_not_reffered@zammad.example.com',
+                   'Content-Disposition' => 'inline',
+                 })
 
           # #2483 - #{article.body_as_html} now includes attachments (e.g. PDFs)
           # Regular attachments do not get assigned a Content-ID, and should not be copied in this use case
-          Store.add(
-            object:        'Ticket::Article',
-            o_id:          article_parent.id,
-            data:          'content_file3_with_no_content_id',
-            filename:      'some_file3.jpg',
-            preferences:   {
-              'Content-Type' => 'image/jpeg',
-              'Mime-Type'    => 'image/jpeg',
-            },
-            created_by_id: 1,
-          )
+          create(:store,
+                 object:      'Ticket::Article',
+                 o_id:        article_parent.id,
+                 data:        'content_file3_with_no_content_id',
+                 filename:    'some_file3.jpg',
+                 preferences: {
+                   'Content-Type' => 'image/jpeg',
+                   'Mime-Type'    => 'image/jpeg',
+                 })
 
           article_new = create(:ticket_article)
           UserInfo.current_user_id = 1

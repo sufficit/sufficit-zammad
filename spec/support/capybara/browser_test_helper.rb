@@ -58,6 +58,16 @@ module BrowserTestHelper
     find(*args).click
   end
 
+  # Finds svg icon in Mobile View
+  #
+  # @example
+  #  icon = find_icon('home')
+  #  icon.click
+  #
+  def find_icon(name)
+    find("[href=\"#icon-#{name}\"]").find(:xpath, '..')
+  end
+
   # This is a wrapper around the Selenium::WebDriver::Wait class
   # with additional methods.
   # @see BrowserTestHelper::Waiter
@@ -74,8 +84,7 @@ module BrowserTestHelper
     Waiter.new(wait_handle)
   end
 
-  # This checks the number of queued AJAX requests in the frontend JS app
-  # and assures that the number is constantly zero for 0.5 seconds.
+  # This checks the number of queued AJAX requests in the frontend JS is zero.
   # It comes in handy when waiting for AJAX requests to be completed
   # before performing further actions.
   #
@@ -83,17 +92,27 @@ module BrowserTestHelper
   #  await_empty_ajax_queue
   #
   def await_empty_ajax_queue
+
+    # Waiting not supported/required by mobile app.
+    return if self.class.metadata[:app] == :mobile # self.class needed to get metadata from within an `it` block.
+
     # page.evaluate_script silently discards any present alerts, which is not desired.
     begin
       return if page.driver.browser.switch_to.alert
     rescue Selenium::WebDriver::Error::NoSuchAlertError # rubocop:disable Lint/SuppressedException
     end
 
-    wait(5, interval: 0.1).until_constant do
-      page.evaluate_script('App.Ajax.queue().length === 0 && $.active === 0 && Object.keys(App.FormHandlerCoreWorkflow.getRequests()).length === 0').present?
+    # skip on non app related context
+    return if page.evaluate_script('typeof(App) !== "function" || typeof($) !== "function"')
+
+    # Always wait a little bit to allow for triggering of requests.
+    sleep 0.1
+
+    wait(5).until do
+      page.evaluate_script('App.Ajax.queue().length === 0 && $.active === 0 && Object.keys(App.FormHandlerCoreWorkflow.getRequests()).length === 0').eql? true
     end
-  rescue
-    nil
+  rescue Selenium::WebDriver::Error::TimeoutError
+    nil # There may be cases when the default wait time is not enough.
   end
 
   # Moves the mouse from its current position by the given offset.

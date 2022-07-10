@@ -1,4 +1,5 @@
 # coffeelint: disable=camel_case_classes
+<<<<<<< HEAD
 class App.UiElement.tree_select_search extends App.UiElement.ApplicationUiElement
   @render: (attributeConfig, params) ->
     attribute = $.extend(true, {}, attributeConfig)
@@ -45,3 +46,13 @@ class App.UiElement.tree_select_search extends App.UiElement.ApplicationUiElemen
 
       if row.children
         @getSub(options, row.children, params)
+=======
+class App.UiElement.tree_select_search extends App.UiElement.multi_tree_select
+  @render: (attributeConfig, params) ->
+    attributeConfig = $.extend(true, {}, attributeConfig)
+
+    attributeConfig.multiple   = true
+    attributeConfig.nulloption = true
+
+    super
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4

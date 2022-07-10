@@ -43,7 +43,7 @@ returns
 
   def self.store_raw(content, content_type)
     Store.remove(object: 'System::Logo', o_id: 1)
-    file = Store.add(
+    file = Store.create!(
       object:        'System::Logo',
       o_id:          1,
       data:          content,
@@ -74,7 +74,7 @@ returns
       return Store.find(list[0])
     end
 
-    raise __('Could not read raw logo!')
+    raise __('The raw logo could not be read.')
   end
 
 =begin
@@ -91,7 +91,7 @@ returns
 
   def self.store(content, content_type)
     Store.remove(object: 'System::Logo', o_id: 2)
-    file = Store.add(
+    file = Store.create!(
       object:        'System::Logo',
       o_id:          2,
       data:          content,
@@ -146,18 +146,19 @@ generate filename based on Store model
 
   def self.filename(file)
     hash = Digest::MD5.hexdigest(file.content)
-    extention = ''
-    case file.preferences['Content-Type']
-    when %r{jpg|jpeg}i
-      extention = '.jpg'
-    when %r{png}i
-      extention = '.png'
-    when %r{gif}i
-      extention = '.gif'
-    when %r{svg}i
-      extention = '.svg'
-    end
-    "#{hash}#{extention}"
+    extension = case file.preferences['Content-Type']
+                when %r{jpg|jpeg}i
+                  '.jpg'
+                when %r{png}i
+                  '.png'
+                when %r{gif}i
+                  '.gif'
+                when %r{svg}i
+                  '.svg'
+                else
+                  ''
+                end
+    "#{hash}#{extension}"
   end
 
 =begin
@@ -172,7 +173,7 @@ sync image to fs (public/assets/images/hash.png)
     file = read
     return if !file
 
-    path = Rails.root.join('public', 'assets', 'images', filename(file))
+    path = Rails.public_path.join('assets', 'images', filename(file))
     File.open(path, 'wb') do |f|
       f.puts file.content
     end

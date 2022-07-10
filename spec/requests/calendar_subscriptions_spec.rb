@@ -13,7 +13,7 @@ RSpec.describe 'iCal endpoints', type: :request do
 
   describe 'time zone', authenticated_as: :user do
     let(:group) { create(:group) }
-    let(:user) { create(:agent) }
+    let(:user)  { create(:agent) }
 
     before do
       user.groups << group
@@ -33,6 +33,23 @@ RSpec.describe 'iCal endpoints', type: :request do
       get '/ical/tickets'
 
       expect(response.body).to match %r{DTSTART;TZID=Europe/Vilnius:\d{8}T0{6}}
+    end
+  end
+
+  # https://github.com/zammad/zammad/issues/3962
+  context 'with request method PROPFIND', authenticated_as: :user do
+    let(:user) { create(:agent) }
+
+    it 'contains correct request method' do
+      get '/ical/tickets', headers: { 'REQUEST_METHOD' => 'PROPFIND' }
+
+      expect(response.request.request_method).to eq('PROPFIND')
+    end
+
+    it 'returns the desired calendar file' do
+      get '/ical/tickets', headers: { 'REQUEST_METHOD' => 'PROPFIND' }
+
+      expect(response.body).to match(%r{BEGIN:VCALENDAR})
     end
   end
 end

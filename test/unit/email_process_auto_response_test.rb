@@ -3,6 +3,7 @@
 require 'test_helper'
 
 class EmailProcessAutoResponseTest < ActiveSupport::TestCase
+  include BackgroundJobsHelper
 
   test 'process auto reply check - 1' do
 
@@ -60,7 +61,7 @@ Some Text"
 
     _ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(true, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     assert_equal(2, article_p.ticket.articles.count)
 
     email_raw_string = "From: me@example.com
@@ -72,7 +73,7 @@ Some Text"
 
     _ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(false, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     assert_equal(1, article_p.ticket.articles.count)
 
     email_raw_string = "From: me@example.com
@@ -91,7 +92,7 @@ Subject: some new subject
 Auto-Submitted: auto-generated
 
 Some Text"
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     assert_equal(1, article_p.ticket.articles.count)
 
     _ticket_p, _article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
@@ -107,7 +108,7 @@ Some Text"
 
     _ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(false, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     assert_equal(1, article_p.ticket.articles.count)
 
     fqdn = Setting.get('fqdn')
@@ -120,7 +121,7 @@ Some Text"
 
     _ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(false, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     assert_equal(1, article_p.ticket.articles.count)
 
     fqdn = Setting.get('fqdn')
@@ -133,16 +134,16 @@ Some Text"
 
     _ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(true, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     assert_equal(2, article_p.ticket.articles.count)
 
     email_raw_string = "Return-Path: <XX@XX.XX>
-X-Original-To: sales@znuny.com
+X-Original-To: sales@zammad.com
 Received: from mail-qk0-f170.example.com (mail-qk0-f170.example.com [209.1.1.1])
-    by arber.znuny.com (Postfix) with ESMTPS id C3AED5FE2E
-    for <sales@znuny.com>; Mon, 22 Aug 2016 19:03:15 +0200 (CEST)
+    by mail.zammad.com (Postfix) with ESMTPS id C3AED5FE2E
+    for <sales@zammad.com>; Mon, 22 Aug 2016 19:03:15 +0200 (CEST)
 Received: by mail-qk0-f170.example.com with SMTP id t7so87721720qkh.1
-        for <sales@znuny.com>; Mon, 22 Aug 2016 10:03:15 -0700 (PDT)
+        for <sales@zammad.com>; Mon, 22 Aug 2016 10:03:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=XX.XX; s=example;
         h=to:from:date:message-id:subject:mime-version:precedence
@@ -166,7 +167,7 @@ X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 X-Gm-Message-State: AE9vXwMCTnihGiG/tc7xNNlhFLcEK6DPp7otypJg5e4alD3xGK2R707BP29druIi/mcdNyaHg1vP5lSZ8EvrwvOF8iA0HNFhECGjBTJ40YrSJAR8E89xVwxFv/er+U3vEpqmPmt+hL4QhxK/+D2gKOcHSxku
 X-Received: by 10.1.1.1 with SMTP id 17mr25015996qkf.279.1471885393931;
         Mon, 22 Aug 2016 10:03:13 -0700 (PDT)
-To: sales@znuny.com
+To: sales@zammad.com
 From: \"XXX\" <XX@XX.XX>
 Date: Mon, 22 Aug 2016 10:03:13 -0700
 Message-ID: <CA+kqV8PH1DU+zcSx3M00Hrm_oJedRLjbgAUdoi9p0+sMwYsyUg@mail.gmail.com>
@@ -183,7 +184,7 @@ test"
 
     _ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(false, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     assert_equal(1, article_p.ticket.articles.count)
 
     # add an agent notification
@@ -224,7 +225,7 @@ Some Text"
 
     ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(false, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
 
     tags = ticket_p.tag_list
     assert_equal('new', ticket_p.state.name)
@@ -250,7 +251,7 @@ Some Text"
 
     ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(false, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
 
     tags = ticket_p.tag_list
     assert_equal('new', ticket_p.state.name)
@@ -282,7 +283,7 @@ Some Text"
 
     ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(true, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
 
     tags = ticket_p.tag_list
     assert_equal('new', ticket_p.state.name)
@@ -313,7 +314,7 @@ Some Text"
 
     ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(true, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     tags = ticket_p.tag_list
     assert_equal('new', ticket_p.state.name)
     assert_equal('3 high', ticket_p.priority.name)
@@ -397,7 +398,7 @@ Some Text"
 
     _ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(true, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     assert_equal(2, article_p.ticket.articles.count)
 
     email_raw_string = "From: me@example.com
@@ -409,7 +410,7 @@ Some Text"
 
     _ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(false, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     assert_equal(1, article_p.ticket.articles.count)
 
     email_raw_string = "From: me@example.com
@@ -428,7 +429,7 @@ Subject: some new subject
 Auto-Submitted: auto-generated
 
 Some Text"
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     assert_equal(1, article_p.ticket.articles.count)
 
     _ticket_p, _article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
@@ -444,7 +445,7 @@ Some Text"
 
     _ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(false, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     assert_equal(1, article_p.ticket.articles.count)
 
     fqdn = Setting.get('fqdn')
@@ -457,7 +458,7 @@ Some Text"
 
     _ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(false, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     assert_equal(1, article_p.ticket.articles.count)
 
     fqdn = Setting.get('fqdn')
@@ -470,16 +471,16 @@ Some Text"
 
     _ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(true, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     assert_equal(2, article_p.ticket.articles.count)
 
     email_raw_string = "Return-Path: <XX@XX.XX>
-X-Original-To: sales@znuny.com
+X-Original-To: sales@zammad.com
 Received: from mail-qk0-f170.example.com (mail-qk0-f170.example.com [209.1.1.1])
-    by arber.znuny.com (Postfix) with ESMTPS id C3AED5FE2E
-    for <sales@znuny.com>; Mon, 22 Aug 2016 19:03:15 +0200 (CEST)
+    by mail.zammad.com (Postfix) with ESMTPS id C3AED5FE2E
+    for <sales@zammad.com>; Mon, 22 Aug 2016 19:03:15 +0200 (CEST)
 Received: by mail-qk0-f170.example.com with SMTP id t7so87721720qkh.1
-        for <sales@znuny.com>; Mon, 22 Aug 2016 10:03:15 -0700 (PDT)
+        for <sales@zammad.com>; Mon, 22 Aug 2016 10:03:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=XX.XX; s=example;
         h=to:from:date:message-id:subject:mime-version:precedence
@@ -503,7 +504,7 @@ X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 X-Gm-Message-State: AE9vXwMCTnihGiG/tc7xNNlhFLcEK6DPp7otypJg5e4alD3xGK2R707BP29druIi/mcdNyaHg1vP5lSZ8EvrwvOF8iA0HNFhECGjBTJ40YrSJAR8E89xVwxFv/er+U3vEpqmPmt+hL4QhxK/+D2gKOcHSxku
 X-Received: by 10.1.1.1 with SMTP id 17mr25015996qkf.279.1471885393931;
         Mon, 22 Aug 2016 10:03:13 -0700 (PDT)
-To: sales@znuny.com
+To: sales@zammad.com
 From: \"XXX\" <XX@XX.XX>
 Date: Mon, 22 Aug 2016 10:03:13 -0700
 Message-ID: <CA+kqV8PH1DU+zcSx3M00Hrm_oJedRLjbgAUdoi9p0+sMwYsyUg@mail.gmail.com>
@@ -520,7 +521,7 @@ test"
 
     _ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(false, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     assert_equal(1, article_p.ticket.articles.count)
 
     # add an agent notification
@@ -561,7 +562,7 @@ Some Text"
 
     ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(false, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
 
     tags = ticket_p.tag_list
     assert_equal('new', ticket_p.state.name)
@@ -587,7 +588,7 @@ Some Text"
 
     ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(false, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
 
     tags = ticket_p.tag_list
     assert_equal('new', ticket_p.state.name)
@@ -619,7 +620,7 @@ Some Text"
 
     ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(true, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
 
     tags = ticket_p.tag_list
     assert_equal('new', ticket_p.state.name)
@@ -650,7 +651,7 @@ Some Text"
 
     ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(true, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     tags = ticket_p.tag_list
     assert_equal('new', ticket_p.state.name)
     assert_equal('3 high', ticket_p.priority.name)
@@ -767,7 +768,7 @@ Some Text"
 
     ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(false, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
 
     tags = ticket_p.tag_list
     assert_equal('open', ticket_p.state.name)
@@ -793,7 +794,7 @@ Some Text"
 
     ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(false, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
 
     tags = ticket_p.tag_list
     assert_equal('open', ticket_p.state.name)
@@ -825,7 +826,7 @@ Some Text"
 
     ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(true, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
 
     tags = ticket_p.tag_list
     assert_equal('open', ticket_p.state.name)
@@ -850,7 +851,7 @@ Some Text"
 
     ticket_p, article_p, _user_p, mail = Channel::EmailParser.new.process({}, email_raw_string)
     assert_equal(true, mail[:'x-zammad-send-auto-response'])
-    Scheduler.worker(true)
+    perform_enqueued_jobs
     tags = ticket_p.tag_list
     assert_equal('open', ticket_p.state.name)
     assert_equal('3 high', ticket_p.priority.name)

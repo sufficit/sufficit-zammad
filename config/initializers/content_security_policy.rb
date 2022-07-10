@@ -12,9 +12,17 @@
 #   policy.img_src     :self, :https, :data
 #   policy.object_src  :none
 #   policy.script_src  :self, :https
+# Allow @vite/client to hot reload changes in development
+#    policy.script_src *policy.script_src, :unsafe_eval, "http://#{ ViteRuby.config.host_with_port }" if Rails.env.development?
+
+# You may need to enable this in production as well depending on your setup.
+#    policy.script_src *policy.script_src, :blob if Rails.env.test?
+
 #   policy.style_src   :self, :https
 #   # If you are using webpack-dev-server then specify webpack-dev-server host
 #   policy.connect_src :self, :https, "http://localhost:3035", "ws://localhost:3035" if Rails.env.development?
+# Allow @vite/client to hot reload changes in development
+#    policy.connect_src *policy.connect_src, "ws://#{ ViteRuby.config.host_with_port }" if Rails.env.development?
 
 #   # Specify URI for violation reports
 #   # policy.report_uri "/csp-violation-report-endpoint"
@@ -33,13 +41,26 @@ Rails.application.config.content_security_policy do |policy|
 
   policy.base_uri :self, base_uri
 
-  policy.default_src :self, :ws, :wss, 'https://log.zammad.com', 'https://images.zammad.com'
+  policy.default_src :self, :ws, :wss, 'https://images.zammad.com'
   policy.font_src    :self, :data
   policy.img_src     '*', :data
   policy.object_src  :none
   policy.script_src  :self, :unsafe_eval, :strict_dynamic
   policy.style_src   :self, :unsafe_inline
   policy.frame_src   'www.youtube.com', 'player.vimeo.com'
+
+  if Rails.env.development?
+    websocket_uri = proc do
+      "ws://#{ViteRuby.config.host}:#{Setting.get('websocket_port')}"
+    end
+
+    websocket_cable_uri = proc do
+      "ws://#{ViteRuby.config.host}:#{ENV['ZAMMAD_RAILS_PORT'] || 3000}/cable"
+    end
+
+    policy.script_src :self, :unsafe_eval, :unsafe_inline
+    policy.connect_src :self, :https, "http://#{ViteRuby.config.host_with_port}", "ws://#{ViteRuby.config.host_with_port}", websocket_cable_uri, websocket_uri
+  end
 end
 
 # If you are using UJS then enable automatic nonce generation

@@ -1,0 +1,93 @@
+# Workaround to enable usage of mixed SSH and Docker GitLab CI runners
+.template_lint:
+  stage: lint
+  extends:
+    - .job_rules_default
+
+.template_lint_rails:
+  extends:
+    - .template_lint
+  services:
+    - !reference [.services, postgresql]
+  before_script:
+    - !reference [.scripts, source_rvm]
+    - !reference [.scripts, bundle_install]
+    - !reference [.scripts, configure_environment]
+    - !reference [.scripts, zammad_db_init]
+
+# Must be a separate job because it uses a custom image.
+'lint: shellcheck':
+  extends:
+    - .template_lint
+  image: koalaman/shellcheck-alpine:stable
+  cache: []
+  before_script: []
+  script:
+    - shellcheck -S warning $(find . -name "*.sh" -o -name "functions" | egrep -v "/vendor|node_modules/")
+    - shellcheck -S error script/init.d/*
+  after_script: []
+
+'lint: i18n & rails':
+  extends:
+    - .template_lint_rails
+  cache: !reference [.cache, read_only_full]
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - tmp/brakeman-report.html
+    when: on_failure
+  script:
+    - !reference [.scripts, yarn_install]
+    - echo "Checking .po file syntax..."
+    - for FILE in i18n/*.pot i18n/*.po; do echo "Checking $FILE"; msgfmt -o /dev/null -c $FILE; done
+    - echo "Checking .pot catalog consistency..."
+    - bundle exec rails generate translation_catalog --check
+    - echo "Brakeman security check..."
+    - bundle exec brakeman -o /dev/stdout -o tmp/brakeman-report.html
+    - echo "Rails zeitwerk:check autoloader check..."
+    - bundle exec rails zeitwerk:check
+    - .gitlab/check_graphql_api_consistency.sh
+
+'lint: ruby & security':
+  extends:
+    - .template_lint
+  before_script:
+    - !reference [.scripts, source_rvm]
+    - !reference [.scripts, bundle_install]
+  script:
+    - echo "Rubocop check..."
+    - bundle exec .rubocop/validate_todos.rb
+    - bundle exec rubocop --parallel
+    - echo "bundler-audit security check..."
+    - gem install bundler-audit
+    - bundle-audit update
+    - bundle-audit --ignore CVE-2015-9284
+
+'lint: js & css':
+  extends:
+    - .template_lint
+  cache: !reference [.cache, read_only_nodejs]
+  before_script: []
+  script:
+    - echo "Coffeelint check..."
+    - coffeelint --rules ./.coffeelint/rules/* app/
+    - echo "Stylelint check..."
+    - !reference [.scripts, yarn_install]
+    - yarn lint:css
+    - echo "ESLint check..."
+    - yarn storybook:install
+    - yarn lint
+    - echo "Storybook test build..."
+    - yarn storybook:build
+
+# Must be a separate job because it may fail and is only executed manually.
+'lint: orphaned ruby gems':
+  extends:
+    - .template_lint_rails
+  allow_failure: true
+  rules:
+    - if: $CI_MERGE_REQUEST_ID
+      when: never
+    - when: manual
+  script:
+    - bundle exec rake zammad:ci:bundle:orphaned 5

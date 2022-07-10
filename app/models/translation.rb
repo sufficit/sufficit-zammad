@@ -40,7 +40,37 @@ get list of translations
 =end
 
   def self.lang(locale, admin = false)
+    Rails.cache.fetch("#{self}/#{latest_change}/lang/#{locale}/#{admin}") do
 
+      # show total translations as reference count
+      data = {
+        'total' => Translation.where(locale: 'de-de').count,
+      }
+      list = []
+      translations = if admin
+                       Translation.where(locale: locale.downcase).order(:source)
+                     else
+                       Translation.where(locale: locale.downcase).where.not(target: '').order(:source)
+                     end
+      translations.each do |item|
+        translation_item = if admin
+                             [
+                               item.id,
+                               item.source,
+                               item.target,
+                               item.target_initial,
+                             ]
+                           else
+                             [
+                               item.id,
+                               item.source,
+                               item.target,
+                             ]
+                           end
+        list.push translation_item
+      end
+
+<<<<<<< HEAD
     # use cache if not admin page is requested
     if !admin
       data = lang_cache_get(locale)
@@ -80,12 +110,23 @@ get list of translations
     %w[yes no or Year Years Month Months Day Days Hour Hours Minute Minutes Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec January February March April May June July August September October November December Mon Tue Wed Thu Fri Sat Sun Monday Tuesday Wednesday Thursday Friday Saturday Sunday].each do |presort|
       list.each do |item|
         next if item[1] != presort
+=======
+      # add presorted on top
+      presorted_list = []
+      %w[yes no or Year Years Month Months Day Days Hour Hours Minute Minutes Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec January February March April May June July August September October November December Mon Tue Wed Thu Fri Sat Sun Monday Tuesday Wednesday Thursday Friday Saturday Sunday].each do |presort|
+        list.each do |item|
+          next if item[1] != presort
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
-        presorted_list.push item
-        list.delete item
-        # list.unshift presort
+          presorted_list.push item
+          list.delete item
+          # list.unshift presort
+        end
       end
+      data['list'] = presorted_list.concat list
+      data
     end
+<<<<<<< HEAD
     data['list'] = presorted_list.concat list
 
     # set cache
@@ -94,6 +135,8 @@ get list of translations
     end
 
     data
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
   end
 
 =begin
@@ -104,8 +147,12 @@ translate strings in Ruby context, e. g. for notifications
 
 =end
 
-  def self.translate(locale, string)
-    find_source(locale, string)&.target || find_source('en', string)&.target || string
+  def self.translate(locale, string, *args)
+    translated = find_source(locale, string)&.target || string
+
+    translated = translated % args if args.any?
+
+    translated
   end
 
 =begin
@@ -116,8 +163,12 @@ because it could produce wrong matches on case insensitive MySQL databases.
 =end
 
   def self.find_source(locale, string)
-    # MySQL might find the wrong record with find_by with case insensitive locales, so use a direct comparison.
-    where(locale: locale, source: string).find { |t| t.source.eql? string }
+    if ActiveRecord::Base.connection_db_config.configuration_hash[:adapter] == 'mysql2'
+      # MySQL might find the wrong record with find_by with case insensitive locales, so use a direct comparison.
+      where(locale: locale, source: string).find { |t| t.source.eql? string }
+    else
+      find_by(locale: locale, source: string)
+    end
   end
 
 =begin
@@ -132,7 +183,7 @@ or
 
 =end
 
-  def self.timestamp(locale, timezone, timestamp)
+  def self.timestamp(locale, timezone, timestamp, append_timezone: true)
 
     if timestamp.instance_of?(String)
       begin
@@ -165,7 +216,10 @@ or
     record.sub!('HH', format('%<hour>02d', hour: timestamp.hour.to_s))
     record.sub!('l', timestamp.strftime('%l'))
     record.sub!('P', timestamp.strftime('%P'))
-    "#{record} (#{timezone})"
+
+    record += " (#{timezone})" if append_timezone
+
+    record
   end
 
 =begin
@@ -245,6 +299,7 @@ or
     self.target_initial = target
     true
   end
+<<<<<<< HEAD
 
   def cache_delete
     super
@@ -255,4 +310,6 @@ or
     "TranslationMapOnlyContent::#{locale.downcase}"
   end
   private_class_method :lang_cache_key
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 end

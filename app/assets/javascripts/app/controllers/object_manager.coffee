@@ -48,7 +48,7 @@ multiselectParams = (params) ->
 
 setSelectDefaults = (el) ->
   data_type = el.find('select[name=data_type]').val()
-  return if !/^((multi)?select)$/.test(data_type) && data_type isnt 'boolean'
+  return if !/^((multi)?select|multi_tree_select)$/.test(data_type) && data_type isnt 'boolean'
 
   el.find('.js-value, .js-valueTrue, .js-valueFalse').each(->
     element = $(@)
@@ -92,17 +92,19 @@ class ObjectManager extends App.ControllerTabs
     )
 
   build: (objects) =>
-    @tabs = []
-    for object in objects
-      item =
-        name:       object
-        target:     "c-#{object}"
-        controller: Items
-        params:
-          object: object
-      @tabs.push item
+    App.ObjectManagerAttribute.fetchFull(=>
+      @tabs = []
+      for object in objects
+        item =
+          name:       object
+          target:     "c-#{object}"
+          controller: Items
+          params:
+            object: object
+        @tabs.push item
 
-    @render()
+      @render()
+    )
 
 class Items extends App.ControllerSubContent
   header: __('Object Manager')
@@ -116,7 +118,7 @@ class Items extends App.ControllerSubContent
   constructor: ->
     super
     @subscribeId = App.ObjectManagerAttribute.subscribe(@render)
-    App.ObjectManagerAttribute.fetch()
+    @render()
 
   release: =>
     if @subscribeId

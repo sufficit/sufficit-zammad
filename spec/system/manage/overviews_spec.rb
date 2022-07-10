@@ -6,15 +6,15 @@ RSpec.describe 'Manage > Overviews', type: :system do
   let(:group) { create(:group) }
 
   let(:owner_one) { create(:agent, groups: [group]) }
-  let(:owner_two) { create(:agent, groups: [group]) }
+  let(:owner_two)   { create(:agent, groups: [group]) }
   let(:owner_three) { create(:agent, groups: [group]) }
 
   let(:customer_one) { create(:customer, organization_id: organization_one.id, groups: [group]) }
-  let(:customer_two) { create(:customer, organization_id: organization_two.id, groups: [group]) }
+  let(:customer_two)   { create(:customer, organization_id: organization_two.id, groups: [group]) }
   let(:customer_three) { create(:customer, organization_id: organization_three.id, groups: [group]) }
 
   let(:organization_one) { create(:organization, name: 'Test Org One') }
-  let(:organization_two) { create(:organization, name: 'Test Org Two') }
+  let(:organization_two)   { create(:organization, name: 'Test Org Two') }
   let(:organization_three) { create(:organization, name: 'Test Org Three') }
 
   let!(:ticket_one) do
@@ -289,14 +289,6 @@ RSpec.describe 'Manage > Overviews', type: :system do
     end
 
     context 'for organization' do
-      # let(:condition) do
-      #   { 'ticket.organization_id' => {
-      #     operator:      operator,
-      #     pre_condition: 'specific',
-      #     value:         [101, 102, 103]
-      #   } }
-      # end
-
       context 'for new overview' do
         before do
           visit '/#manage/overviews'
@@ -375,6 +367,62 @@ RSpec.describe 'Manage > Overviews', type: :system do
           it_behaves_like 'previewing the correct ticket for multiple selected objects'
         end
       end
+    end
+  end
+
+  # https://github.com/zammad/zammad/issues/4140
+  context 'checking form validation' do
+    shared_examples 'showing the error message if roles are empty' do
+      it 'shows an error message if roles are empty' do
+        in_modal disappears: false do
+          wait.until do
+            page.has_css?('.has-error')
+            find('.has-error').has_content?('is required')
+          end
+        end
+      end
+    end
+
+    context 'when new overview is created' do
+      before do
+        visit '/#manage/overviews'
+        click_on 'New Overview'
+
+        in_modal disappears: false do
+          fill_in 'name', with: 'dummy'
+          click_on 'Submit'
+        end
+      end
+
+      include_examples 'showing the error message if roles are empty'
+    end
+
+    context 'when existing overview is edited' do
+      let(:overview) { create(:overview, role_ids: [role_id]) }
+      let(:role_id)  { Role.find_by(name: 'Agent').id }
+
+      before do
+        overview
+
+        visit '/#manage/overviews'
+
+        within '.table-overview .js-tableBody' do
+          find("tr[data-id='#{overview.id}']   td.table-draggable").click
+        end
+
+        in_modal disappears: false do
+          # delete the role and wait for the help message to appear
+          find("div[data-attribute-name='role_ids'] div.js-selected div[data-value='#{role_id}']").click
+
+          wait.until do
+            find("div[data-attribute-name='role_ids'] div.u-placeholder").has_content?('Nothing selected')
+          end
+
+          click_on 'Submit'
+        end
+      end
+
+      include_examples 'showing the error message if roles are empty'
     end
   end
 end

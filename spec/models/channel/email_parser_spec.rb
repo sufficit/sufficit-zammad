@@ -128,7 +128,7 @@ RSpec.describe Channel::EmailParser, type: :model do
 
         context 'when no channel is given but a group with the :to address exists' do
           let!(:email_address) { create(:email_address, email: 'baz@qux.net', channel: nil) }
-          let!(:group) { create(:group, name: 'baz headquarter', email_address: email_address) }
+          let!(:group)         { create(:group, name: 'baz headquarter', email_address: email_address) }
           let!(:channel) do
             channel = create(:email_channel, group: group)
             email_address.update(channel: channel)
@@ -159,8 +159,8 @@ RSpec.describe Channel::EmailParser, type: :model do
 
         context 'when from address matches an existing agent customer' do
           let!(:agent_customer) { create(:agent_and_customer, email: 'foo@bar.com') }
-          let!(:ticket) { create(:ticket, customer: agent_customer) }
-          let!(:raw_email) { <<~RAW.chomp }
+          let!(:ticket)         { create(:ticket, customer: agent_customer) }
+          let!(:raw_email)      { <<~RAW.chomp }
             From: foo@bar.com
             To: myzammad@example.com
             Subject: [#{Setting.get('ticket_hook') + Setting.get('ticket_hook_divider') + ticket.number}] test
@@ -299,7 +299,7 @@ RSpec.describe Channel::EmailParser, type: :model do
             Content-Type: multipart/mixed; boundary="Apple-Mail=_ED77AC8D-FB6F-40E5-8FBE-D41FF5E1BAF2"
             Subject: no reference
             Date: Sun, 30 Aug 2015 23:20:54 +0200
-            To: Martin Edenhofer <me@znuny.com>
+            To: Martin Edenhofer <me@zammad.com>
             Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
             X-Mailer: Apple Mail (2.2104)
 
@@ -329,7 +329,7 @@ RSpec.describe Channel::EmailParser, type: :model do
             Content-Type: multipart/mixed; boundary="Apple-Mail=_ED77AC8D-FB6F-40E5-8FBE-D41FF5E1BAF2"
             Subject: no reference
             Date: Sun, 30 Aug 2015 23:20:54 +0200
-            To: Martin Edenhofer <me@znuny.com>
+            To: Martin Edenhofer <me@zammad.com>
             Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
             X-Mailer: Apple Mail (2.2104)
 
@@ -359,7 +359,7 @@ RSpec.describe Channel::EmailParser, type: :model do
             Content-Type: multipart/mixed; boundary="Apple-Mail=_ED77AC8D-FB6F-40E5-8FBE-D41FF5E1BAF2"
             Subject: no reference
             Date: Sun, 30 Aug 2015 23:20:54 +0200
-            To: Martin Edenhofer <me@znuny.com>
+            To: Martin Edenhofer <me@zammad.com>
             Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
             X-Mailer: Apple Mail (2.2104)
 
@@ -389,7 +389,7 @@ RSpec.describe Channel::EmailParser, type: :model do
             Content-Type: multipart/mixed; boundary="Apple-Mail=_ED77AC8D-FB6F-40E5-8FBE-D41FF5E1BAF2"
             Subject: no reference
             Date: Sun, 30 Aug 2015 23:20:54 +0200
-            To: Martin Edenhofer <me@znuny.com>
+            To: Martin Edenhofer <me@zammad.com>
             Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2104\))
             X-Mailer: Apple Mail (2.2104)
 
@@ -431,7 +431,7 @@ RSpec.describe Channel::EmailParser, type: :model do
             From: me@example.com
             To: customer@example.com
             Subject: no reference
-            References: <DA918CD1-BE9A-4262-ACF6-5001E59291B6@znuny.com> #{article.message_id} <DA918CD1-BE9A-4262-ACF6-5001E59291XX@znuny.com>
+            References: <DA918CD1-BE9A-4262-ACF6-5001E59291B6@zammad.com> #{article.message_id} <DA918CD1-BE9A-4262-ACF6-5001E59291XX@zammad.com>
 
             Lorem ipsum dolor
           RAW
@@ -919,7 +919,7 @@ RSpec.describe Channel::EmailParser, type: :model do
 
         context 'when group has follow_up_assignment true' do
           let(:group) { create(:group, follow_up_assignment: true) }
-          let(:agent) { create(:agent, groups: [group]) }
+          let(:agent)  { create(:agent, groups: [group]) }
           let(:ticket) { create(:ticket, state_name: 'closed', owner: agent, group: group) }
 
           it 'does not change the owner' do
@@ -930,7 +930,7 @@ RSpec.describe Channel::EmailParser, type: :model do
 
         context 'when group has follow_up_assignment false' do
           let(:group) { create(:group, follow_up_assignment: false) }
-          let(:agent) { create(:agent, groups: [group]) }
+          let(:agent)  { create(:agent, groups: [group]) }
           let(:ticket) { create(:ticket, state_name: 'closed', owner: agent, group: group) }
 
           it 'does change the owner' do
@@ -977,7 +977,7 @@ RSpec.describe Channel::EmailParser, type: :model do
     describe 'formatting to/from addresses' do
       # see https://github.com/zammad/zammad/issues/2198
       context 'when sender address contains spaces (#2198)' do
-        let(:mail_file) { Rails.root.join('test/data/mail/mail071.box') }
+        let(:mail_file)    { Rails.root.join('test/data/mail/mail071.box') }
         let(:sender_email) { 'powerquadrantsystem@example.com' }
 
         it 'removes them before creating a new user' do
@@ -1016,7 +1016,7 @@ RSpec.describe Channel::EmailParser, type: :model do
       end
     end
 
-    describe 'signature detection' do
+    describe 'signature detection', performs_jobs: true do
       let(:raw_mail) { header + File.read(message_file) }
 
       let(:header) { <<~HEADER }
@@ -1032,7 +1032,7 @@ RSpec.describe Channel::EmailParser, type: :model do
         it 'does not detect signatures' do
           described_class.new.process({}, raw_mail)
 
-          expect { Scheduler.worker(true) }
+          expect { perform_enqueued_jobs }
             .to not_change { Ticket.last.customer.preferences[:signature_detection] }.from(nil)
             .and not_change { Ticket.last.articles.first.preferences[:signature_detection] }.from(nil)
         end
@@ -1050,14 +1050,14 @@ RSpec.describe Channel::EmailParser, type: :model do
         it 'sets detected signature on user (in a background job)' do
           described_class.new.process({}, raw_mail)
 
-          expect { Scheduler.worker(true) }
+          expect { perform_enqueued_jobs }
             .to change { Ticket.last.customer.preferences[:signature_detection] }
         end
 
         it 'sets line of detected signature on article (in a background job)' do
           described_class.new.process({}, raw_mail)
 
-          expect { Scheduler.worker(true) }
+          expect { perform_enqueued_jobs }
             .to change { Ticket.last.articles.first.preferences[:signature_detection] }.to(20)
         end
       end
@@ -1090,7 +1090,7 @@ RSpec.describe Channel::EmailParser, type: :model do
     describe 'attachment handling' do
       context 'with header "Content-Transfer-Encoding: x-uuencode"' do
         let(:mail_file) { Rails.root.join('test/data/mail/mail078-content_transfer_encoding_x_uuencode.box') }
-        let(:article) { described_class.new.process({}, raw_mail).second }
+        let(:article)   { described_class.new.process({}, raw_mail).second }
 
         it 'does not raise RuntimeError' do
           expect { described_class.new.process({}, raw_mail) }
@@ -1152,7 +1152,7 @@ RSpec.describe Channel::EmailParser, type: :model do
       context 'when image is large but not resizable' do
         let(:mail_file) { Rails.root.join('test/data/mail/mail079.box') }
         let(:attachment) { article.attachments.to_a.find { |i| i.filename == 'a.jpg' } }
-        let(:article) { described_class.new.process({}, raw_mail).second }
+        let(:article)    { described_class.new.process({}, raw_mail).second }
 
         it "doesn't set resizable preference" do
           expect(attachment.filename).to eq('a.jpg')
@@ -1181,7 +1181,7 @@ RSpec.describe Channel::EmailParser, type: :model do
       context 'follow up' do
 
         let(:mail_file) { Rails.root.join('test/data/mail/mail090.box') }
-        let(:ticket) { create(:ticket) }
+        let(:ticket)    { create(:ticket) }
         let!(:external_sync) do
           create(:external_sync,
                  source:    'ServiceNow-example@service-now.com',
@@ -1288,8 +1288,8 @@ RSpec.describe Channel::EmailParser, type: :model do
     end
 
     context 'for “delivery failed” notifications (a.k.a. bounce messages)' do
-      let(:ticket) { article.ticket }
-      let(:article) { create(:ticket_article, sender_name: 'Agent', message_id: message_id) }
+      let(:ticket)     { article.ticket }
+      let(:article)    { create(:ticket_article, sender_name: 'Agent', message_id: message_id) }
       let(:message_id) { raw_mail[%r{(?<=^(References|Message-ID): )\S*}] }
 
       context 'with future retries (delayed)' do
@@ -1514,7 +1514,7 @@ RSpec.describe Channel::EmailParser, type: :model do
       context 'when gives address matches exactly' do
 
         let(:group) { create(:group) }
-        let(:channel) { create(:email_channel, group: group) }
+        let(:channel)        { create(:email_channel, group: group) }
         let!(:email_address) { create(:email_address, channel: channel) }
 
         it 'returns the Channel Group' do
@@ -1525,8 +1525,8 @@ RSpec.describe Channel::EmailParser, type: :model do
       context 'when gives address matches key insensitive' do
 
         let(:group) { create(:group) }
-        let(:channel) { create(:email_channel, group: group) }
-        let(:address) { 'KeyInsensitive@example.COM' }
+        let(:channel)        { create(:email_channel, group: group) }
+        let(:address)        { 'KeyInsensitive@example.COM' }
         let!(:email_address) { create(:email_address, email: address, channel: channel) }
 
         it 'returns the Channel Group' do
@@ -1545,7 +1545,7 @@ RSpec.describe Channel::EmailParser, type: :model do
 
       context 'when Channel has no Group assigned' do
 
-        let(:channel) { create(:email_channel, group: nil) }
+        let(:channel)        { create(:email_channel, group: nil) }
         let!(:email_address) { create(:email_address, channel: channel) }
 
         it 'returns nil' do

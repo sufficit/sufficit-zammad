@@ -32,7 +32,7 @@ class TicketPolicy < ApplicationPolicy
   def ensure_group!
     return if record.group_id
 
-    raise Exceptions::UnprocessableEntity, __("Group can't be blank")
+    raise Exceptions::UnprocessableEntity, __("The required value 'group_id' is missing.")
   end
 
   def follow_up?
@@ -80,7 +80,7 @@ class TicketPolicy < ApplicationPolicy
   def shared_organization?
     return false if record.organization_id.blank?
     return false if user.organization_id.blank?
-    return false if record.organization_id != user.organization_id
+    return false if !user.organization_id?(record.organization_id)
 
     record.organization.shared?
   end

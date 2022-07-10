@@ -7,7 +7,7 @@ require 'system/examples/core_workflow_examples'
 RSpec.describe 'Ticket zoom', type: :system do
 
   describe 'owner auto-assignment', authenticated_as: :authenticate do
-    let!(:ticket) { create(:ticket, group: Group.find_by(name: 'Users'), state: Ticket::State.find_by(name: 'new')) }
+    let!(:ticket)       { create(:ticket, group: Group.find_by(name: 'Users'), state: Ticket::State.find_by(name: 'new')) }
     let!(:session_user) { User.find_by(login: 'admin@example.com') }
 
     context 'for agent disabled' do
@@ -138,16 +138,14 @@ RSpec.describe 'Ticket zoom', type: :system do
     let(:attachment_name) { 'some_file.txt' }
 
     before do
-      Store.add(
-        object:        'Ticket::Article',
-        o_id:          article.id,
-        data:          'some content',
-        filename:      attachment_name,
-        preferences:   {
-          'Content-Type' => 'text/plain',
-        },
-        created_by_id: 1,
-      )
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article.id,
+             data:        'some content',
+             filename:    attachment_name,
+             preferences: {
+               'Content-Type' => 'text/plain',
+             })
     end
 
     context 'article was already forwarded once' do
@@ -171,6 +169,75 @@ RSpec.describe 'Ticket zoom', type: :system do
         within('.js-writeArea') do
           expect(page).to have_text attachment_name
         end
+      end
+    end
+  end
+
+  context 'when ticket has a calendar attachment' do
+    let(:group) { Group.find_by(name: 'Users') }
+    let(:store_file_content_name) do
+      File.read(Rails.root.join('spec/fixtures/files/calendar/basic.ics'))
+    end
+    let(:store_file_name) { 'basic.ics' }
+    let(:expected_event) do
+      {
+        'title'       => 'Test Summary',
+        'location'    => 'https://us.zoom.us/j/example?pwd=test',
+        'attendees'   => ['M.bob@example.com', 'J.doe@example.com'],
+        'organizer'   => 'f.sample@example.com',
+        'description' => 'Test description'
+      }
+    end
+    let(:ticket)          { create(:ticket, group: group) }
+    let(:article)         { create(:ticket_article, ticket: ticket) }
+
+    before do
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article.id,
+             data:        store_file_content_name,
+             filename:    store_file_name,
+             preferences: {
+               'Content-Type' => 'text/calendar',
+             })
+
+      visit "#ticket/zoom/#{ticket.id}"
+    end
+
+    it 'has an attached calendar file' do
+      within :active_ticket_article, article do
+        within '.attachment.file-calendar' do
+          expect(page).to have_text(store_file_name)
+        end
+      end
+    end
+
+    it 'shows a preview button for the calendar file' do
+      within :active_ticket_article, article do
+        within '.attachment.file-calendar' do
+          expect(page).to have_button('Preview')
+        end
+      end
+    end
+
+    context 'when calendar preview button is clicked' do
+      before do
+        within :active_ticket_article, article do
+          within '.attachment.file-calendar' do
+            click_button 'Preview'
+          end
+        end
+      end
+
+      it 'shows calender data in the model' do
+        in_modal do
+          expect(page).to have_text expected_event['title']
+          expect(page).to have_text expected_event['location']
+          expected_event['attendees'].each { |attendee| expect(page).to have_text attendee }
+          expect(page).to have_text expected_event['organizer']
+          expect(page).to have_text expected_event['description']
+        end
+        click '.js-cancel'
       end
     end
   end
@@ -513,9 +580,9 @@ RSpec.describe 'Ticket zoom', type: :system do
   context 'S/MIME active', authenticated_as: :authenticate do
     let(:system_email_address) { 'smime1@example.com' }
     let(:email_address) { create(:email_address, email: system_email_address) }
-    let(:group) { create(:group, email_address: email_address) }
-    let(:agent_groups) { [group] }
-    let(:agent) { create(:agent, groups: agent_groups) }
+    let(:group)         { create(:group, email_address: email_address) }
+    let(:agent_groups)  { [group] }
+    let(:agent)         { create(:agent, groups: agent_groups) }
 
     let(:sender_email_address) { 'smime2@example.com' }
     let(:customer) { create(:customer, email: sender_email_address) }
@@ -747,12 +814,16 @@ RSpec.describe 'Ticket zoom', type: :system do
 
         it "security defaults sign: #{sign}, encrypt: #{encrypt}" do
           within(:active_content) do
-            encrypt_button = find('.js-securityEncrypt')
-            sign_button    = find('.js-securitySign')
-
-            active_button_class = '.btn--active'
-            expect(encrypt_button.matches_css?(active_button_class)).to be(encrypt)
-            expect(sign_button.matches_css?(active_button_class)).to be(sign)
+            if sign
+              expect(page).to have_css('.js-securitySign.btn--active')
+            else
+              expect(page).to have_no_css('.js-securitySign.btn--active')
+            end
+            if encrypt
+              expect(page).to have_css('.js-securityEncrypt.btn--active')
+            else
+              expect(page).to have_no_css('.js-securityEncrypt.btn--active')
+            end
           end
         end
       end
@@ -912,7 +983,7 @@ RSpec.describe 'Ticket zoom', type: :system do
   describe 'forwarding article with an image' do
     let(:ticket_article_body) do
       filename = 'squares.png'
-      file     = File.binread(Rails.root.join("spec/fixtures/image/#{filename}"))
+      file     = File.binread(Rails.root.join("spec/fixtures/files/image/#{filename}"))
       ext      = File.extname(filename)[1...]
       base64   = Base64.encode64(file).delete("\n")
 
@@ -1039,7 +1110,7 @@ RSpec.describe 'Ticket zoom', type: :system do
 
     context 'as customer' do
       let!(:current_user) { create(:customer) }
-      let(:ticket) { create(:ticket, customer: current_user) }
+      let(:ticket)        { create(:ticket, customer: current_user) }
 
       include_examples 'shows attributes and values for customer view'
     end
@@ -1139,7 +1210,7 @@ RSpec.describe 'Ticket zoom', type: :system do
 
     context 'as agent+customer but only customer for the ticket (no agent access)' do
       let!(:current_user) { create(:agent_and_customer) }
-      let(:ticket) { create(:ticket, customer: current_user) }
+      let(:ticket)        { create(:ticket, customer: current_user) }
 
       include_examples 'shows attributes and values for customer view'
     end
@@ -1322,7 +1393,7 @@ RSpec.describe 'Ticket zoom', type: :system do
       # click in the upper most upper left corner of the article create textbox
       # (that works for both Firefox and Chrome)
       # to avoid clicking on attachment upload
-      find('.js-writeArea').click({ x: 5, y: 5 })
+      find('.js-writeArea').click(x: 5, y: 5)
 
       # wait for propagateOpenTextarea to be completed
       find('.attachmentPlaceholder-label').in_fixed_position
@@ -1337,16 +1408,14 @@ RSpec.describe 'Ticket zoom', type: :system do
 
       # create a on-the-fly article with attachment that will get pushed to open browser
       article1 = create(:ticket_article, ticket: ticket)
-      Store.add(
-        object:        'Ticket::Article',
-        o_id:          article1.id,
-        data:          'some content',
-        filename:      'some_file.txt',
-        preferences:   {
-          'Content-Type' => 'text/plain',
-        },
-        created_by_id: 1,
-      )
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article1.id,
+             data:        'some content',
+             filename:    'some_file.txt',
+             preferences: {
+               'Content-Type' => 'text/plain',
+             })
 
       # wait for article to be added to the page
       expect(page).to have_css('.ticket-article-item', count: 2)
@@ -1379,9 +1448,13 @@ RSpec.describe 'Ticket zoom', type: :system do
 
   describe 'mentions' do
     context 'when logged in as agent' do
-      let(:ticket) { create(:ticket, group: Group.find_by(name: 'Users')) }
+      let(:ticket)       { create(:ticket, group: Group.find_by(name: 'Users')) }
       let!(:other_agent) { create(:agent, groups: [Group.find_by(name: 'Users')]) }
+<<<<<<< HEAD
       let!(:admin) { User.find_by(email: 'admin@example.com') }
+=======
+      let!(:admin)       { User.find_by(email: 'admin@example.com') }
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
       it 'can subscribe and unsubscribe' do
         ensure_websocket do
@@ -1428,11 +1501,9 @@ RSpec.describe 'Ticket zoom', type: :system do
       ticket.update(pending_time: 1.day.from_now, state: Ticket::State.lookup(name: 'pending reminder'))
 
       visit "ticket/zoom/#{ticket.id}"
-      sleep 3 # wait for popover killer to pass
     end
 
     let(:ticket) { Ticket.first }
-    let(:elem)   { find('.js-timepicker') }
 
     # has to run asynchronously to keep both Firefox and Safari
     # https://github.com/zammad/zammad/issues/3414
@@ -1440,15 +1511,20 @@ RSpec.describe 'Ticket zoom', type: :system do
     context 'when clicking timepicker component' do
       it 'in the first half, hours selected' do
         within :active_content do
-          elem.click({ x: 10, y: 20 })
-          expect(elem).to have_selection(0..2)
+          # timepicker messes with the dom, so don't cache the element and wait a bit.
+          sleep 1
+          find('.js-timepicker').click(x: -10, y: 20)
+          sleep 0.5
+          expect(find('.js-timepicker')).to have_selection(0..2)
         end
       end
 
       it 'in the second half, minutes selected' do
         within :active_content do
-          elem.click({ x: 35, y: 20 })
-          expect(elem).to have_selection(3..5)
+          sleep 1
+          find('.js-timepicker').click(x: 10, y: 20)
+          sleep 0.5
+          expect(find('.js-timepicker')).to have_selection(3..5)
         end
       end
     end
@@ -1467,7 +1543,7 @@ RSpec.describe 'Ticket zoom', type: :system do
   end
 
   describe 'Article ID URL / link' do
-    let(:ticket) { create(:ticket, group: Group.first) }
+    let(:ticket)   { create(:ticket, group: Group.first) }
     let!(:article) { create(:'ticket/article', ticket: ticket) }
 
     it 'shows Article direct link' do
@@ -1484,7 +1560,7 @@ RSpec.describe 'Ticket zoom', type: :system do
 
     context 'when multiple Articles are present' do
       let(:article_count) { 20 }
-      let(:article_top) { ticket.articles.second }
+      let(:article_top)    { ticket.articles.second }
       let(:article_middle) { ticket.articles[ article_count / 2 ] }
       let(:article_bottom) { ticket.articles.last }
 
@@ -1555,7 +1631,7 @@ RSpec.describe 'Ticket zoom', type: :system do
 
   describe 'Macros', authenticated_as: :authenticate do
     let(:macro_body) { 'macro <b>body</b>' }
-    let(:macro) { create :macro, perform: { 'article.note' => { 'body' => macro_body, 'internal' => 'true', 'subject' => 'macro note' } } }
+    let(:macro)   { create :macro, perform: { 'article.note' => { 'body' => macro_body, 'internal' => 'true', 'subject' => 'macro note' } } }
     let!(:ticket) { create(:ticket, group: Group.find_by(name: 'Users')) }
 
     def authenticate
@@ -1597,6 +1673,32 @@ RSpec.describe 'Ticket zoom', type: :system do
         fill_in 'maxtest', with: 'hellu'
         expect(page.find_field('maxtest').value).to eq('hel')
       end
+    end
+  end
+
+  describe 'Update of ticket links', authenticated_as: :authenticate do
+    let(:ticket1) { create(:ticket, group: Group.find_by(name: 'Users')) }
+    let(:ticket2) { create(:ticket, group: Group.find_by(name: 'Users')) }
+
+    def authenticate
+      ticket1
+      ticket2
+      create(:link, from: ticket1, to: ticket2)
+      true
+    end
+
+    it 'does update the state of the ticket links' do
+      visit "ticket/zoom/#{ticket1.id}"
+
+      # check title changes
+      expect(page).to have_text(ticket2.title)
+      ticket2.update(title: 'super new title')
+      expect(page).to have_text(ticket2.reload.title)
+
+      # check state changes
+      expect(page).to have_css('div.links .tasks svg.open')
+      ticket2.update(state: Ticket::State.find_by(name: 'closed'))
+      expect(page).to have_css('div.links .tasks svg.closed')
     end
   end
 
@@ -1716,16 +1818,16 @@ RSpec.describe 'Ticket zoom', type: :system do
     end
   end
 
-  context 'Sidebar - Open & Closed Tickets', searchindex: true, authenticated_as: :authenticate do
+  context 'Sidebar - Open & Closed Tickets', searchindex: true, authenticated_as: :authenticate, performs_jobs: true do
     let(:customer) { create(:customer, :with_org) }
-    let(:ticket_open) { create(:ticket, group: Group.find_by(name: 'Users'), customer: customer, title: SecureRandom.uuid) }
+    let(:ticket_open)   { create(:ticket, group: Group.find_by(name: 'Users'), customer: customer, title: SecureRandom.uuid) }
     let(:ticket_closed) { create(:ticket, group: Group.find_by(name: 'Users'), customer: customer, state: Ticket::State.find_by(name: 'closed'), title: SecureRandom.uuid) }
 
     def authenticate
       ticket_open
       ticket_closed
       configure_elasticsearch(required: true, rebuild: true)
-      Scheduler.worker(true)
+      perform_enqueued_jobs
       true
     end
 
@@ -1747,8 +1849,8 @@ RSpec.describe 'Ticket zoom', type: :system do
     context 'members section' do
 
       let(:customers) { create_list(:customer, 50, organization: organization) }
-      let(:ticket) { create(:ticket, group: Group.find_by(name: 'Users'), customer: customers.first) }
-      let(:members) { organization.members.order(id: :asc) }
+      let(:ticket)    { create(:ticket, group: Group.find_by(name: 'Users'), customer: customers.first) }
+      let(:members)   { organization.members.order(id: :asc) }
 
       before do
         visit "#ticket/zoom/#{ticket.id}"
@@ -2124,7 +2226,7 @@ RSpec.describe 'Ticket zoom', type: :system do
   end
 
   describe 'Unable to close tickets in certran cases if core workflow is used #3710', authenticated_as: :authenticate, db_strategy: :reset do
-    let!(:ticket) { create(:ticket, group: Group.find_by(name: 'Users')) }
+    let!(:ticket)    { create(:ticket, group: Group.find_by(name: 'Users')) }
     let(:field_name) { SecureRandom.uuid }
     let(:field) do
       create :object_manager_attribute_text, name: field_name, display: field_name, screens: {
@@ -2253,7 +2355,7 @@ RSpec.describe 'Ticket zoom', type: :system do
 
     context 'when 2 users are in 2 different tickets' do
       let(:ticket2) { create(:ticket, group: Group.find_by(name: 'Users')) }
-      let(:agent2) { create(:agent, password: 'test', groups: [Group.find_by(name: 'Users')]) }
+      let(:agent2)  { create(:agent, password: 'test', groups: [Group.find_by(name: 'Users')]) }
 
       before do
         using_session(:second_browser) do
@@ -2292,6 +2394,7 @@ RSpec.describe 'Ticket zoom', type: :system do
     end
 
     it 'does open and close by usage' do
+      find('.js-writeArea').click
       find('.js-textarea').send_keys(' ')
       expect(page).to have_selector('form.article-add.is-open')
       find('input#global-search').click
@@ -2403,9 +2506,9 @@ RSpec.describe 'Ticket zoom', type: :system do
     end
   end
 
-  describe 'Multiselect displaying and saving', authenticated_as: :authenticate, db_strategy: :reset do
+  describe 'Multiselect displaying and saving', authenticated_as: :authenticate, db_strategy: :reset, mariadb: true do
     let(:field_name) { SecureRandom.uuid }
-    let(:ticket) { create(:ticket, group: Group.find_by(name: 'Users'), field_name => %w[key_2 key_3]) }
+    let(:ticket)     { create(:ticket, group: Group.find_by(name: 'Users'), field_name => %w[key_2 key_3]) }
 
     def authenticate
       create :object_manager_attribute_multiselect, name: field_name, display: field_name, screens: {
@@ -2486,7 +2589,7 @@ RSpec.describe 'Ticket zoom', type: :system do
       end
 
       it 'does set the article internal and external for new article' do
-        page.find('.js-writeArea').click({ x: 5, y: 5 })
+        page.find('.js-writeArea').click(x: 5, y: 5)
         expect(page).to have_css('.article-new .icon-internal')
         expect(page).to have_no_css('.article-new .icon-public')
 
@@ -2509,18 +2612,23 @@ RSpec.describe 'Ticket zoom', type: :system do
       it 'does set the article internal and external for existing articles' do
         expect { page.find('.js-ArticleAction[data-type=internal]').click }.to change { article.reload.internal }.to(true)
         page.find('.js-ArticleAction[data-type=public]').click
-        expect(page).to have_css('.modal-dialog')
-        expect { find('.modal-dialog button[type=submit]').click }.to change { article.reload.internal }.to(false)
+
+        in_modal do
+          expect { find('button[type=submit]').click }.to change { article.reload.internal }.to(false)
+        end
       end
 
       it 'does set the article internal and external for new article' do
-        page.find('.js-writeArea').click({ x: 5, y: 5 })
+        page.find('.js-writeArea').click(x: 5, y: 5)
         expect(page).to have_css('.article-new .icon-internal')
         expect(page).to have_no_css('.article-new .icon-public')
 
         page.find('.article-new .icon-internal').click
-        expect(page).to have_css('.modal-dialog')
-        find('.modal-dialog button[type=submit]').click
+
+        in_modal do
+          find('button[type=submit]').click
+        end
+
         expect(page).to have_no_css('.article-new .icon-internal')
         expect(page).to have_css('.article-new .icon-public')
 
@@ -2545,7 +2653,6 @@ RSpec.describe 'Ticket zoom', type: :system do
     end
 
     it 'does show the extended escalation information' do
-      sleep 4 # wait for popup killer
       page.find('.escalation-popover').hover
       expect(page).to have_text('FIRST RESPONSE TIME')
       expect(page).to have_text('UPDATE TIME')
@@ -2559,16 +2666,14 @@ RSpec.describe 'Ticket zoom', type: :system do
     let(:article2)         { create(:ticket_article, ticket: ticket) }
 
     def attachment_add(article, filename)
-      Store.add(
-        object:        'Ticket::Article',
-        o_id:          article.id,
-        data:          "content #{filename}",
-        filename:      filename,
-        preferences:   {
-          'Content-Type' => 'text/plain',
-        },
-        created_by_id: 1,
-      )
+      create(:store,
+             object:      'Ticket::Article',
+             o_id:        article.id,
+             data:        "content #{filename}",
+             filename:    filename,
+             preferences: {
+               'Content-Type' => 'text/plain',
+             })
     end
 
     def authenticate
@@ -2622,11 +2727,44 @@ RSpec.describe 'Ticket zoom', type: :system do
     end
   end
 
+<<<<<<< HEAD
+=======
+  context 'Assign user to multiple organizations #1573', authenticated_as: :authenticate do
+    let(:organizations) { create_list(:organization, 20) }
+    let(:customer) { create(:customer, organization: organizations[0], organizations: organizations[1..]) }
+    let(:ticket)   { create(:ticket, group: Group.first, customer: customer) }
+
+    def authenticate
+      customer
+      true
+    end
+
+    before do
+      visit "#ticket/zoom/#{ticket.id}"
+      click '.tabsSidebar-tab[data-tab=customer]'
+    end
+
+    it 'shows only first 3 organizations and loads more on demand' do
+      expect(page).to have_text(organizations[1].name)
+      expect(page).to have_text(organizations[2].name)
+      expect(page).to have_no_text(organizations[10].name)
+
+      click '.js-showMoreOrganizations a'
+
+      expect(page).to have_text(organizations[10].name)
+    end
+  end
+
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
   describe 'Image preview #4044' do
     let(:ticket) { create(:ticket, group: Group.find_by(name: 'Users')) }
 
     let(:image_as_base64) do
+<<<<<<< HEAD
       file = File.binread(Rails.root.join('spec/fixtures/image/squares.png'))
+=======
+      file = File.binread(Rails.root.join('spec/fixtures/files/image/squares.png'))
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
       Base64.encode64(file).delete("\n")
     end
 

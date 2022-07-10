@@ -20,11 +20,16 @@ RSpec.describe Generators::TranslationCatalog::Extractor::Frontend do
         App.i18n.translatePlain("Double quoted String with '")
         @T('T')
         @Ti('Ti')
+        i18n.t('new tech stack', ...)
+        $t('global t in tech stack', ...)
+        __(
+          'Indented string.',
+        )
       CODE
     end
 
     it 'finds the correct strings' do
-      expect(result_strings).to eq(Set['__ String', 'String', 'Inline string', "Double quoted String with '", 'T', 'Ti'])
+      expect(result_strings).to eq(Set['__ String', 'String', 'Inline string', "Double quoted String with '", 'T', 'Ti', 'new tech stack', 'global t in tech stack', 'Indented string.'])
     end
   end
 

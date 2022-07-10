@@ -264,10 +264,250 @@ QUnit.test("form elements check", assert => {
   });
   var params = App.ControllerForm.params(el)
   var test_params = {
-    tree_select_search: ['aa::aab', 'aa::aac::33', 'bb'],
+    tree_select_search: ['aa::aab', 'bb', 'aa::aac::33'],
+    tree_select_search_completion: ""
   }
   assert.deepEqual(params, test_params, 'form param check')
 
+  $('#forms').append('<hr><h1>form elements check / tree_select multiple / 3 selected</h1><form id="form6"></form>')
+  var el = $('#form6')
+  new App.ControllerForm({
+    el:        el,
+    model:     {
+      "configure_attributes": [
+        {
+          "name": "tree_select",
+          "display": "tree_select",
+          "tag": "tree_select",
+          "null": true,
+          "multiple": true,
+          "translate": true,
+          "value": ['aa::aab', 'bb', 'aa::aac::33'],
+          "options": [
+            {
+              "value": "aa",
+              "name": "yes",
+              "children": [
+                  {
+                    "value": "aa::aaa",
+                    "name": "yes1",
+                  },
+                  {
+                    "value": "aa::aab",
+                    "name": "yes2",
+                  },
+                  {
+                    "value": "aa::aac",
+                    "name": "yes3",
+                    "children": [
+                        {
+                          "value": "aa::aaa::11",
+                          "name": "11",
+                        },
+                        {
+                          "value": "aa::aa1::22",
+                          "name": "22",
+                        },
+                        {
+                          "value": "aa::aac::33",
+                          "name": "33",
+                        },
+                    ]
+                  },
+              ]
+            },
+            {
+              "value": "bb",
+              "name": "bb (comment)",
+              "children": [
+                  {
+                    "value": "bb::bba",
+                    "name": "yes11",
+                  },
+                  {
+                    "value": "bb::bbb",
+                    "name": "yes22",
+                  },
+                  {
+                    "value": "bb::bbc",
+                    "name": "yes33",
+                  },
+              ]
+            },
+          ],
+        }
+      ]
+    },
+    autofocus: true
+  });
+  var params = App.ControllerForm.params(el)
+  var test_params = {
+    tree_select: ['aa::aab', 'bb', 'aa::aac::33'],
+    tree_select_completion: "",
+  }
+  assert.deepEqual(params, test_params, 'form param check')
+
+  $('#forms').append('<hr><h1>form elements check / tree_select multiple / 1 selected</h1><form id="form7"></form>')
+  var el = $('#form7')
+  new App.ControllerForm({
+    el:        el,
+    model:     {
+      "configure_attributes": [
+        {
+          "name": "tree_select",
+          "display": "tree_select",
+          "tag": "tree_select",
+          "null": true,
+          "multiple": true,
+          "translate": true,
+          "value": ['aa::aab'],
+          "options": [
+            {
+              "value": "aa",
+              "name": "yes",
+              "children": [
+                  {
+                    "value": "aa::aaa",
+                    "name": "yes1",
+                  },
+                  {
+                    "value": "aa::aab",
+                    "name": "yes2",
+                  },
+                  {
+                    "value": "aa::aac",
+                    "name": "yes3",
+                    "children": [
+                        {
+                          "value": "aa::aaa::11",
+                          "name": "11",
+                        },
+                        {
+                          "value": "aa::aa1::22",
+                          "name": "22",
+                        },
+                        {
+                          "value": "aa::aac::33",
+                          "name": "33",
+                        },
+                    ]
+                  },
+              ]
+            },
+            {
+              "value": "bb",
+              "name": "bb (comment)",
+              "children": [
+                  {
+                    "value": "bb::bba",
+                    "name": "yes11",
+                  },
+                  {
+                    "value": "bb::bbb",
+                    "name": "yes22",
+                  },
+                  {
+                    "value": "bb::bbc",
+                    "name": "yes33",
+                  },
+              ]
+            },
+          ],
+        }
+      ]
+    },
+    autofocus: true
+  });
+  var params = App.ControllerForm.params(el)
+  var test_params = {
+    tree_select: ['aa::aab'],
+    tree_select_completion: "",
+  }
+  assert.deepEqual(params, test_params, 'form param check')
+});
+
+QUnit.test("ui elements check", assert => {
+
+  attribute =  {
+    "name": "tree_select_search",
+    "display": "tree_select_search",
+    "tag": "tree_select_search",
+    "null": true,
+    "translate": true,
+    "value": ['bb::bba', 'bb::bbb'],
+    "multiple": true,
+    "options": [
+      {
+        "value": "aa",
+        "name": "yes",
+        "children": [
+            {
+              "value": "aa::aaa",
+              "name": "yes1",
+            },
+            {
+              "value": "aa::aab",
+              "name": "yes2",
+            },
+        ]
+      },
+      {
+        "value": "bb",
+        "name": "bb (comment)",
+        "children": [
+            {
+              "value": "bb::bba",
+              "name": "yes11",
+            },
+            {
+              "value": "bb::bbb",
+              "name": "yes22",
+            },
+        ]
+      },
+    ],
+  };
+
+  options = [
+    {
+      "value": "aa",
+      "name": "yes",
+      "children": [
+          {
+            "value": "aa::aaa",
+            "name": "yes1",
+          },
+          {
+            "value": "aa::aab",
+            "name": "yes2",
+          },
+      ]
+    },
+    {
+      "value": "bb",
+      "name": "bb (comment)",
+      "children": [
+          {
+            "value": "bb::bba",
+            "name": "yes11",
+          },
+          {
+            "value": "bb::bbb",
+            "name": "yes22",
+          },
+      ]
+    }
+  ]
+
+  element = App.UiElement.tree_select_search.render(attribute)
+  assert.deepEqual(attribute.options, options, 'options tree_select_search')
+
+  attribute.name = 'tree_select'
+  attribute.display = 'tree_select'
+  attribute.tag = 'tree_select'
+
+  element = App.UiElement.tree_select.render(attribute)
+  assert.deepEqual(attribute.options, options, 'options tree_select')
 });
 
 QUnit.test("ui elements check", assert => {
@@ -415,8 +655,8 @@ QUnit.test("searchable_select submenu and option list check", assert => {
   });
 
   el.find("[name=\"tree_select\"].js-shadow + .js-input").trigger('click')
-  el.find(".searchableSelect .js-optionsList [data-value=\"a\\\\a\"]").mouseenter().trigger('click')
-  el.find(".searchableSelect .js-optionsSubmenu [data-value=\"a\\\\a::aab\"]").mouseenter().trigger('click')
+  el.find(".searchableSelect .js-optionsList [data-value=\"a\\\\a\"] .searchableSelect-option-arrow").mouseenter().trigger('click')
+  el.find(".searchableSelect .js-optionsSubmenu [data-value=\"a\\\\a::aab\"] .searchableSelect-option-text").mouseenter().trigger('click')
   el.find("[name=\"tree_select\"].js-shadow + .js-input").trigger('click')
 
   var params = App.ControllerForm.params(el)

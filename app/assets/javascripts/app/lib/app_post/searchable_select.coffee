@@ -1,21 +1,23 @@
 class App.SearchableSelect extends Spine.Controller
 
   events:
-    'input .js-input':       'onInput'
-    'blur .js-input':        'onBlur'
-    'focus .js-input':       'onFocus'
-    'focus .js-shadow':      'onShadowFocus'
-    'change .js-shadow':     'onShadowChange'
-    'click .js-option':      'selectItem'
-    'click .js-enter':       'navigateIn'
-    'click .js-back':        'navigateOut'
-    'mouseenter .js-option': 'highlightItem'
-    'mouseenter .js-enter':  'highlightItem'
-    'mouseenter .js-back':   'highlightItem'
-    'shown.bs.dropdown':     'onDropdownShown'
-    'hidden.bs.dropdown':    'onDropdownHidden'
-    'keyup .js-input':       'onKeyUp'
-    'click .js-remove':      'removeThisToken'
+    'input .js-input':                                'onInput'
+    'blur .js-input':                                 'onBlur'
+    'focus .js-input':                                'onFocus'
+    'focus .js-shadow':                               'onShadowFocus'
+    'change .js-shadow':                              'onShadowChange'
+    'click .js-option':                               'selectItem'
+    'click .js-option .searchableSelect-option-text': 'selectItem'
+    'click .js-enter .searchableSelect-option-text':  'navigateInOrSelectItem'
+    'click .searchableSelect-option-arrow':           'navigateIn'
+    'click .js-back':                                 'navigateOut'
+    'mouseenter .js-option':                          'highlightItem'
+    'mouseenter .js-enter':                           'highlightItem'
+    'mouseenter .js-back':                            'highlightItem'
+    'shown.bs.dropdown':                              'onDropdownShown'
+    'hidden.bs.dropdown':                             'onDropdownHidden'
+    'keyup .js-input':                                'onKeyUp'
+    'click .js-remove':                               'removeThisToken'
 
   elements:
     '.js-dropdown':               'dropdown'
@@ -49,13 +51,31 @@ class App.SearchableSelect extends Spine.Controller
 
       # create tokens and attribute values
       values = []
+<<<<<<< HEAD
       for dataId in @attribute.value
         if App[relation] && App[relation].exists(dataId)
           name = App[relation].find(dataId).displayName()
           value = dataId
           values.push({name: name, value: value})
+=======
+      if relation
+        for dataId in @attribute.value
+          if App[relation] && App[relation].exists dataId
+            name = App[relation].find(dataId).displayName()
+            value = dataId
+            values.push({name: name, value: value})
+            tokens += App.view('generic/token')(
+              name: name
+              value: value
+              object: relation
+            )
+
+      else
+        for value in @attribute.value
+          values.push({name: value, value: value})
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
           tokens += App.view('generic/token')(
-            name: name
+            name: value
             value: value
           )
 
@@ -66,6 +86,8 @@ class App.SearchableSelect extends Spine.Controller
       options: @renderAllOptions('', @attribute.options, 0)
       submenus: @renderSubmenus(@attribute.options)
       tokens: tokens
+
+    @input.get(0).selectValue = @selectValue
 
     # initial data
     @currentMenu = @findMenuContainingValue(@attribute.value)
@@ -271,20 +293,33 @@ class App.SearchableSelect extends Spine.Controller
     @visiblePart.text('')
     @invisiblePart.text('')
 
+  selectValue: (key, value) =>
+    @input.val value
+    @shadowInput.val key
+
+  navigateInOrSelectItem: (event) ->
+    return @selectItem(event) if @attribute.multiple
+    return @navigateIn(event)
+
   selectItem: (event) ->
-    currentText = event.currentTarget.querySelector('span.searchableSelect-option-text').textContent.trim()
+    currentText = $(event.target).text().trim()
     return if !currentText
 
-    dataId = event.currentTarget.getAttribute('data-value')
+    dataId = $(event.target).closest('li').data('value')
     if @attribute.multiple
       @addValueToShadowInput(currentText, dataId)
     else
+<<<<<<< HEAD
       @input.val currentText
       @shadowInput.val dataId
+=======
+      @selectValue(dataId, currentText)
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
   navigateIn: (event) ->
     event.stopPropagation()
-    @selectItem(event)
+    if !@attribute.multiple
+      @selectItem(event)
     @navigateDepth(1)
 
   navigateOut: (event) ->
@@ -434,10 +469,18 @@ class App.SearchableSelect extends Spine.Controller
         option.selected = (option.value + '') == value # makes sure option value is always a string
 
   createToken: ({name, value}) =>
-    @input.before App.view('generic/token')(
-      name: name
-      value: value
-    )
+    content = {}
+    if @attribute.relation
+      content =
+        name: name
+        value: value
+        object: @attribute.relation
+    else
+      content =
+        name: value
+        value: value
+
+    @input.before App.view('generic/token')(content)
 
   removeThisToken: (e) =>
     @removeToken $(e.currentTarget).parents('.token')
@@ -451,7 +494,7 @@ class App.SearchableSelect extends Spine.Controller
         token = which
 
     id = token.data('value')
-    @shadowInput.find("[value=#{id}]").remove()
+    @shadowInput.find("[value=\"#{id}\"]").remove()
     @shadowInput.trigger('change')
     token.remove()
 
@@ -489,11 +532,16 @@ class App.SearchableSelect extends Spine.Controller
 
   addValueToShadowInput: (currentText, dataId) ->
     @input.val('')
-    @currentData = {name: currentText, value: dataId}
-    if @shadowInput.val()
-      return if @shadowInput.val().includes("#{dataId}")  # cast dataId to string before check
+
+    if @attribute.multiple
+      return if @shadowInput.val().includes("#{dataId}") if @shadowInput.val() # cast dataId to string before check
+      @currentData = {name: currentText, value: dataId}
+    else
+      @currentData = {name: currentText, value: dataId}
+      return if @shadowInput.val().includes("#{dataId}") if @shadowInput.val() # cast dataId to string before check
+
     @shadowInput.append($('<option/>').attr('selected', true).attr('value', @currentData.value).text(@currentData.name))
-    @shadowInput.trigger('change')
+    @onShadowChange()
 
   highlightFirst: (autocomplete) ->
     @unhighlightCurrentItem()

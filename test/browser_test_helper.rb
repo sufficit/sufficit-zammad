@@ -82,6 +82,10 @@ class TestCase < ActiveSupport::TestCase
           'intl.accept_languages'                                => 'en-US',
           'profile.default_content_setting_values.notifications' => 1, # ALLOW notifications
         },
+<<<<<<< HEAD
+=======
+        args:            %w[--enable-logging --v=1],
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
         # Disable the "Chrome is controlled by automation software" info bar.
         excludeSwitches: ['enable-automation'],
       )
@@ -95,7 +99,11 @@ class TestCase < ActiveSupport::TestCase
   def browser_instance
     @browsers ||= {}
     if ENV['REMOTE_URL'].blank?
+<<<<<<< HEAD
       local_browser = Selenium::WebDriver.for(browser.to_sym, options: browser_options)
+=======
+      local_browser = Selenium::WebDriver.for(browser.to_sym, capabilities: browser_options)
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
       @browsers[local_browser.hash] = local_browser
       browser_instance_preferences(local_browser)
       return local_browser
@@ -124,9 +132,15 @@ class TestCase < ActiveSupport::TestCase
 
     local_browser = Selenium::WebDriver.for(
       :remote,
+<<<<<<< HEAD
       url:         ENV['REMOTE_URL'],
       http_client: http_client,
       options:     browser_options,
+=======
+      url:          ENV['REMOTE_URL'],
+      http_client:  http_client,
+      capabilities: browser_options,
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
     )
     @browsers[local_browser.hash] = local_browser
     browser_instance_preferences(local_browser)
@@ -200,9 +214,6 @@ class TestCase < ActiveSupport::TestCase
     if params[:url]
       instance.get(params[:url])
     end
-
-    # submit logs anyway
-    instance.execute_script('App.Track.force()')
 
     element = instance.find_elements(css: '#login input[name="username"]')[0]
     if !element
@@ -626,7 +637,7 @@ class TestCase < ActiveSupport::TestCase
 
     watch_for(
       browser: instance,
-      css:     '.modal.in',
+      css:     '.modal.in.modal--ready',
       timeout: params[:timeout] || 4,
     )
   end
@@ -1773,7 +1784,7 @@ wait untill text in selector disabppears
       selector: {
         'Priority': '1 low',
       },
-      'order::direction' => 'down',
+      'order::direction' => 'descending',
     }
   )
 
@@ -1931,7 +1942,7 @@ wait untill text in selector disabppears
       selector: {
         'Priority': '1 low',
       },
-      'order::direction' => 'down',
+      'order::direction' => 'descending',
     }
   )
 

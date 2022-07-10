@@ -56,7 +56,8 @@ RSpec.describe ::Sequencer::Sequence::Import::Zendesk::User, sequencer: :sequenc
           'report_csv'              => true,
           'user_fields'             => {
             'custom_dropdown' => '2',
-            'lieblingstier'   => 'Hundä'
+            'lieblingstier'   => 'Hundä',
+            'test::example'   => '1',
           }
         }.merge(merge_resource)
       )
@@ -80,6 +81,16 @@ RSpec.describe ::Sequencer::Sequence::Import::Zendesk::User, sequencer: :sequenc
       {}
     end
 
+    let(:field_map) do
+      {
+        'User' => {
+          'custom_dropdown' => 'custom_dropdown',
+          'lieblingstier'   => 'lieblingstier',
+          'test::example'   => 'test_example',
+        }
+      }
+    end
+
     let(:process_payload) do
       {
         import_job:       build_stubbed(:import_job, name: 'Import::Zendesk', payload: {}),
@@ -88,23 +99,30 @@ RSpec.describe ::Sequencer::Sequence::Import::Zendesk::User, sequencer: :sequenc
         group_map:        group_map,
         user_group_map:   user_group_map,
         organization_map: organization_map,
+        field_map:        field_map
       }
     end
 
+    let(:merge_imported_user) { {} }
+
     let(:imported_user) do
       {
-        firstname:  'Bob',
-        lastname:   'Smith',
-        login:      'zendesk-user@example.com',
-        email:      'zendesk-user@example.com',
-        active:     true,
-        last_login: DateTime.parse('2021-08-19T13:40:25Z'),
-      }
+        firstname:       'Bob',
+        lastname:        'Smith',
+        login:           'zendesk-user@example.com',
+        email:           'zendesk-user@example.com',
+        active:          true,
+        last_login:      DateTime.parse('2021-08-19T13:40:25Z'),
+        custom_dropdown: '2',
+        lieblingstier:   'Hundä',
+        test_example:    '1',
+      }.merge(merge_imported_user)
     end
 
     before do
       create :object_manager_attribute_select, object_name: 'User', name: 'custom_dropdown'
       create :object_manager_attribute_text, object_name: 'User', name: 'lieblingstier'
+      create :object_manager_attribute_text, object_name: 'User', name: 'test_example'
       ObjectManager::Attribute.migration_execute
     end
 
@@ -142,6 +160,44 @@ RSpec.describe ::Sequencer::Sequence::Import::Zendesk::User, sequencer: :sequenc
       it 'sets user groups correctly' do
         process(process_payload)
         expect(User.last.groups_access('full').sort).to eq groups
+      end
+    end
+
+    context 'with inactive user' do
+      let(:merge_resource) do
+        {
+          'active' => false,
+        }
+      end
+
+      let(:merge_imported_user) do
+        {
+          active: false,
+        }
+      end
+
+      it 'imports user data correctly' do
+        process(process_payload)
+        expect(User.last).to have_attributes(imported_user)
+      end
+    end
+
+    context 'with suspended user' do
+      let(:merge_resource) do
+        {
+          'suspended' => true,
+        }
+      end
+
+      let(:merge_imported_user) do
+        {
+          active: false,
+        }
+      end
+
+      it 'imports user data correctly' do
+        process(process_payload)
+        expect(User.last).to have_attributes(imported_user)
       end
     end
   end

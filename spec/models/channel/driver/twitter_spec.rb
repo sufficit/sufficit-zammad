@@ -714,7 +714,7 @@ RSpec.describe Channel::Driver::Twitter, required_envs: %w[TWITTER_CONSUMER_KEY 
 
     context 'for tweets' do
       let!(:outgoing_tweet) { create(:twitter_article) }
-      let(:return_value) { Twitter::Tweet }
+      let(:return_value)    { Twitter::Tweet }
 
       include_examples 'for #send'
 
@@ -738,7 +738,7 @@ RSpec.describe Channel::Driver::Twitter, required_envs: %w[TWITTER_CONSUMER_KEY 
     context 'for DMs' do
       let(:recipient) { create(:twitter_authorization, uid: ENV.fetch('TWITTER_DM_RECIPIENT', '1234567890')) }
       let!(:outgoing_tweet) { create(:twitter_dm_article, :pending_delivery, recipient: recipient) }
-      let(:return_value) { Twitter::DirectMessage }
+      let(:return_value)    { Twitter::DirectMessage }
 
       include_examples 'for #send'
     end
@@ -813,7 +813,7 @@ RSpec.describe Channel::Driver::Twitter, required_envs: %w[TWITTER_CONSUMER_KEY 
           let(:thread) do
             Ticket.joins(articles: :type).where(ticket_article_types: { name: 'twitter status' })
               .group('tickets.id').having(
-                case ActiveRecord::Base.connection_config[:adapter]
+                case ActiveRecord::Base.connection_db_config.configuration_hash[:adapter]
                 when 'mysql2'
                   'COUNT("ticket_articles.*") > 1'
                 when 'postgresql'
@@ -917,10 +917,8 @@ RSpec.describe Channel::Driver::Twitter, required_envs: %w[TWITTER_CONSUMER_KEY 
                 let(:twitter_job) { Delayed::Job.where("handler LIKE '%job_class: CommunicateTwitterJob%#{tweet.id}%'").first }
 
                 around do |example|
-                  # Run BG job (Why not use Scheduler.worker?
-                  # It led to hangs & failures elsewhere in test suite.)
                   Thread.new do
-                    sleep 5 # simulate other bg jobs holding up the queue
+                    sleep 5 # Simulate other bg jobs holding up the queue.
                     twitter_job.invoke_job
                   end.tap { example.run }.join
                 end

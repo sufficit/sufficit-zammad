@@ -4,7 +4,11 @@ require 'rails_helper'
 
 RSpec.describe 'Manage > Users', type: :system do
   describe 'switching to an alternative user', authentication_type: :form, authenticated_as: :authenticate do
+<<<<<<< HEAD
     let(:original_user) { create(:admin) }
+=======
+    let(:original_user)        { create(:admin) }
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
     let(:alternative_one_user) { create(:admin) }
     let(:alternative_two_user) { create(:admin) }
 
@@ -93,7 +97,11 @@ RSpec.describe 'Manage > Users', type: :system do
   end
 
   describe 'show/unlock a user', authenticated_as: :authenticate do
+<<<<<<< HEAD
     let(:user) { create(:admin) }
+=======
+    let(:user)        { create(:admin) }
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
     let(:locked_user) { create(:user, login_failed: 6) }
 
     def authenticate
@@ -132,17 +140,19 @@ RSpec.describe 'Manage > Users', type: :system do
     end
 
     it 'handles permission checkboxes correctly' do
-      in_modal disappears: false do
+      in_modal do
         scroll_into_view 'table.settings-list'
         within 'table.settings-list tbody tr:first-child' do
           click 'input[value="full"]', visible: :all
-          expect(find('input[value="full"]', visible: :all).checked?).to be true
+          expect(find('input[value="full"]', visible: :all)).to be_checked
+
           click 'input[value="read"]', visible: :all
-          expect(find('input[value="full"]', visible: :all).checked?).to be false
-          expect(find('input[value="read"]', visible: :all).checked?).to be true
+          expect(find('input[value="full"]', visible: :all)).not_to be_checked
+          expect(find('input[value="read"]', visible: :all)).to be_checked
+
           click 'input[value="full"]', visible: :all
-          expect(find('input[value="full"]', visible: :all).checked?).to be true
-          expect(find('input[value="read"]', visible: :all).checked?).to be false
+          expect(find('input[value="full"]', visible: :all)).to be_checked
+          expect(find('input[value="read"]', visible: :all)).not_to be_checked
         end
       end
     end
@@ -166,7 +176,7 @@ RSpec.describe 'Manage > Users', type: :system do
       let(:user) { create(:admin, login: "auto-#{SecureRandom.uuid}") }
 
       it 'does not allow to update a user with no email/first/last/phone' do
-        in_modal disappears: false do
+        in_modal do
           fill_in 'firstname', with: ''
           fill_in 'lastname', with: ''
           fill_in 'Email', with: ''
@@ -192,7 +202,7 @@ RSpec.describe 'Manage > Users', type: :system do
     end
 
     context 'when admin tries to change admin' do
-      let(:user) { create(:admin) }
+      let(:user)   { create(:admin) }
       let(:record) { create(:admin) }
 
       include_examples 'user permission', true
@@ -254,7 +264,11 @@ RSpec.describe 'Manage > Users', type: :system do
       visit '#manage/users'
       ensure_websocket
       User.csv_import(
+<<<<<<< HEAD
         string:       File.read(Rails.root.join('spec/fixtures/csv_import/user/simple.csv')),
+=======
+        string:       File.read(Rails.root.join('spec/fixtures/files/csv_import/user/simple.csv')),
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
         parse_params: {
           col_sep: ';',
         },

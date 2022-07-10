@@ -1430,6 +1430,20 @@ RSpec.describe String do
           <li><a href="http://business-catalogs.example.com/ODtpbGs5MWIzbjUyYzExLTA4Yy06Mmg7N3AvL3R0bmFvY3B0LXlhbW9sc2Nhb3NnYy5lL3RpbXJlZi9lbS9ycnJuaWFpZXMsdGxnY25pLGUsdXJ0b3NVTGVpNWZ8fGZh" rel="nofollow noreferrer noopener" target="_blank" title="http://business-catalogs.example.com/ODtpbGs5MWIzbjUyYzExLTA4Yy06Mmg7N3AvL3R0bmFvY3B0LXlhbW9sc2Nhb3NnYy5lL3RpbXJlZi9lbS9ycnJuaWFpZXMsdGxnY25pLGUsdXJ0b3NVTGVpNWZ8fGZh">Luxemburg</a></li>
         TEXT
       end
+
+      # https://github.com/zammad/zammad/issues/4112
+      it 'converts lists from MS Outlook correctly' do
+        expect(<<~HTML.chomp.html2html_strict).to eq(<<~TEXT.chomp)
+          <p class="MsoPlainText" style="margin-left:36.0pt;text-indent:-18.0pt;mso-list:l0 level1 lfo1">
+          <![if !supportLists]><span style="font-family:Symbol;mso-fareast-language:EN-US"><span style="mso-list:Ignore">Â·<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </span></span></span><![endif]><span style="mso-fareast-language:EN-US">1<o:p></o:p></span></p>
+          <p class="MsoPlainText" style="margin-left:36.0pt;text-indent:-18.0pt;mso-list:l0 level1 lfo1">
+          <![if !supportLists]><span style="font-family:Symbol;mso-fareast-language:EN-US"><span style="mso-list:Ignore">Â·<span style="font:7.0pt &quot;Times New Roman&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </span></span></span><![endif]><span style="mso-fareast-language:EN-US">2<o:p></o:p></span></p>
+        HTML
+          <p>• 1</p><p>• 2</p>
+        TEXT
+      end
     end
 
     context 'signature recognition' do
@@ -1496,13 +1510,13 @@ RSpec.describe String do
         expect(<<~HTML.chomp.html2html_strict).to eq(<<~TEXT.chomp)
           <div style="border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0cm 0cm 0cm">
           <p class="MsoNormal" style="margin-left:35.4pt"><b><span style="font-family:Calibri;color:black">Von:
-          </span></b><span style="font-family:Calibri;color:black">Johanna Kiefer via Znuny Projects &lt;projects@example.com&gt;<br>
-          <b>Organisation: </b>Znuny Group<br>
+          </span></b><span style="font-family:Calibri;color:black">Johanna Kiefer via Zammad Projects &lt;projects@example.com&gt;<br>
+          <b>Organisation: </b>Zammad GmbH<br>
           <b>Datum: </b>Montag, 6. März 2017 um 13:32<br>
         HTML
           <div>
-          #{marker}<p><b>Von: </b><span>Johanna Kiefer via Znuny Projects &lt;projects@example.com&gt;<br>
-          <b>Organisation: </b>Znuny Group<br>
+          #{marker}<p><b>Von: </b><span>Johanna Kiefer via Zammad Projects &lt;projects@example.com&gt;<br>
+          <b>Organisation: </b>Zammad GmbH<br>
           <b>Datum: </b>Montag, 6. März 2017 um 13:32<br></span></p></div>
         TEXT
       end
@@ -1608,9 +1622,9 @@ RSpec.describe String do
 
       it 'places marker before German quoted text intro' do
         expect(<<~SRC.chomp.signature_identify('text', true)).to eq(<<~MARKED.chomp)
-          Am 03.04.2015 um 20:58 schrieb Martin Edenhofer <me@znuny.ink>:
+          Am 03.04.2015 um 20:58 schrieb Martin Edenhofer <me@zammad.ink>:
         SRC
-          #{marker}Am 03.04.2015 um 20:58 schrieb Martin Edenhofer <me@znuny.ink>:
+          #{marker}Am 03.04.2015 um 20:58 schrieb Martin Edenhofer <me@zammad.ink>:
         MARKED
       end
 
@@ -1797,7 +1811,7 @@ RSpec.describe String do
               --no not match--
 
               Bob Smith
-              From: Martin Edenhofer via Znuny Support [mailto:support@znuny.inc]
+              From: Martin Edenhofer via Zammad Support [mailto:support@zammad.inc]
               Sent: Donnerstag, 2. April 2015 10:00
               lalala</div>
             SRC
@@ -1806,7 +1820,7 @@ RSpec.describe String do
               --no not match--
 
               Bob Smith
-              #{marker}From: Martin Edenhofer via Znuny Support [mailto:support@znuny.inc]
+              #{marker}From: Martin Edenhofer via Zammad Support [mailto:support@zammad.inc]
               Sent: Donnerstag, 2. April 2015 10:00
               lalala</div>
             MARKED
@@ -1821,7 +1835,7 @@ RSpec.describe String do
               --no not match--
 
               Bob Smith
-              Von: Martin Edenhofer via Znuny Support [mailto:support@znuny.inc]
+              Von: Martin Edenhofer via Zammad Support [mailto:support@zammad.inc]
               Gesendet: Donnerstag, 2. April 2015 10:00
               Betreff: lalala
 
@@ -1831,7 +1845,7 @@ RSpec.describe String do
               --no not match--
 
               Bob Smith
-              #{marker}Von: Martin Edenhofer via Znuny Support [mailto:support@znuny.inc]
+              #{marker}Von: Martin Edenhofer via Zammad Support [mailto:support@zammad.inc]
               Gesendet: Donnerstag, 2. April 2015 10:00
               Betreff: lalala
 
@@ -1848,7 +1862,7 @@ RSpec.describe String do
               --no not match--
 
               Bob Smith
-              De : Martin Edenhofer via Znuny Support [mailto:support@znuny.inc]
+              De : Martin Edenhofer via Zammad Support [mailto:support@zammad.inc]
               Envoyé : mercredi 29 avril 2015 17:31
               Objet : lalala
 
@@ -1859,7 +1873,7 @@ RSpec.describe String do
               --no not match--
 
               Bob Smith
-              #{marker}De : Martin Edenhofer via Znuny Support [mailto:support@znuny.inc]
+              #{marker}De : Martin Edenhofer via Zammad Support [mailto:support@zammad.inc]
               Envoyé : mercredi 29 avril 2015 17:31
               Objet : lalala
 
@@ -1894,7 +1908,7 @@ RSpec.describe String do
 
       context 'with no from: option' do
         let(:original_string) { 'Tschüss!' }
-        let(:input_encoding) { Encoding::ISO_8859_2 }
+        let(:input_encoding)  { Encoding::ISO_8859_2 }
 
         it 'detects the input encoding' do
           expect(string.utf8_encode).to eq(original_string)

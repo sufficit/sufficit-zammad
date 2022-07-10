@@ -18,7 +18,7 @@ class ChannelsTwitterController < ApplicationController
 
     calculated_signature = hmac_signature_by_app(request.raw_post)
     raise Exceptions::NotAuthorized if calculated_signature != given_signature
-    raise Exceptions::UnprocessableEntity, __("Missing 'for_user_id' in payload!") if params[:for_user_id].blank?
+    raise Exceptions::UnprocessableEntity, __("The required parameter 'for_user_id' is missing.") if params[:for_user_id].blank?
 
     @channel = nil
     Channel.where(area: 'Twitter::Account', active: true).each do |channel|
@@ -35,7 +35,7 @@ class ChannelsTwitterController < ApplicationController
 
   def hmac_signature_by_app(content)
     external_credential = ExternalCredential.find_by(name: 'twitter')
-    raise Exceptions::UnprocessableEntity, __("Could not find external_credential 'twitter'!") if !external_credential
+    raise Exceptions::UnprocessableEntity, __("The required 'ExternalCredential' 'twitter' could not be found.") if !external_credential
 
     hmac_signature_gen(external_credential.credentials[:consumer_secret], content)
   end
@@ -47,12 +47,12 @@ class ChannelsTwitterController < ApplicationController
   end
 
   def webhook_verify
-    external_credential = Cache.read('external_credential_twitter')
+    external_credential = Rails.cache.read('external_credential_twitter')
     if !external_credential && ExternalCredential.exists?(name: 'twitter')
       external_credential = ExternalCredential.find_by(name: 'twitter').credentials
     end
-    raise Exceptions::UnprocessableEntity, __('Could not find external_credential in cache!') if external_credential.blank?
-    raise Exceptions::UnprocessableEntity, __('Could not find external_credential[:consumer_secret] in cache!') if external_credential[:consumer_secret].blank?
+    raise Exceptions::UnprocessableEntity, __('The required value external_credential could not be found in the cache.') if external_credential.blank?
+    raise Exceptions::UnprocessableEntity, __("The required value 'external_credential[:consumer_secret]' could not be found in the cache.") if external_credential[:consumer_secret].blank?
     raise Exceptions::UnprocessableEntity, __("The required parameter 'crc_token' is missing from the Twitter verify payload!") if params['crc_token'].blank?
 
     render json: {

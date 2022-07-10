@@ -3,8 +3,8 @@
 source 'https://rubygems.org'
 
 # core - base
-ruby '2.7.4'
-gem 'rails', '~> 6.0.0'
+ruby '3.0.4'
+gem 'rails', '~> 6.1.0'
 
 # core - rails additions
 gem 'activerecord-import'
@@ -20,11 +20,14 @@ gem 'unicorn', group: :unicorn
 # core - supported ORMs
 gem 'activerecord-nulldb-adapter', group: :nulldb
 gem 'mysql2', group: :mysql
-gem 'pg', '0.21.0', group: :postgres
+gem 'pg', '~> 1.2.0', group: :postgres
 
 # core - asynchrous task execution
 gem 'daemons'
 gem 'delayed_job_active_record'
+
+# core - command line interface
+gem 'thor'
 
 # core - websocket
 gem 'em-websocket'
@@ -41,11 +44,18 @@ gem 'aasm'
 # core - authorization
 gem 'pundit'
 
+# core - graphql handling
+gem 'graphql'
+gem 'graphql-batch', require: 'graphql/batch'
+
 # core - image processing
-gem 'rszr', '0.5.2'
+gem 'rszr'
 
 # performance - Memcached
 gem 'dalli', require: false
+
+# Vite is required by the web server
+gem 'vite_rails'
 
 # Only load gems for asset compilation if they are needed to avoid
 #   having unneeded runtime dependencies like NodeJS.
@@ -67,13 +77,6 @@ group :assets do
   gem 'uglifier', require: false
 
   gem 'autoprefixer-rails', require: false
-end
-
-# Don't use mini_racer any more for asset compilation.
-#   Instead, use an external node.js binary.
-group :mini_racer, optional: true do
-  gem 'libv8'
-  gem 'mini_racer', '0.2.9' # Newer versions require libv8-node instead which does not compile on older platforms.
 end
 
 # authentication - provider
@@ -100,15 +103,17 @@ gem 'rack-attack'
 # channels
 gem 'gmail_xoauth'
 gem 'koala'
-gem 'telegramAPI'
+# TODO: remove git information after https://github.com/bennesp/telegramAPI/pull/8 is merged
+gem 'telegramAPI', git: 'https://github.com/zammad-deps/telegramAPI', branch: 'uri-escape-warning'
 gem 'twitter'
 
 # channels - email additions
+gem 'email_address'
 gem 'htmlentities'
+# TODO: remove git information once v2.8 is released and works with Zammad
 gem 'mail', git: 'https://github.com/zammad-deps/mail', branch: '2-7-stable'
 gem 'mime-types'
 gem 'rchardet', '>= 1.8.0'
-gem 'valid_email2'
 
 # feature - business hours
 gem 'biz'
@@ -162,6 +167,9 @@ group :development, :test do
   # app boottime improvement
   gem 'spring'
 
+  # watch file changes
+  gem 'listen'
+
   # debugging
   gem 'byebug'
   gem 'pry-rails'
@@ -183,21 +191,12 @@ group :development, :test do
   gem 'capybara'
   gem 'selenium-webdriver'
 
-  # livereload on template changes (html, js, css)
-  gem 'guard',             require: false
-  gem 'guard-livereload',  require: false
-  gem 'rack-livereload',   require: false
-  gem 'rb-fsevent',        require: false
-
-  # auto symlinking
-  gem 'guard-symlink', require: false
-
   # code QA
   gem 'brakeman', require: false
-  gem 'coffeelint'
   gem 'overcommit'
   gem 'rubocop'
   gem 'rubocop-faker'
+  gem 'rubocop-graphql'
   gem 'rubocop-inflector'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
@@ -211,8 +210,8 @@ group :development, :test do
   gem 'webmock'
 
   # record and replay TCP/HTTP transactions
-  gem 'tcr'
-  gem 'vcr'
+  gem 'tcr', require: false
+  gem 'vcr', require: false
 
   # handle deprecations in core and addons
   gem 'deprecation_toolkit'
@@ -234,4 +233,6 @@ end
 # ZAMMAD DEVS:  Consult the internal wiki
 #               (or else risk pushing unwanted changes to Gemfile.lock!)
 #               https://git.zammad.com/zammad/zammad/wikis/Tips#user-content-customizing-the-gemfile
-eval_gemfile 'Gemfile.local' if File.exist?('Gemfile.local')
+Dir['Gemfile.local*'].each do |file|
+  eval_gemfile file
+end

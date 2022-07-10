@@ -12,14 +12,20 @@ class Generators::TranslationCatalog::Extractor::Frontend < Generators::Translat
     # App.i18n.translate(Content|Plain|Inline)
     translate_regex = %r{App\.i18n\.translate(?:Content|Plain|Inline)\(\s*#{literal_string_regex}}
 
+    # i18n.t
+    i18n_t_regex = %r{i18n\.t\(\s*#{literal_string_regex},?}
+
+    # $t
+    global_t_regex = %r{\$t\(\s*#{literal_string_regex},?}
+
     # __()
-    underscore_regex = %r{__\(\s*#{literal_string_regex}\s*\)}
+    underscore_regex = %r{__\(\s*#{literal_string_regex},?\s*\)}
 
     # __() with multiline ''' string
     multiline_string_regex = %r{(''')\n((?:\n|.)*?)\n'''}m
     underscore_multiline_regex = %r{__\(\s*#{multiline_string_regex}\s*\)}
 
-    [t_regex, translate_regex, underscore_regex, underscore_multiline_regex].each do |r|
+    [t_regex, translate_regex, i18n_t_regex, global_t_regex, underscore_regex, underscore_multiline_regex].each do |r|
       string.scan(r) do |match|
         result = match[1].gsub(%r{\\'}, "'")
         next if match[0].eql?('"') && result.include?('#{')
@@ -34,11 +40,11 @@ class Generators::TranslationCatalog::Extractor::Frontend < Generators::Translat
 
   def find_files(base_path)
     files = []
-    ['app/assets/**', 'public/assets/chat', 'public/assets/chat/views', 'public/assets/form'].each do |dir|
-      files += Dir.glob("#{base_path}/#{dir}/*.js")
-      files += Dir.glob("#{base_path}/#{dir}/*.eco")
-      files += Dir.glob("#{base_path}/#{dir}/*.coffee")
+
+    ['app/assets/**', 'public/assets/{chat,chat/views,form}'].each do |dir|
+      files += Dir.glob("#{base_path}/#{dir}/*.{js,eco,coffee}").reject { |f| f.include?('layout_ref') }
     end
-    files.reject { |d| d.include?('layout_ref') }
+
+    files += Dir.glob("#{base_path}/app/frontend/{apps,shared}/**/*.{ts,vue}").reject { |f| f.include? '/__tests__/' }
   end
 end

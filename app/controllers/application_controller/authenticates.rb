@@ -43,8 +43,9 @@ module ApplicationController::Authenticates
   end
 
   def authentication_check_only(auth_param = {})
-    if Rails.env.test? && ENV['FAKE_SELENIUM_LOGIN_USER_ID'].present? && session[:user_id].blank?
+    if %w[test development].include?(Rails.env) && ENV['FAKE_SELENIUM_LOGIN_USER_ID'].present? && session[:user_id].blank?
       session[:user_id] = ENV['FAKE_SELENIUM_LOGIN_USER_ID'].to_i
+      session[:user_device_updated_at] = Time.zone.now
     end
 
     # logger.debug 'authentication_check'
@@ -128,7 +129,7 @@ module ApplicationController::Authenticates
       logger.debug { "OAuth2 token auth check '#{token}'" }
       access_token = Doorkeeper::AccessToken.by_token(token)
 
-      raise Exceptions::NotAuthorized, __('Invalid token!') if !access_token
+      raise Exceptions::NotAuthorized, __('The provided token is invalid.') if !access_token
 
       # check expire
       if access_token.expires_in && (access_token.created_at + access_token.expires_in) < Time.zone.now

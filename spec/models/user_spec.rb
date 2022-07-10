@@ -428,8 +428,8 @@ RSpec.describe User, type: :model do
     end
 
     describe '#permissions' do
-      let(:user) { create(:agent).tap { |u| u.roles = [u.roles.first] } }
-      let(:role) { user.roles.first }
+      let(:user)        { create(:agent).tap { |u| u.roles = [u.roles.first] } }
+      let(:role)        { user.roles.first }
       let(:permissions) { role.permissions }
 
       it 'is a simple association getter' do
@@ -578,9 +578,9 @@ RSpec.describe User, type: :model do
       context 'with privileges for a root permission (e.g., "foo", not "foo.bar")' do
         subject(:user) { create(:user, roles: [role]) }
 
-        let(:role) { create(:role, permissions: [permission]) }
-        let!(:permission) { create(:permission, name: 'foo') }
-        let!(:child_permission) { create(:permission, name: 'foo.bar') }
+        let(:role)                       { create(:role, permissions: [permission]) }
+        let!(:permission)                { create(:permission, name: 'foo') }
+        let!(:child_permission)          { create(:permission, name: 'foo.bar') }
         let!(:inactive_child_permission) { create(:permission, name: 'foo.baz', active: false) }
 
         it 'includes the IDs of user’s explicit permissions' do
@@ -592,6 +592,28 @@ RSpec.describe User, type: :model do
           expect(user.permissions_with_child_ids)
             .to include(child_permission.id)
             .and not_include(inactive_child_permission.id)
+        end
+      end
+    end
+
+    describe '#permissions_with_child_names' do
+      context 'with privileges for a root permission (e.g., "foo", not "foo.bar")' do
+        subject(:user) { create(:user, roles: [role]) }
+
+        let(:role) { create(:role, permissions: [permission]) }
+        let!(:permission)                { create(:permission, name: 'foo') }
+        let!(:child_permission)          { create(:permission, name: 'foo.bar') }
+        let!(:inactive_child_permission) { create(:permission, name: 'foo.baz', active: false) }
+
+        it 'includes the names of user’s explicit permissions' do
+          expect(user.permissions_with_child_names)
+            .to include(permission.name)
+        end
+
+        it 'includes the names of user’s active sub-permissions' do
+          expect(user.permissions_with_child_names)
+            .to include(child_permission.name)
+            .and not_include(inactive_child_permission.name)
         end
       end
     end
@@ -821,7 +843,11 @@ RSpec.describe User, type: :model do
         it 'marks object as invalid by adding error' do
           user.update(password: long_string)
 
+<<<<<<< HEAD
           expect(user.errors.full_messages).to eq([['Invalid password, it must be shorter than %s characters!', 1000]])
+=======
+          expect(user.errors).to satisfy { |errors| errors.any? { |error| error.message.first.include?('Invalid password') } }
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
         end
       end
     end
@@ -840,7 +866,7 @@ RSpec.describe User, type: :model do
 
       context 'when added on update' do
         let(:orig_number) { nil }
-        let(:new_number) { '1234567890' }
+        let(:new_number)  { '1234567890' }
 
         before { user } # create user
 
@@ -863,7 +889,7 @@ RSpec.describe User, type: :model do
             .to eq(0)
 
           expect { user.update(phone: new_number) }
-            .to change { Cti::CallerId.where(object: 'User', o_id: user.id).count }.by(0)
+            .not_to change { Cti::CallerId.where(object: 'User', o_id: user.id).count }
 
           expect(Cti::CallerId).not_to have_received(:build)
         end
@@ -936,7 +962,7 @@ RSpec.describe User, type: :model do
     describe '#image_source' do
 
       describe 'when value is invalid' do
-        let(:value) { 'Th1515n0t4v4l1dh45h' }
+        let(:value)   { 'Th1515n0t4v4l1dh45h' }
         let(:escaped) { Regexp.escape(value) }
 
         it 'valid create' do
@@ -951,6 +977,35 @@ RSpec.describe User, type: :model do
           user = create(:user)
           user.update!(image_source: value)
           expect(user.image_source).to be_nil
+        end
+      end
+    end
+
+    describe 'fetch_avatar_for_email', performs_jobs: true do
+      it 'enqueues avatar job when creating a user with email' do
+        expect { create(:user) }.to have_enqueued_job AvatarCreateJob
+      end
+
+      it 'does not enqueue avatar job when creating a user without email' do
+        expect { create(:user, :without_email) }.not_to have_enqueued_job AvatarCreateJob
+      end
+
+      context 'with an existing user' do
+        before do
+          agent
+          clear_jobs
+        end
+
+        it 'enqueues avatar job when updating a user with email' do
+          expect { agent.update! email: 'avatar@example.com' }.to have_enqueued_job AvatarCreateJob
+        end
+
+        it 'does not enqueue avatar job when updating a user without email' do
+          expect { agent.update! login: 'avatar_login', email: nil }.not_to have_enqueued_job AvatarCreateJob
+        end
+
+        it 'does not enqueue avatar job when updating a user having email' do
+          expect { agent.update! firstname: 'no avatar update' }.not_to have_enqueued_job AvatarCreateJob
         end
       end
     end
@@ -998,6 +1053,7 @@ RSpec.describe User, type: :model do
                      'RecentView'                         => { 'created_by_id' => 1 },
                      'KnowledgeBase::Answer::Translation' =>
                                                              { 'created_by_id' => 0, 'updated_by_id' => 0 },
+                     'LdapSource'                         => { 'created_by_id' => 0, 'updated_by_id' => 0 },
                      'KnowledgeBase::Answer'              =>
                                                              { 'archived_by_id' => 1, 'published_by_id' => 1, 'internal_by_id' => 1 },
                      'Report::Profile'                    => { 'created_by_id' => 0, 'updated_by_id' => 0 },
@@ -1198,8 +1254,8 @@ RSpec.describe User, type: :model do
 
   describe 'Callbacks, Observers, & Async Transactions -' do
     describe 'System-wide agent limit checks:' do
-      let(:agent_role) { Role.lookup(name: 'Agent') }
-      let(:admin_role) { Role.lookup(name: 'Admin') }
+      let(:agent_role)     { Role.lookup(name: 'Agent') }
+      let(:admin_role)     { Role.lookup(name: 'Admin') }
       let(:current_agents) { described_class.with_permissions('ticket.agent') }
 
       describe '#validate_agent_limit_by_role' do
@@ -1247,7 +1303,7 @@ RSpec.describe User, type: :model do
 
               expect { create(:agent) }
                 .to raise_error(Exceptions::UnprocessableEntity)
-                .and change(current_agents, :count).by(0)
+                .and not_change(current_agents, :count)
             end
 
             it 'prevents role change' do
@@ -1257,7 +1313,7 @@ RSpec.describe User, type: :model do
 
               expect { future_agent.roles = [agent_role] }
                 .to raise_error(Exceptions::UnprocessableEntity)
-                .and change(current_agents, :count).by(0)
+                .and not_change(current_agents, :count)
             end
           end
         end
@@ -1306,7 +1362,7 @@ RSpec.describe User, type: :model do
 
               expect { create(:agent) }
                 .to raise_error(Exceptions::UnprocessableEntity)
-                .and change(current_agents, :count).by(0)
+                .and not_change(current_agents, :count)
             end
 
             it 'prevents role change' do
@@ -1316,7 +1372,7 @@ RSpec.describe User, type: :model do
 
               expect { future_agent.roles = [agent_role] }
                 .to raise_error(Exceptions::UnprocessableEntity)
-                .and change(current_agents, :count).by(0)
+                .and not_change(current_agents, :count)
             end
           end
         end
@@ -1332,7 +1388,7 @@ RSpec.describe User, type: :model do
 
               expect { inactive_agent.update!(active: true) }
                 .to raise_error(Exceptions::UnprocessableEntity)
-                .and change(current_agents, :count).by(0)
+                .and not_change(current_agents, :count)
             end
           end
         end
@@ -1346,7 +1402,7 @@ RSpec.describe User, type: :model do
 
               expect { inactive_agent.update!(active: true) }
                 .to raise_error(Exceptions::UnprocessableEntity)
-                .and change(current_agents, :count).by(0)
+                .and not_change(current_agents, :count)
             end
           end
         end
@@ -1388,13 +1444,13 @@ RSpec.describe User, type: :model do
           user.save
 
           expect { user.destroy }
-            .to change { Cti::CallerId.count }.by(-1)
+            .to change(Cti::CallerId, :count).by(-1)
         end
       end
     end
 
     describe 'Cti::Log syncing:' do
-      context 'with existing Log records' do
+      context 'with existing Log records', performs_jobs: true do
         context 'for incoming calls from an unknown number' do
           let!(:log) { create(:'cti/log', :with_preferences, from: '1234567890', direction: 'in') }
 
@@ -1404,8 +1460,7 @@ RSpec.describe User, type: :model do
             it 'populates #preferences[:from] hash in all associated Log records (in a bg job)' do
               expect do
                 user.save
-                TransactionDispatcher.commit
-                Scheduler.worker(true)
+                perform_enqueued_jobs commit_transaction: true
               end.to change { log.reload.preferences[:from]&.first }
                 .to(hash_including('caller_id' => user.phone))
             end
@@ -1417,8 +1472,7 @@ RSpec.describe User, type: :model do
             it 'populates #preferences[:from] hash in all associated Log records (in a bg job)' do
               expect do
                 user.update(phone: log.from)
-                TransactionDispatcher.commit
-                Scheduler.worker(true)
+                perform_enqueued_jobs commit_transaction: true
               end.to change { log.reload.preferences[:from]&.first }
                 .to(hash_including('object' => 'User', 'o_id' => user.id))
             end
@@ -1430,8 +1484,7 @@ RSpec.describe User, type: :model do
             it 'does not modify any Log records' do
               expect do
                 user.save
-                TransactionDispatcher.commit
-                Scheduler.worker(true)
+                perform_enqueued_jobs commit_transaction: true
               end.not_to change { log.reload.attributes }
             end
           end
@@ -1442,8 +1495,7 @@ RSpec.describe User, type: :model do
             it 'does not modify any Log records' do
               expect do
                 user.save
-                TransactionDispatcher.commit
-                Scheduler.worker(true)
+                perform_enqueued_jobs commit_transaction: true
               end.not_to change { log.reload.attributes }
             end
           end
@@ -1459,8 +1511,7 @@ RSpec.describe User, type: :model do
               it 'empties #preferences[:from] hash in all associated Log records (in a bg job)' do
                 expect do
                   user.update(phone: '0123456789')
-                  TransactionDispatcher.commit
-                  Scheduler.worker(true)
+                  perform_enqueued_jobs commit_transaction: true
                 end.to change { logs.map(&:reload).map { |log| log.preferences[:from] } }
                   .to(Array.new(5) { nil })
               end
@@ -1470,8 +1521,7 @@ RSpec.describe User, type: :model do
               it 'empties #preferences[:from] hash in all associated Log records (in a bg job)' do
                 expect do
                   user.update(phone: '')
-                  TransactionDispatcher.commit
-                  Scheduler.worker(true)
+                  perform_enqueued_jobs commit_transaction: true
                 end.to change { logs.map(&:reload).map { |log| log.preferences[:from] } }
                   .to(Array.new(5) { nil })
               end
@@ -1481,8 +1531,7 @@ RSpec.describe User, type: :model do
               it 'empties #preferences[:from] hash in all associated Log records (in a bg job)' do
                 expect do
                   user.update(phone: nil)
-                  TransactionDispatcher.commit
-                  Scheduler.worker(true)
+                  perform_enqueued_jobs commit_transaction: true
                 end.to change { logs.map(&:reload).map { |log| log.preferences[:from] } }
                   .to(Array.new(5) { nil })
               end
@@ -1493,8 +1542,7 @@ RSpec.describe User, type: :model do
             it 'does not modify any Log records' do
               expect do
                 user.update(mobile: '2345678901')
-                TransactionDispatcher.commit
-                Scheduler.worker(true)
+                perform_enqueued_jobs commit_transaction: true
               end.not_to change { logs.map(&:reload).map(&:attributes) }
             end
           end
@@ -1503,4 +1551,55 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe 'Assign user to multiple organizations #1573' do
+    context 'when importing users via csv' do
+      let(:organization1) { create(:organization) }
+      let(:organization2) { create(:organization) }
+      let(:organization3) { create(:organization) }
+      let(:organization4) { create(:organization) }
+      let(:user)          { create(:agent, organization: organization1, organizations: [organization2, organization3]) }
+
+      def csv_import(string)
+        User.csv_import(
+          string:       string,
+          parse_params: {
+            col_sep: ',',
+          },
+          try:          false,
+          delete:       false,
+        )
+      end
+
+      before do
+        user
+      end
+
+      it 'does not change user on re-import' do
+        expect { csv_import(described_class.csv_example) }.not_to change { user.reload.updated_at }
+      end
+
+      it 'does not change user on different organization order' do
+        string = described_class.csv_example
+        string.sub!(organization3.name, organization2.name)
+        string.sub!(organization2.name, organization3.name)
+        expect { csv_import(string) }.not_to change { user.reload.updated_at }
+      end
+
+      it 'does change user on different organizations' do
+        string = described_class.csv_example
+        string.sub!(organization2.name, organization4.name)
+        expect { csv_import(string) }.to change { user.reload.updated_at }
+      end
+    end
+
+    context 'when creating users' do
+      it 'does not allow creation without primary organization but secondary organizations' do
+        expect { create(:agent, organization: nil, organizations: [create(:organization)]) }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Secondary organizations are only allowed when the primary organization is given.')
+      end
+
+      it 'does not allow creation with more than 250 organizations' do
+        expect { create(:agent, organization: create(:organization), organizations: create_list(:organization, 251)) }.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: More than 250 secondary organizations are not allowed.')
+      end
+    end
+  end
 end

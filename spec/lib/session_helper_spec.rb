@@ -6,7 +6,11 @@ RSpec.describe SessionHelper do
   describe 'Core Workflow: Does show wrong field list if you only have admin permissions and not ticket.agent permissions #4035' do
     context 'when user has admin.core_workflow permissions' do
       let(:core_workflow_role) { create(:role, :admin_core_workflow) }
+<<<<<<< HEAD
       let(:user) { create(:user, role_ids: [core_workflow_role.id]) }
+=======
+      let(:user)               { create(:user, role_ids: [core_workflow_role.id]) }
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
       it 'does provide assets for application selector ui element' do
         expect(described_class.json_hash(user)[:collections][ObjectManager::Attribute.to_app_model]).to be_truthy

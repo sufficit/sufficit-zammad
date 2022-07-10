@@ -20,7 +20,11 @@ RSpec.configure do |config|
     # set the Host from gather container IP for CI runs
     if ENV['CI'].present?
       ip_address = Socket.ip_address_list.detect(&:ipv4_private?).ip_address
-      host!("http://#{ip_address}")
+      Capybara.app_host = "http://#{ip_address}"
+    end
+
+    if Capybara.app_host.nil?
+      Capybara.app_host = 'http://localhost'
     end
 
     # set custom Zammad driver (e.g. zammad_chrome) for special
@@ -28,7 +32,17 @@ RSpec.configure do |config|
     browser_name = ENV.fetch('BROWSER', 'firefox')
     driven_by(:"zammad_#{browser_name}")
 
-    case example.metadata.fetch(:screen_size, :desktop)
+    screen_size = example.metadata[:screen_size] || case example.metadata[:app]
+                                                    when :mobile
+                                                      :mobile
+                                                    else
+                                                      :desktop
+                                                    end
+
+    case screen_size
+    when :mobile
+      browser_width  = 390
+      browser_height = 844
     when :tablet
       browser_width  = 1020
       browser_height = 760

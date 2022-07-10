@@ -1,6 +1,7 @@
 # Copyright (C) 2012-2022 Zammad Foundation, https://zammad-foundation.org/
 
 class ImportJob < ApplicationModel
+  extend ::Mixin::StartFinishLogger
 
   store :payload
   store :result
@@ -13,7 +14,7 @@ class ImportJob < ApplicationModel
   # exceptions into result if they happen.
   #
   # @example
-  #  import = ImportJob.new(name: 'Import::Ldap', payload: Setting.get('ldap_config'))
+  #  import = ImportJob.new(name: 'Import::Ldap', payload: LdapSource.first.preferences)
   #  import.start
   #
   # return [nil]
@@ -37,13 +38,13 @@ class ImportJob < ApplicationModel
     save
   end
 
-  # Gets called when the Scheduler gets (re-)started and this job was still
+  # Gets called when the background worker gets (re-)started and this job was still
   # in the queue. If `finished_at` is blank the call is piped through to
   # the ImportJob backend which has to decide how to go from here. The delayed
   # job will get destroyed if rescheduled? is not implemented
   # as an ImportJob backend class method.
   #
-  # @see Scheduler#cleanup_delayed
+  # @see BackgroundServices::Service::ProcessDelayedJobs::CleanupAction.cleanup_delayed_jobs
   #
   # @example
   #  import.reschedule?(delayed_job)
@@ -67,7 +68,7 @@ class ImportJob < ApplicationModel
   # @option params [Boolean] :delay Defines if job should get executed delayed. Default is true.
 
   # @example
-  #  import = ImportJob.dry_run(name: 'Import::Ldap', payload: Setting.get('ldap_config'), delay: false)
+  #  import = ImportJob.dry_run(name: 'Import::Ldap', payload: LdapSource.first.preferences, delay: false)
   #
   # return [nil]
   def self.dry_run(params)
@@ -160,5 +161,32 @@ class ImportJob < ApplicationModel
 
       true
     end || []
+  end
+
+  # Checks for killed import jobs and marks them as finished and adds a note.
+  #
+  # @param [ActiveSupport::TimeWithZone] after the time the cleanup was started
+  #
+  # @example
+  #   ImportJob.cleanup_import_jobs(TimeZone.now)
+  #
+  # return [nil]
+  def self.cleanup_import_jobs(after)
+    log_start_finish(:info, "Cleanup of left over import jobs #{after}") do
+      error = __('Interrupted by a restart of the background worker process. Please restart manually or wait until the next execution time.').freeze
+
+      # we need to exclude jobs that were updated at or since we started
+      # cleaning up (via the #reschedule? call) because they might
+      # were started `.delay`-ed and are flagged for restart
+      ImportJob.running.where('updated_at < ?', after).each do |job|
+
+        job.update!(
+          finished_at: after,
+          result:      {
+            error: error
+          }
+        )
+      end
+    end
   end
 end

@@ -31,6 +31,7 @@ class App.UiElement.ApplicationSelector
       '^select$': [__('is'), __('is not')]
       '^multiselect$': [__('contains all'), __('contains one'), __('contains all not'), __('contains one not')]
       '^tree_select$': [__('is'), __('is not')]
+      '^multi_tree_select$': [__('contains all'), __('contains one'), __('contains all not'), __('contains one not')]
       '^input$': [__('contains'), __('contains not')]
       '^richtext$': [__('contains'), __('contains not')]
       '^textarea$': [__('contains'), __('contains not')]
@@ -47,6 +48,7 @@ class App.UiElement.ApplicationSelector
         '^select$': [__('is'), __('is not'), __('has changed')]
         '^multiselect$': [__('contains all'), __('contains one'), __('contains all not'), __('contains one not')]
         '^tree_select$': [__('is'), __('is not'), __('has changed')]
+        '^multi_tree_select$': [__('contains all'), __('contains one'), __('contains all not'), __('contains one not')]
         '^input$': [__('contains'), __('contains not'), __('has changed')]
         '^richtext$': [__('contains'), __('contains not'), __('has changed')]
         '^textarea$': [__('contains'), __('contains not'), __('has changed')]
@@ -99,10 +101,16 @@ class App.UiElement.ApplicationSelector
         for config in configureAttributes
           # ignore passwords and relations
           if config.type isnt 'password' && config.name.substr(config.name.length-4,4) isnt '_ids' && config.searchable isnt false
+<<<<<<< HEAD
+=======
+            config.default  = undefined
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
             if config.tag is 'textarea'
               config.expanding = false
             if config.type is 'email' || config.type is 'tel'
               config.type = 'text'
+            if config.tag is 'select'
+              config.multiple = true
             for operatorRegEx, operator of operators_type
               myRegExp = new RegExp(operatorRegEx, 'i')
               if config.tag && config.tag.match(myRegExp)
@@ -114,9 +122,12 @@ class App.UiElement.ApplicationSelector
                 config.operator = operator
               elements["#{groupKey}.#{config.name}"] = config
 
+<<<<<<< HEAD
             if /^(tree_|multi)?select$/.test(config.tag)
               config.multiple = true
 
+=======
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
     if attribute.out_of_office
       elements['ticket.out_of_office_replacement_id'] =
         name: 'out_of_office_replacement_id'
@@ -529,7 +540,7 @@ class App.UiElement.ApplicationSelector
     return config
 
   @humanText: (condition) ->
-    none = App.i18n.translateContent('No filter.')
+    none = App.i18n.translateContent('No filter was configured.')
     return [none] if _.isEmpty(condition)
     [defaults, groups, elements] = @defaults()
     rules = []

@@ -1,4 +1,5 @@
 # coffeelint: disable=camel_case_classes
+<<<<<<< HEAD
 class App.UiElement.tree_select extends App.UiElement.ApplicationUiElement
   @render: (attributeConfig, params) ->
     attribute = $.extend(true, {}, attributeConfig)
@@ -73,3 +74,6 @@ class App.UiElement.tree_select extends App.UiElement.ApplicationUiElement
   @filterOptionArray: (attribute) ->
     attribute.options = @filterTreeOptions(attribute.filter, 0, attribute.options, attribute.null)
 
+=======
+class App.UiElement.tree_select extends App.UiElement.ApplicationTreeSelect
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4

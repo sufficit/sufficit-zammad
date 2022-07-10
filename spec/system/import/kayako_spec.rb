@@ -10,8 +10,8 @@ RSpec.describe 'Import Kayako', type: :system, set_up: false, authenticated_as: 
     end
 
     let(:subdomain_field) { find('#kayako-subdomain') }
-    let(:email_field) { find('#kayako-email') }
-    let(:password_field) { find('#kayako-password') }
+    let(:email_field)     { find('#kayako-email') }
+    let(:password_field)  { find('#kayako-password') }
 
     it 'invalid hostname' do
       subdomain_field.fill_in with: 'reallybadexample'
@@ -36,7 +36,7 @@ RSpec.describe 'Import Kayako', type: :system, set_up: false, authenticated_as: 
       email_field.fill_in with: ENV['IMPORT_KAYAKO_ENDPOINT_USERNAME']
       password_field.fill_in with: '1nv4l1dT0K3N'
 
-      expect(page).to have_css('.kayako-password-error', text: 'Invalid credentials!')
+      expect(page).to have_css('.kayako-password-error', text: 'The provided credentials are invalid.')
     end
 
     it 'valid credentials' do
@@ -46,11 +46,11 @@ RSpec.describe 'Import Kayako', type: :system, set_up: false, authenticated_as: 
       password_field.fill_in with: '1nv4l1dT0K3N'
 
       # wait for error to appear to validate it's hidden successfully
-      expect(page).to have_css('.kayako-password-error', text: 'Invalid credentials!')
+      expect(page).to have_css('.kayako-password-error', text: 'The provided credentials are invalid.')
 
       password_field.fill_in with: ENV['IMPORT_KAYAKO_ENDPOINT_PASSWORD']
 
-      expect(page).to have_no_css('.kayako-password-error', text: 'Invalid credentials!')
+      expect(page).to have_no_css('.kayako-password-error', text: 'The provided credentials are invalid.')
     end
 
     it 'shows start button' do
@@ -65,9 +65,9 @@ RSpec.describe 'Import Kayako', type: :system, set_up: false, authenticated_as: 
 
   describe 'import progress', :use_vcr do
     let(:subdomain_field) { find('#kayako-subdomain') }
-    let(:email_field) { find('#kayako-email') }
+    let(:email_field)    { find('#kayako-email') }
     let(:password_field) { find('#kayako-password') }
-    let(:job) { ImportJob.find_by(name: 'Import::Kayako') }
+    let(:job)            { ImportJob.find_by(name: 'Import::Kayako') }
 
     before do
       VCR.use_cassette 'system/import/kayako/import_progress_setup' do

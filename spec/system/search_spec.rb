@@ -4,9 +4,9 @@ require 'rails_helper'
 
 RSpec.describe 'Search', type: :system, authenticated: true, searchindex: true do
   let(:users_group) { Group.find_by(name: 'Users') }
-  let(:ticket_1) { create(:ticket, title: 'Testing Ticket 1', group: users_group) }
-  let(:ticket_2) { create(:ticket, title: 'Testing Ticket 2', group: users_group) }
-  let(:note) { 'Test note' }
+  let(:ticket_1)    { create(:ticket, title: 'Testing Ticket 1', group: users_group) }
+  let(:ticket_2)    { create(:ticket, title: 'Testing Ticket 2', group: users_group) }
+  let(:note)        { 'Test note' }
 
   before do
     ticket_1 && ticket_2 && configure_elasticsearch(required: true, rebuild: true)
@@ -128,7 +128,6 @@ RSpec.describe 'Search', type: :system, authenticated: true, searchindex: true d
     end
 
     before do
-      sleep 3 # wait for popover killer to pass
       fill_in id: 'global-search', with: organization.name.to_s
     end
 
@@ -233,6 +232,7 @@ RSpec.describe 'Search', type: :system, authenticated: true, searchindex: true d
     end
   end
 
+<<<<<<< HEAD
   describe 'Searches display all groups and owners on bulk selections #4054', authenticated_as: :authenticate do
     let(:group1) { create(:group) }
     let(:group2) { create(:group) }
@@ -241,6 +241,53 @@ RSpec.describe 'Search', type: :system, authenticated: true, searchindex: true d
     let(:agent_all) { create(:agent, groups: [group1, group2]) }
     let(:ticket1) { create(:ticket, group: group1, title: '4054 group 1') }
     let(:ticket2) { create(:ticket, group: group2, title: '4054 group 2') }
+=======
+  context 'Assign user to multiple organizations #1573', authenticated_as: :authenticate do
+    let(:organizations) { create_list(:organization, 20) }
+    let(:customer) { create(:customer, organization: organizations[0], organizations: organizations[1..]) }
+
+    context 'when agent' do
+      def authenticate
+        customer
+        true
+      end
+
+      before do
+        fill_in id: 'global-search', with: customer.firstname.to_s
+      end
+
+      it 'shows only first 3 organizations' do
+        expect(page).to have_text(customer.firstname)
+        popover_on_hover(first('a.nav-tab.user'))
+        within '.popover' do
+          expect(page).to have_text(organizations[2].name, wait: 30)
+          expect(page).to have_no_text(organizations[10].name)
+        end
+      end
+    end
+
+    context 'when customer', authenticated_as: :customer do
+      before do
+        fill_in id: 'global-search', with: organizations[0].name.to_s
+      end
+
+      it 'does not show any organizations in global search because only agents have access to it' do
+        within '.global-search-result' do
+          expect(page).to have_no_text(organizations[0].name)
+        end
+      end
+    end
+  end
+
+  describe 'Searches display all groups and owners on bulk selections #4054', authenticated_as: :authenticate do
+    let(:group1) { create(:group) }
+    let(:group2)    { create(:group) }
+    let(:agent1)    { create(:agent, groups: [group1]) }
+    let(:agent2)    { create(:agent, groups: [group2]) }
+    let(:agent_all) { create(:agent, groups: [group1, group2]) }
+    let(:ticket1)   { create(:ticket, group: group1, title: '4054 group 1') }
+    let(:ticket2)   { create(:ticket, group: group2, title: '4054 group 2') }
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
     def authenticate
       agent1 && agent2 && agent_all

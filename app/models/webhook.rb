@@ -3,7 +3,6 @@
 class Webhook < ApplicationModel
   include ChecksClientNotification
   include ChecksHtmlSanitized
-  include ChecksLatestChangeObserved
   include HasCollectionUpdate
 
   before_destroy Webhook::EnsureNoRelatedObjects
@@ -18,9 +17,9 @@ class Webhook < ApplicationModel
   def validate_endpoint
     uri = URI.parse(endpoint)
 
-    errors.add(:endpoint, __('Invalid endpoint (no http/https)!')) if !uri.is_a?(URI::HTTP)
-    errors.add(:endpoint, __('Invalid endpoint (no hostname)!')) if uri.host.nil?
+    errors.add(:endpoint, __('The provided endpoint is invalid, no http or https protocol was specified.')) if !uri.is_a?(URI::HTTP)
+    errors.add(:endpoint, __('The provided endpoint is invalid, no hostname was specified.')) if uri.host.nil?
   rescue URI::InvalidURIError
-    errors.add :endpoint, __('Invalid endpoint!')
+    errors.add :endpoint, __('The provided endpoint is invalid.')
   end
 end

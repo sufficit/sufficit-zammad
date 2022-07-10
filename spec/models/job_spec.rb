@@ -3,16 +3,18 @@
 require 'rails_helper'
 require 'models/application_model_examples'
 require 'models/concerns/has_xss_sanitized_note_examples'
+require 'models/concerns/has_timeplan_examples'
 
 RSpec.describe Job, type: :model do
   subject(:job) { create(:job) }
 
   it_behaves_like 'ApplicationModel', can_assets: { selectors: %i[condition perform] }
   it_behaves_like 'HasXssSanitizedNote', model_factory: :job
+  it_behaves_like 'HasTimeplan'
 
   describe 'Class methods:' do
     describe '.run' do
-      let!(:executable_jobs) { jobs.select(&:executable?).select(&:in_timeplan?) }
+      let!(:executable_jobs)    { jobs.select(&:executable?).select(&:in_timeplan?) }
       let!(:nonexecutable_jobs) { jobs - executable_jobs }
 
       let!(:jobs) do
@@ -142,8 +144,8 @@ RSpec.describe Job, type: :model do
 
           describe 'use case: deleting tickets based on tag' do
             let(:condition) { { 'ticket.tags' => { 'operator' => 'contains one', 'value' => 'spam' } } }
-            let(:perform) { { 'ticket.action' => { 'value' => 'delete' } } }
-            let!(:matching_ticket) { create(:ticket).tap { |t| t.tag_add('spam', 1) } }
+            let(:perform)             { { 'ticket.action' => { 'value' => 'delete' } } }
+            let!(:matching_ticket)    { create(:ticket).tap { |t| t.tag_add('spam', 1) } }
             let!(:nonmatching_ticket) { create(:ticket) }
 
             it 'deletes tickets matching the specified tags' do
@@ -156,8 +158,8 @@ RSpec.describe Job, type: :model do
 
           describe 'use case: deleting tickets based on group' do
             let(:condition) { { 'ticket.group_id' => { 'operator' => 'is', 'value' => matching_ticket.group.id } } }
-            let(:perform) { { 'ticket.action' => { 'value' => 'delete' } } }
-            let!(:matching_ticket) { create(:ticket) }
+            let(:perform)             { { 'ticket.action' => { 'value' => 'delete' } } }
+            let!(:matching_ticket)    { create(:ticket) }
             let!(:nonmatching_ticket) { create(:ticket) }
 
             it 'deletes tickets matching the specified groups' do
@@ -345,22 +347,6 @@ RSpec.describe Job, type: :model do
         end
       end
     end
-
-    describe '#in_timeplan?' do
-      before do
-        job.timeplan = { days: { Mon: true }, hours: { 0 => true }, minutes: { 0 => true } }
-      end
-
-      it 'checks in selected time zone' do
-        Setting.set 'timezone_default', 'Europe/Vilnius'
-
-        expect(job).to be_in_timeplan Time.zone.parse('2020-12-27 22:00')
-      end
-
-      it 'checks in UTC' do
-        expect(job).to be_in_timeplan Time.zone.parse('2020-12-28 00:00')
-      end
-    end
   end
 
   describe 'Attributes:' do
@@ -527,8 +513,8 @@ RSpec.describe Job, type: :model do
   # when it no longer matches the conditions
   # https://github.com/zammad/zammad/issues/3329
   context 'job re-checks conditions' do
-    let(:job)    { create(:job, condition: condition, perform: perform) }
-    let(:ticket) { create(:ticket, title: initial_title) }
+    let(:job)           { create(:job, condition: condition, perform: perform) }
+    let(:ticket)        { create(:ticket, title: initial_title) }
     let(:initial_title) { 'initial 3329'  }
     let(:changed_title) { 'performed 3329' }
 
@@ -567,9 +553,9 @@ RSpec.describe Job, type: :model do
     end
   end
 
-  describe 'Scheduler ignores "disable notifications == no" #3684', sends_notification_emails: true do
+  describe 'Scheduler ignores "disable notifications == no" #3684', sends_notification_emails: true, performs_jobs: true do
     let!(:group) { create(:group) }
-    let!(:agent) { create(:agent, groups: [group]) }
+    let!(:agent)  { create(:agent, groups: [group]) }
     let!(:ticket) { create(:ticket, group: group, owner: agent) }
     let(:perform) do
       { 'article.note' => { 'body' => 'ccc', 'internal' => 'true', 'subject' => 'ccc' }, 'ticket.state_id' => { 'value' => 4 } }
@@ -585,7 +571,7 @@ RSpec.describe Job, type: :model do
       it 'does not send a notification to the owner of the ticket' do # rubocop:disable RSpec/ExampleLength
         check_notification do
           notify_job.run(true)
-          Scheduler.worker(true)
+          perform_enqueued_jobs
 
           not_sent(
             template: 'ticket_update',
@@ -606,7 +592,7 @@ RSpec.describe Job, type: :model do
       it 'does send a notification to the owner of the ticket with trigger note in notification body' do # rubocop:disable RSpec/ExampleLength
         check_notification do
           notify_job.run(true)
-          Scheduler.worker(true)
+          perform_enqueued_jobs
 
           sent(
             template: 'ticket_update',

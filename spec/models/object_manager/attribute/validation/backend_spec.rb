@@ -13,7 +13,7 @@ RSpec.describe ObjectManager::Attribute::Validation::Backend do
       )
     end
 
-    let(:record) { build(:user) }
+    let(:record)    { build(:user) }
     let(:attribute) { ::ObjectManager::Attribute.find_by(name: 'firstname') }
 
     it 'has attr_accessor for record' do
@@ -46,7 +46,7 @@ RSpec.describe ObjectManager::Attribute::Validation::Backend do
       end
 
       it 'uses ObjectManager::Attribute#name as ActiveModel::Errors identifier' do
-        expect(record.errors.to_h).to have_key(attribute.name.to_sym)
+        expect(record.errors.to_hash).to have_key(attribute.name.to_sym)
       end
     end
   end

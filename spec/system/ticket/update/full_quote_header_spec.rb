@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe 'Ticket > Update > Full Quote Header', current_user_id: -> { current_user.id }, type: :system, time_zone: 'Europe/London' do
-  let(:group) { Group.find_by(name: 'Users') }
-  let(:ticket) { create(:ticket, group: group) }
+  let(:group)          { Group.find_by(name: 'Users') }
+  let(:ticket)         { create(:ticket, group: group) }
   let(:ticket_article) { create(:ticket_article, ticket: ticket, from: 'Example Name <asdf1@example.com>') }
-  let(:customer) { create(:customer) }
-  let(:current_user) { customer }
-  let(:selection) { '' }
+  let(:customer)       { create(:customer) }
+  let(:current_user)   { customer }
+  let(:selection)      { '' }
 
   prepend_before do
     Setting.set 'ui_ticket_zoom_article_email_full_quote_header', full_quote_header_setting
@@ -152,8 +152,8 @@ RSpec.describe 'Ticket > Update > Full Quote Header', current_user_id: -> { curr
   context 'when text is selected on page while replying' do
     let(:full_quote_header_setting) { false }
     let(:before_article_content_selector) { '.ticketZoom-header' }
-    let(:after_article_content_selector) { '.ticket-article-item .humanTimeFromNow' }
-    let(:article_content_selector) { '.ticket-article-item .richtext-content' }
+    let(:after_article_content_selector)  { '.ticket-article-item .humanTimeFromNow' }
+    let(:article_content_selector)        { '.ticket-article-item .richtext-content' }
 
     it 'does not quote article when bits other than the article are selected' do
       within(:active_content) do
@@ -227,6 +227,9 @@ RSpec.describe 'Ticket > Update > Full Quote Header', current_user_id: -> { curr
           highlight_and_click_reply
 
           within(:richtext) do
+            wait.until do
+              first('blockquote br:nth-child(2)', visible: :all)
+            end
             blockquote_empty_line = first('blockquote br:nth-child(2)', visible: :all)
             page.driver.browser.action.move_to_location(blockquote_empty_line.native.location.x, blockquote_empty_line.native.location.y).click.perform
           end
@@ -286,7 +289,17 @@ RSpec.describe 'Ticket > Update > Full Quote Header', current_user_id: -> { curr
         window.getSelection().addRange(range)
       JAVASCRIPT
 
+    wait.until_constant do
+      find('.ticket-article-item .richtext-content').evaluate_script('window.getSelection().toString().trim()')
+    end
+
     click_reply
+
+    within(:richtext) do
+      wait.until do
+        find('blockquote', visible: :all)
+      end
+    end
   end
 
   define :contain_full_quote do
@@ -374,7 +387,11 @@ RSpec.describe 'Ticket > Update > Full Quote Header', current_user_id: -> { curr
       expected
         .created_at
         .in_time_zone('Europe/London')
+<<<<<<< HEAD
         .strftime(format_string)
+=======
+        .strftime('%A, %B %1d, %Y at %1I:%M:%S %p')
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
     end
 
     def timestamp_forward

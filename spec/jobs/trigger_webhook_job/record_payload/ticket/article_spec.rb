@@ -10,7 +10,7 @@ RSpec.describe TriggerWebhookJob::RecordPayload::Ticket::Article do
     subject(:generate) { described_class.new(record).generate }
 
     let(:resolved_associations) { described_class.const_get(:ASSOCIATIONS).map(&:to_s) }
-    let(:record) { create(:'ticket/article') }
+    let(:record)                { create(:'ticket/article') }
 
     it "adds 'accounted_time' key" do
       expect(generate['accounted_time']).to be_zero
@@ -36,16 +36,15 @@ RSpec.describe TriggerWebhookJob::RecordPayload::Ticket::Article do
     context 'when Article has stored attachments' do
 
       before do
-        Store.add(
-          object:        record.class.name,
-          o_id:          record.id,
-          data:          'some content',
-          filename:      'some_file.txt',
-          preferences:   {
-            'Content-Type' => 'text/plain',
-          },
-          created_by_id: 1,
-        )
+        create(:store,
+               object:        record.class.name,
+               o_id:          record.id,
+               data:          'some content',
+               filename:      'some_file.txt',
+               preferences:   {
+                 'Content-Type' => 'text/plain',
+               },
+               created_by_id: 1,)
       end
 
       it 'adds URLs to attachments' do

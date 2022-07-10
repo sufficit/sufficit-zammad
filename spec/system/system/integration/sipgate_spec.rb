@@ -4,13 +4,13 @@ require 'rails_helper'
 
 RSpec.describe 'Manage > Integration > sipgate.io', type: :system do
   let(:caller_id) { '0411234567' }
-  let(:note) { 'block spam caller id' }
+  let(:note)      { 'block spam caller id' }
 
   before do
     visit 'system/integration/sipgate'
 
     # enable sipgate
-    check 'setting-switch', { allow_label_click: true }
+    check 'setting-switch', allow_label_click: true
   end
 
   context 'for Blocked caller ids based on sender caller id' do

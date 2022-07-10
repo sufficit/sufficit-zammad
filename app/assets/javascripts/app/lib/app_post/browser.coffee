@@ -83,18 +83,25 @@ class App.Browser
     fingerprint
 
   @magicKey: ->
-    browser = @detection()
-    magicKey = 'ctrl'
-    if browser && browser.os && browser.os.name.toString().match(/mac/i)
-      magicKey = 'cmd'
-    magicKey
+    if @isMac()
+      'cmd'
+    else
+      'ctrl'
 
   @hotkeys: ->
+    if @isMac()
+      'alt+ctrl'
+    else
+      'ctrl+shift'
+
+  @isMac: ->
     browser = @detection()
-    hotkeys = 'ctrl+shift'
-    if browser && browser.os && browser.os.name.toString().match(/mac/i)
-      hotkeys = 'alt+ctrl'
-    hotkeys
+
+    osName = browser?.os?.name?.toString()
+
+    return if !osName
+
+    osName.match(/mac/i)
 
 class Modal extends App.ControllerModal
   buttonClose: false
@@ -102,7 +109,7 @@ class Modal extends App.ControllerModal
   buttonSubmit: false
   backdrop: false
   keyboard: false
-  head: __('Browser too old!')
+  head: __('Outdated Browser')
 
   content: ->
     "Your Browser is not supported (#{@data.browser.name} #{@data.browser.major} on #{@data.os.name}). Please use a newer one (e. g. #{@data.browser.name} #{@version} or higher)."

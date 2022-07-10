@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Search', type: :request, searchindex: true do
+RSpec.describe 'Search', type: :request do
 
   let(:group) { create(:group) }
   let!(:admin) do
@@ -65,33 +65,19 @@ RSpec.describe 'Search', type: :request, searchindex: true do
   let!(:article_nested) do
     article = create(:ticket_article, ticket_id: ticket_nested.id)
 
-    Store.add(
-      object:        'Ticket::Article',
-      o_id:          article.id,
-      data:          File.binread(Rails.root.join('test/data/elasticsearch/es-normal.txt')),
-      filename:      'es-normal.txt',
-      preferences:   {},
-      created_by_id: 1,
-    )
+    create(:store,
+           object:   'Ticket::Article',
+           o_id:     article.id,
+           data:     File.binread(Rails.root.join('test/data/elasticsearch/es-normal.txt')),
+           filename: 'es-normal.txt')
 
     article
   end
 
-  before do
-    configure_elasticsearch do
-
-      travel 1.minute
-
-      rebuild_searchindex
-
-      # execute background jobs
-      Scheduler.worker(true)
-
-      sleep 6
+  describe 'request handling', searchindex: true, performs_jobs: true do
+    before do
+      configure_elasticsearch rebuild: true
     end
-  end
-
-  describe 'request handling' do
 
     it 'does settings index with nobody' do
       params = {
@@ -373,7 +359,7 @@ RSpec.describe 'Search', type: :request, searchindex: true do
       expect(json_response['assets']['User'][customer_nested.id.to_s]).to be_truthy
 
       organization_nested.update(name: 'Cucumber43 Ltd.')
-      Scheduler.worker(true)
+      perform_enqueued_jobs
       SearchIndexBackend.refresh
 
       # even after a change of the organization name we should find
@@ -410,7 +396,7 @@ RSpec.describe 'Search', type: :request, searchindex: true do
       expect(json_response['assets']['Ticket'][ticket_nested.id.to_s]).to be_truthy
 
       organization_nested.update(name: 'Cucumber43 Ltd.')
-      Scheduler.worker(true)
+      perform_enqueued_jobs
       SearchIndexBackend.refresh
 
       post '/api/v1/search/Ticket', params: { query: 'Cucumber43' }, as: :json
@@ -438,7 +424,7 @@ RSpec.describe 'Search', type: :request, searchindex: true do
       expect(group).not_to eq('ultrasupport')
 
       group.update(name: 'ultrasupport')
-      Scheduler.worker(true)
+      perform_enqueued_jobs
       SearchIndexBackend.refresh
 
       post '/api/v1/search/Ticket', params: { query: "number:#{ticket1.number} && group.name:ultrasupport" }, as: :json
@@ -458,7 +444,7 @@ RSpec.describe 'Search', type: :request, searchindex: true do
       expect(ticket1.state.name).not_to eq('ultrastate')
 
       ticket1.state.update(name: 'ultrastate')
-      Scheduler.worker(true)
+      perform_enqueued_jobs
       SearchIndexBackend.refresh
 
       post '/api/v1/search/Ticket', params: { query: "number:#{ticket1.number} && state.name:ultrastate" }, as: :json
@@ -478,7 +464,7 @@ RSpec.describe 'Search', type: :request, searchindex: true do
       expect(ticket1.priority.name).not_to eq('ultrapriority')
 
       ticket1.priority.update(name: 'ultrapriority')
-      Scheduler.worker(true)
+      perform_enqueued_jobs
       SearchIndexBackend.refresh
 
       post '/api/v1/search/Ticket', params: { query: "number:#{ticket1.number} && priority.name:ultrapriority" }, as: :json
@@ -502,7 +488,7 @@ RSpec.describe 'Search', type: :request, searchindex: true do
       expect(json_response['assets']['Ticket'][ticket_nested.id.to_s]).to be_truthy
 
       organization_nested.update(name: 'Cucumber43 Ltd.')
-      Scheduler.worker(true)
+      perform_enqueued_jobs
       SearchIndexBackend.refresh
 
       params = {
@@ -515,6 +501,148 @@ RSpec.describe 'Search', type: :request, searchindex: true do
       expect(json_response).to be_a_kind_of(Hash)
       expect(json_response).to be_truthy
       expect(json_response['assets']['Ticket'][ticket_nested.id.to_s]).to be_truthy
+    end
+  end
+
+  describe 'Assign user to multiple organizations #1573' do
+    shared_examples 'search for organization ids' do
+      context 'when customer with multi organizations', authenticated_as: :customer do
+        context 'with multi organizations' do
+          let(:customer) { create(:customer, organization: organizations[0], organizations: organizations[1..2]) }
+          let(:organizations) { create_list(:organization, 5) }
+
+          it 'does not return organizations which are not allowed' do
+            params = {
+              query: 'TestOrganization',
+              limit: 10,
+            }
+            post '/api/v1/search/Organization', params: params, as: :json
+            expect(json_response['result']).to include({ 'id' => organizations[0].id, 'type' => 'Organization' })
+            expect(json_response['result']).to include({ 'id' => organizations[1].id, 'type' => 'Organization' })
+            expect(json_response['result']).to include({ 'id' => organizations[2].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[3].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[4].id, 'type' => 'Organization' })
+          end
+
+          it 'does not return organizations which are not allowed when overwritten' do
+            params = {
+              query: 'TestOrganization',
+              limit: 10,
+              ids:   organizations.map(&:id)
+            }
+            post '/api/v1/search/Organization', params: params, as: :json
+            expect(json_response['result']).to include({ 'id' => organizations[0].id, 'type' => 'Organization' })
+            expect(json_response['result']).to include({ 'id' => organizations[1].id, 'type' => 'Organization' })
+            expect(json_response['result']).to include({ 'id' => organizations[2].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[3].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[4].id, 'type' => 'Organization' })
+          end
+        end
+
+        context 'with single organization' do
+          let(:customer) { create(:customer, organization: organizations[0]) }
+          let(:organizations) { create_list(:organization, 5) }
+
+          it 'does not return organizations which are not allowed' do
+            params = {
+              query: 'TestOrganization',
+              limit: 10,
+            }
+            post '/api/v1/search/Organization', params: params, as: :json
+            expect(json_response['result']).to include({ 'id' => organizations[0].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[1].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[2].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[3].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[4].id, 'type' => 'Organization' })
+          end
+
+          it 'does not return organizations which are not allowed when overwritten' do
+            params = {
+              query: 'TestOrganization',
+              limit: 10,
+              ids:   organizations.map(&:id)
+            }
+            post '/api/v1/search/Organization', params: params, as: :json
+            expect(json_response['result']).to include({ 'id' => organizations[0].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[1].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[2].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[3].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[4].id, 'type' => 'Organization' })
+          end
+        end
+
+        context 'with no organization' do
+          let(:customer) do
+            organizations
+            create(:customer)
+          end
+          let(:organizations) { create_list(:organization, 5) }
+
+          it 'does not return organizations which are not allowed' do
+            params = {
+              query: 'TestOrganization',
+              limit: 10,
+            }
+            post '/api/v1/search/Organization', params: params, as: :json
+            expect(json_response['result']).not_to include({ 'id' => organizations[0].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[1].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[2].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[3].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[4].id, 'type' => 'Organization' })
+          end
+
+          it 'does not return organizations which are not allowed when overwritten' do
+            params = {
+              query: 'TestOrganization',
+              limit: 10,
+              ids:   organizations.map(&:id)
+            }
+            post '/api/v1/search/Organization', params: params, as: :json
+            expect(json_response['result']).not_to include({ 'id' => organizations[0].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[1].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[2].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[3].id, 'type' => 'Organization' })
+            expect(json_response['result']).not_to include({ 'id' => organizations[4].id, 'type' => 'Organization' })
+          end
+        end
+      end
+
+      it 'does return all organizations' do
+        params = {
+          query: 'Rest',
+          limit: 10,
+        }
+        authenticated_as(admin)
+        post '/api/v1/search/Organization', params: params, as: :json
+        expect(json_response['result']).to include({ 'id' => organization1.id, 'type' => 'Organization' })
+        expect(json_response['result']).to include({ 'id' => organization2.id, 'type' => 'Organization' })
+        expect(json_response['result']).to include({ 'id' => organization3.id, 'type' => 'Organization' })
+      end
+
+      it 'does return organization specific ids' do
+        params = {
+          query: 'Rest',
+          ids:   [organization1.id],
+          limit: 10,
+        }
+        authenticated_as(admin)
+        post '/api/v1/search/Organization', params: params, as: :json
+        expect(json_response['result']).to include({ 'id' => organization1.id, 'type' => 'Organization' })
+        expect(json_response['result']).not_to include({ 'id' => organization2.id, 'type' => 'Organization' })
+        expect(json_response['result']).not_to include({ 'id' => organization3.id, 'type' => 'Organization' })
+      end
+    end
+
+    context 'with elasticsearch', searchindex: true do
+      before do
+        configure_elasticsearch(required: true, rebuild: true)
+      end
+
+      include_examples 'search for organization ids'
+    end
+
+    context 'with db only', searchindex: false do
+      include_examples 'search for organization ids'
     end
   end
 end

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html dir='ltr' lang="en-us">
+  <head>
+    <title><%= Setting.get('product_name') %></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= action_cable_meta_tag %>
+
+    <%= vite_typescript_tag 'mobile', nonce: true %>
+    <%= vite_client_tag %>
+  </head>
+  <body>
+    <%= yield %>
+  </body>
+</html>

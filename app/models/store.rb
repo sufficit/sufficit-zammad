@@ -12,49 +12,28 @@ class Store < ApplicationModel
 
   store :preferences
 
-  before_create :oversized_preferences_check
+  before_validation :set_object_id
+  before_create :set_store_file, :oversized_preferences_check
   after_create :generate_previews
   before_update :oversized_preferences_check
 
-=begin
+  attr_accessor :object, :data
 
-add an attachment to storage
+  def set_object_id
+    return if object.blank?
 
-  result = Store.add(
-    object: 'Ticket::Article',
-    o_id: 4711,
-    data: binary_string,
-    filename: 'filename.txt',
-    preferences: {
-      content_type: 'image/png',
-      content_id: 234,
-    }
-  )
+    self.store_object_id = Store::Object.create_if_not_exists(name: object).id
+  end
 
-returns
+  def set_store_file
+    file = Store::File.add(data)
+    self.size = data.to_s.bytesize
+    self.store_file_id = file.id
+  end
 
-  result = true
-
-=end
-
-  def self.add(data)
-    data.deep_stringify_keys!
-
-    # lookup store_object.id
-    store_object = Store::Object.create_if_not_exists(name: data['object'])
-    data['store_object_id'] = store_object.id
-
-    # add to real store
-    file = Store::File.add(data['data'])
-
-    data['size'] = data['data'].to_s.bytesize
-    data['store_file_id'] = file.id
-
-    # not needed attributes
-    data.delete('data')
-    data.delete('object')
-
-    Store.create!(data)
+  def self.add(...)
+    ActiveSupport::Deprecation.warn("The method 'Store.add' is deprecated. Use 'Store.create!' instead.")
+    create!(...)
   end
 
 =begin
@@ -219,7 +198,7 @@ returns
     slice :id, :store_file_id, :filename, :size, :preferences
   end
 
-  RESIZABLE_MIME_REGEXP = %r{image/(jpeg|jpg|png)}i.freeze
+  RESIZABLE_MIME_REGEXP = %r{image/(jpeg|jpg|png)}i
 
   def self.resizable_mime?(input)
     input.match? RESIZABLE_MIME_REGEXP
@@ -259,32 +238,26 @@ returns
   def image_resize(content, width)
     local_sha = Digest::SHA256.hexdigest(content)
 
-    cache_key = "image-resize-#{local_sha}_#{width}"
-    image = Cache.read(cache_key)
-    return image if image
+    Rails.cache.fetch("#{self.class}/image-resize-#{local_sha}_#{width}", expires_in: 6.months) do
+      temp_file = ::Tempfile.new
+      temp_file.binmode
+      temp_file.write(content)
+      temp_file.close
+      image = Rszr::Image.load(temp_file.path)
 
-    temp_file = ::Tempfile.new
-    temp_file.binmode
-    temp_file.write(content)
-    temp_file.close
-    image = Rszr::Image.load(temp_file.path)
+      # do not resize image if image is smaller or already same size
+      return if image.width <= width
 
-    # do not resize image if image is smaller or already same size
-    return if image.width <= width
+      # do not resize image if new height is smaller then 7px (images
+      # with small height are usually useful to resize)
+      ratio = image.width / width
+      return if image.height / ratio <= 6
 
-    # do not resize image if new height is smaller then 7px (images
-    # with small height are usually useful to resize)
-    ratio = image.width / width
-    return if image.height / ratio <= 6
-
-    image.resize!(width, :auto)
-    temp_file_resize = ::Tempfile.new.path
-    image.save(temp_file_resize)
-    image_resized = ::File.binread(temp_file_resize)
-
-    Cache.write(cache_key, image_resized, { expires_in: 6.months })
-
-    image_resized
+      image.resize!(width, :auto)
+      temp_file_resize = ::Tempfile.new.path
+      image.save(temp_file_resize)
+      ::File.binread(temp_file_resize)
+    end
   end
 
   def oversized_preferences_check

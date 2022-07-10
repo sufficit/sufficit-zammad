@@ -2,12 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Form', type: :request, searchindex: true do
-
-  before do
-    configure_elasticsearch
-    rebuild_searchindex
-  end
+RSpec.describe 'Form', type: :request do
 
   describe 'request handling' do
 
@@ -64,7 +59,7 @@ RSpec.describe 'Form', type: :request, searchindex: true do
       expect(json_response['errors']['title']).to eq('required')
       expect(json_response['errors']['body']).to eq('required')
 
-      post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@znuny.com', title: 'test', body: 'hello' }, as: :json
+      post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@zammad.com', title: 'test', body: 'hello' }, as: :json
       expect(response).to have_http_status(:ok)
       expect(json_response).to be_a_kind_of(Hash)
 
@@ -75,7 +70,7 @@ RSpec.describe 'Form', type: :request, searchindex: true do
 
       travel 5.hours
 
-      post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@znuny.com', title: 'test', body: 'hello' }, as: :json
+      post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@zammad.com', title: 'test', body: 'hello' }, as: :json
 
       expect(response).to have_http_status(:ok)
       expect(json_response).to be_a_kind_of(Hash)
@@ -87,7 +82,7 @@ RSpec.describe 'Form', type: :request, searchindex: true do
 
       travel 20.hours
 
-      post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@znuny.com', title: 'test', body: 'hello' }, as: :json
+      post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@zammad.com', title: 'test', body: 'hello' }, as: :json
       expect(response).to have_http_status(:unauthorized)
 
     end
@@ -139,8 +134,6 @@ RSpec.describe 'Form', type: :request, searchindex: true do
     end
 
     it 'does limits' do
-      skip('No ES configured') if !SearchIndexBackend.enabled?
-
       Setting.set('form_ticket_create', true)
       fingerprint = SecureRandom.hex(40)
       post '/api/v1/form_config', params: { fingerprint: fingerprint }, as: :json
@@ -153,62 +146,47 @@ RSpec.describe 'Form', type: :request, searchindex: true do
       token = json_response['token']
 
       (1..20).each do |count|
-        post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@znuny.com', title: "test#{count}", body: 'hello' }, as: :json
+        post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@zammad.com', title: "test#{count}", body: 'hello' }, as: :json
         expect(response).to have_http_status(:ok)
         expect(json_response).to be_a_kind_of(Hash)
 
         expect(json_response['errors']).to be_falsey
         expect(json_response['ticket']).to be_truthy
         expect(json_response['ticket']['id']).to be_truthy
-        Scheduler.worker(true)
       end
 
-      sleep 10 # wait until elasticsearch is index
-
-      post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@znuny.com', title: 'test-last', body: 'hello' }, as: :json
-      expect(response).to have_http_status(:forbidden)
-      expect(json_response).to be_a_kind_of(Hash)
-      expect(json_response['error']).to be_truthy
+      post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@zammad.com', title: 'test-last', body: 'hello' }, as: :json
+      expect(response).to have_http_status(:too_many_requests)
 
       @headers = { 'ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'REMOTE_ADDR' => '1.2.3.5' }
 
       (1..20).each do |count|
-        post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@znuny.com', title: "test-2-#{count}", body: 'hello' }, as: :json
+        post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@zammad.com', title: "test-2-#{count}", body: 'hello' }, as: :json
         expect(response).to have_http_status(:ok)
         expect(json_response).to be_a_kind_of(Hash)
 
         expect(json_response['errors']).to be_falsey
         expect(json_response['ticket']).to be_truthy
         expect(json_response['ticket']['id']).to be_truthy
-        Scheduler.worker(true)
       end
 
-      sleep 10 # wait until elasticsearch is index
-
-      post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@znuny.com', title: 'test-2-last', body: 'hello' }, as: :json
-      expect(response).to have_http_status(:forbidden)
-      expect(json_response).to be_a_kind_of(Hash)
-      expect(json_response['error']).to be_truthy
+      post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@zammad.com', title: 'test-2-last', body: 'hello' }, as: :json
+      expect(response).to have_http_status(:too_many_requests)
 
       @headers = { 'ACCEPT' => 'application/json', 'CONTENT_TYPE' => 'application/json', 'REMOTE_ADDR' => '::1' }
 
       (1..20).each do |count|
-        post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@znuny.com', title: "test-2-#{count}", body: 'hello' }, as: :json
+        post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@zammad.com', title: "test-2-#{count}", body: 'hello' }, as: :json
         expect(response).to have_http_status(:ok)
         expect(json_response).to be_a_kind_of(Hash)
 
         expect(json_response['errors']).to be_falsey
         expect(json_response['ticket']).to be_truthy
         expect(json_response['ticket']['id']).to be_truthy
-        Scheduler.worker(true)
       end
 
-      sleep 10 # wait until elasticsearch is index
-
-      post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@znuny.com', title: 'test-2-last', body: 'hello' }, as: :json
-      expect(response).to have_http_status(:forbidden)
-      expect(json_response).to be_a_kind_of(Hash)
-      expect(json_response['error']).to be_truthy
+      post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@zammad.com', title: 'test-2-last', body: 'hello' }, as: :json
+      expect(response).to have_http_status(:too_many_requests)
     end
 
     it 'does customer_ticket_create false disables form' do
@@ -224,7 +202,7 @@ RSpec.describe 'Form', type: :request, searchindex: true do
         fingerprint: fingerprint,
         token:       token,
         name:        'Bob Smith',
-        email:       'discard@znuny.com',
+        email:       'discard@zammad.com',
         title:       'test',
         body:        'hello'
       }
@@ -245,13 +223,13 @@ RSpec.describe 'Form', type: :request, searchindex: true do
 
       it 'gets switched to "form"' do
         allow(ApplicationHandleInfo).to receive('context=')
-        post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@znuny.com', title: 'test-last', body: 'hello' }, as: :json
+        post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@zammad.com', title: 'test-last', body: 'hello' }, as: :json
         expect(ApplicationHandleInfo).to have_received('context=').with('form').at_least(1)
       end
 
       it 'reverts back to default' do
         allow(ApplicationHandleInfo).to receive('context=')
-        post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@znuny.com', title: 'test-last', body: 'hello' }, as: :json
+        post '/api/v1/form_submit', params: { fingerprint: fingerprint, token: token, name: 'Bob Smith', email: 'discard@zammad.com', title: 'test-last', body: 'hello' }, as: :json
         expect(ApplicationHandleInfo.context).not_to eq 'form'
       end
     end

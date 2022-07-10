@@ -248,7 +248,7 @@ class App.UiElement.ticket_perform_action
         @buildValue(elementFull, elementRow, groupAndAttribute, elements, meta, attribute)
 
     # force to use auto complition on user lookup
-    attribute = _.clone(attributeConfig)
+    attribute = clone(attributeConfig, true)
 
     name = "#{attribute.name}::#{groupAndAttribute}::value"
     attributeSelected = elements[groupAndAttribute]
@@ -305,7 +305,7 @@ class App.UiElement.ticket_perform_action
 
     # build new item
     attributeConfig = elements[groupAndAttribute]
-    config = _.clone(attributeConfig)
+    config = clone(attributeConfig, true)
 
     if config.relation is 'User'
       config.tag = 'user_autocompletion'
@@ -319,18 +319,19 @@ class App.UiElement.ticket_perform_action
       if attribute.value && attribute.value[groupAndAttribute]
         config['value'] = _.clone(attribute.value[groupAndAttribute]['value'])
       config.multiple = false
+      config.default = undefined
       config.nulloption = config.null
+<<<<<<< HEAD
       if config.tag is 'multiselect'
+=======
+      if config.tag is 'multiselect' || config.tag is 'multi_tree_select'
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
         config.multiple = true
       if config.tag is 'checkbox'
         config.tag = 'select'
-      tagSearch = "#{config.tag}_search"
       if config.tag is 'datetime'
         config.validationContainer = 'self'
-      if App.UiElement[tagSearch]
-        item = App.UiElement[tagSearch].render(config, {})
-      else
-        item = App.UiElement[config.tag].render(config, {})
+      item = App.UiElement[config.tag].render(config, {})
 
     relative_operators = [
       'before (relative)',
@@ -577,41 +578,3 @@ class App.UiElement.ticket_perform_action
     )
 
     elementRow.find('.js-setArticle').html(articleElement).removeClass('hide')
-
-  @humanText: (condition) ->
-    none = App.i18n.translateContent('No filter.')
-    return [none] if _.isEmpty(condition)
-    [defaults, groups, operators, elements] = @defaults()
-    rules = []
-    for attribute, value of condition
-
-      objectAttribute = attribute.split(/\./)
-
-      # get stored params
-      if meta && objectAttribute[1]
-        model = toCamelCase(objectAttribute[0])
-        config = elements[attribute]
-
-        valueHuman = []
-        if _.isArray(value)
-          for data in value
-            r = @humanTextLookup(config, data)
-            valueHuman.push r
-        else
-          valueHuman.push @humanTextLookup(config, value)
-
-        if valueHuman.join
-          valueHuman = valueHuman.join(', ')
-        rules.push "#{App.i18n.translateContent('Set')} <b>#{App.i18n.translateContent(model)} -> #{App.i18n.translateContent(config.display)}</b> #{App.i18n.translateContent('to')} <b>#{valueHuman}</b>."
-
-    return [none] if _.isEmpty(rules)
-    rules
-
-  @humanTextLookup: (config, value) ->
-    return value if !App[config.relation]
-    return value if !App[config.relation].exists(value)
-    data = App[config.relation].fullLocal(value)
-    return value if !data
-    if data.displayName
-      return App.i18n.translateContent( data.displayName() )
-    valueHuman.push App.i18n.translateContent( data.name )

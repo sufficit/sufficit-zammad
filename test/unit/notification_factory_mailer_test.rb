@@ -37,7 +37,7 @@ class NotificationFactoryMailerTest < ActiveSupport::TestCase
     assert_match('text/html', result.to_s)
 
     attachments = []
-    attachments.push Store.add(
+    attachments.push Store.create!(
       object:        'TestMailer',
       o_id:          1,
       data:          'content_file1_normally_should_be_an_image',
@@ -50,7 +50,7 @@ class NotificationFactoryMailerTest < ActiveSupport::TestCase
       },
       created_by_id: 1,
     )
-    attachments.push Store.add(
+    attachments.push Store.create!(
       object:        'TestMailer',
       o_id:          1,
       data:          'content_file2',
@@ -283,7 +283,7 @@ class NotificationFactoryMailerTest < ActiveSupport::TestCase
 
     if Rails.application.config.cache_store.first.eql? :mem_cache_store
       # External memcached does not support time travel, so clear the cache to avoid an outdated match.
-      Cache.clear
+      Rails.cache.clear
     end
 
     result = NotificationFactory::Mailer.notification_settings(agent1, ticket1, 'create')

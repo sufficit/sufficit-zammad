@@ -4,7 +4,11 @@ require 'rails_helper'
 
 RSpec.describe ::Sequencer::Sequence::Import::Freshdesk::TimeEntries, sequencer: :sequence, db_strategy: 'reset' do
   let(:time_entry_available) { true }
+<<<<<<< HEAD
   let(:ticket) { create :ticket }
+=======
+  let(:ticket)               { create :ticket }
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
 
   let(:process_payload) do
     {
@@ -88,7 +92,11 @@ RSpec.describe ::Sequencer::Sequence::Import::Freshdesk::TimeEntries, sequencer:
       let(:resources_payloud) { [] }
 
       it 'do not change time entry for ticket' do
+<<<<<<< HEAD
         expect { process(process_payload) }.to change(Ticket::TimeAccounting, :count).by(0)
+=======
+        expect { process(process_payload) }.not_to change(Ticket::TimeAccounting, :count)
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
       end
     end
   end
@@ -97,7 +105,11 @@ RSpec.describe ::Sequencer::Sequence::Import::Freshdesk::TimeEntries, sequencer:
     let(:time_entry_available) { false }
 
     it 'add time entry for ticket' do
+<<<<<<< HEAD
       expect { process(process_payload) }.to change(Ticket::TimeAccounting, :count).by(0)
+=======
+      expect { process(process_payload) }.not_to change(Ticket::TimeAccounting, :count)
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
     end
   end
 end

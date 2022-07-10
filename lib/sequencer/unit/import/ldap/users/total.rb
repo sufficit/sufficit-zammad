@@ -13,7 +13,7 @@ class Sequencer
             def process
               state.provide(:statistics_diff) do
                 diff.merge(
-                  total: total
+                  total: ((diff[:total] || 0) + total)
                 )
               end
             end
@@ -22,13 +22,13 @@ class Sequencer
 
             def total
               if !dry_run
-                result = Cache.read(cache_key)
+                result = Rails.cache.read(cache_key)
               end
 
               result ||= ldap_connection.count(ldap_config[:user_filter])
 
               if !dry_run
-                Cache.write(cache_key, result, { expires_in: 1.hour })
+                Rails.cache.write(cache_key, result, { expires_in: 1.hour })
               end
 
               result

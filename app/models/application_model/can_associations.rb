@@ -57,7 +57,11 @@ returns
 
         list.push item_id
       end
+
+      next if Array(list).sort == Array(send(real_ids)).sort
+
       send("#{real_ids}=", list)
+      self.updated_at = Time.zone.now
     end
 
     # set relations by name/lookup
@@ -81,6 +85,8 @@ returns
       list = []
       class_object = assoc.klass
       params[real_values].each do |value|
+        next if value.blank?
+
         lookup = nil
         if class_object == User
           if !lookup
@@ -100,7 +106,11 @@ returns
 
         list.push lookup.id
       end
+
+      next if Array(list).sort == Array(send(real_ids)).sort
+
       send("#{real_ids}=", list)
+      self.updated_at = Time.zone.now
     end
   end
 
@@ -118,10 +128,9 @@ returns
 =end
 
   def attributes_with_association_ids
-
     key = "#{self.class}::aws::#{id}"
-    cache = Cache.read(key)
-    return filter_unauthorized_attributes(cache) if cache
+    cache = Rails.cache.read(key)
+    return filter_unauthorized_attributes(cache) if cache && cache['updated_at'] == try(:updated_at)
 
     attributes = self.attributes
     relevant   = %i[has_and_belongs_to_many has_many]
@@ -159,7 +168,7 @@ returns
 
     filter_attributes(attributes)
 
-    Cache.write(key, attributes)
+    Rails.cache.write(key, attributes)
     filter_unauthorized_attributes(attributes)
   end
 
@@ -412,6 +421,8 @@ returns
         class_object = assoc.klass
         lookup_ids = []
         value.each do |item|
+          next if item.blank?
+
           lookup = nil
           if class_object == User
             if !item.instance_of?(String)

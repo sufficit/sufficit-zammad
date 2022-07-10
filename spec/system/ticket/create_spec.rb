@@ -7,10 +7,10 @@ require 'system/examples/text_modules_examples'
 
 RSpec.describe 'Ticket Create', type: :system do
   context 'when applying ticket templates' do
-    let(:agent) { create(:agent, groups: [permitted_group]) }
-    let(:permitted_group) { create(:group) }
+    let(:agent)             { create(:agent, groups: [permitted_group]) }
+    let(:permitted_group)   { create(:group) }
     let(:unpermitted_group) { create(:group) }
-    let!(:template) { create(:template, :dummy_data, group: unpermitted_group, owner: agent) }
+    let!(:template)         { create(:template, :dummy_data, group: unpermitted_group, owner: agent) }
 
     # Regression test for issue #2424 - Unavailable ticket template attributes get applied
     it 'unavailable attributes do not get applied', authenticated_as: :agent do
@@ -67,9 +67,9 @@ RSpec.describe 'Ticket Create', type: :system do
 
       let(:system_email_address) { 'smime1@example.com' }
       let(:email_address) { create(:email_address, email: system_email_address) }
-      let(:group) { create(:group, email_address: email_address) }
-      let(:agent_groups) { [group] }
-      let(:agent) { create(:agent, groups: agent_groups) }
+      let(:group)         { create(:group, email_address: email_address) }
+      let(:agent_groups)  { [group] }
+      let(:agent)         { create(:agent, groups: agent_groups) }
 
       before do
         create(:smime_certificate, :with_private, fixture: system_email_address)
@@ -202,12 +202,16 @@ RSpec.describe 'Ticket Create', type: :system do
 
             it "security defaults sign: #{sign}, encrypt: #{encrypt}" do
               within(:active_content) do
-                encrypt_button = find('.js-securityEncrypt')
-                sign_button    = find('.js-securitySign')
-
-                active_button_class = '.btn--active'
-                expect(encrypt_button.matches_css?(active_button_class)).to be(encrypt)
-                expect(sign_button.matches_css?(active_button_class)).to be(sign)
+                if sign
+                  expect(page).to have_css('.js-securitySign.btn--active')
+                else
+                  expect(page).to have_no_css('.js-securitySign.btn--active')
+                end
+                if encrypt
+                  expect(page).to have_css('.js-securityEncrypt.btn--active')
+                else
+                  expect(page).to have_no_css('.js-securityEncrypt.btn--active')
+                end
               end
             end
           end
@@ -263,7 +267,7 @@ RSpec.describe 'Ticket Create', type: :system do
               }
             end
 
-            let(:default_sign) { true }
+            let(:default_sign)       { true }
             let(:default_encryption) { true }
 
             shared_examples 'sign and encrypt variations' do |check_examples_name|
@@ -341,9 +345,87 @@ RSpec.describe 'Ticket Create', type: :system do
     end
   end
 
+  describe 'object manager attributes default date', time_zone: 'Europe/London' do
+    before :all do # rubocop:disable RSpec/BeforeAfterAll
+      screens = {
+        'create_top' => {
+          '-all-' => {
+            'null' => true
+          }
+        },
+      }
+
+      create(:object_manager_attribute_date, name: 'date_test', display: 'date_test', default: 24, screens: screens)
+      create(:object_manager_attribute_datetime, name: 'datetime_test', display: 'datetime_test', default: 100, screens: screens)
+      ObjectManager::Attribute.migration_execute # rubocop:disable Zammad/ExistsDbStrategy
+    end
+
+    after :all do # rubocop:disable RSpec/BeforeAfterAll
+      ObjectManager::Attribute.where(name: %i[object_manager_attribute_date object_manager_attribute_datetime]).destroy_all
+    end
+
+    around do |example|
+      Time.use_zone('Europe/London') { example.run }
+    end
+
+    before do
+      template = create(:template, :dummy_data)
+
+      travel 1.month
+      browser_travel_to Time.current
+
+      visit 'ticket/create'
+      use_template template
+    end
+
+    let(:field_date) { find 'input[name="{date}date_test"]', visible: :all }
+    let(:field_time) { find 'input[name="{datetime}datetime_test"]', visible: :all }
+
+    it 'prefills date' do
+      expect(field_date.value).to eq 1.day.from_now.to_date.to_s
+    end
+
+    it 'prefills datetime' do
+      expect(Time.zone.parse(field_time.value)).to eq 100.minutes.from_now.change(sec: 0, usec: 0)
+    end
+
+    it 'saves dates' do
+      click '.js-submit'
+
+      date = 1.day.from_now.to_date
+      time = 100.minutes.from_now.change(sec: 0)
+
+      expect(Ticket.last).to have_attributes date_test: date, datetime_test: time
+    end
+
+    it 'allows to save with different values' do
+      date = 2.days.from_now.to_date
+      time = 200.minutes.from_now.change(sec: 0)
+
+      field_date.sibling('[data-item=date]').set date.strftime('%m/%d/%Y')
+      field_time.sibling('[data-item=date]').set time.strftime('%m/%d/%Y')
+      field_time.sibling('[data-item=time]').set time.strftime('%H:%M')
+
+      click '.js-submit'
+
+      expect(Ticket.last).to have_attributes date_test: date, datetime_test: time
+    end
+
+    it 'allows to save with cleared value' do
+      field_date.sibling('[data-item=date]').click
+      find('.datepicker .clear').click
+      field_time.sibling('[data-item=date]').click
+      find('.datepicker .clear').click
+
+      click '.js-submit'
+
+      expect(Ticket.last).to have_attributes date_test: nil, datetime_test: nil
+    end
+  end
+
   describe 'GitLab Integration', :integration, authenticated_as: :authenticate, required_envs: %w[GITLAB_ENDPOINT GITLAB_APITOKEN] do
     let(:customer) { create(:customer) }
-    let(:agent) { create(:agent, groups: [Group.find_by(name: 'Users')]) }
+    let(:agent)     { create(:agent, groups: [Group.find_by(name: 'Users')]) }
     let!(:template) { create(:template, :dummy_data, group: Group.find_by(name: 'Users'), owner: agent, customer: customer) }
 
     def authenticate
@@ -388,7 +470,7 @@ RSpec.describe 'Ticket Create', type: :system do
 
   describe 'GitHub Integration', :integration, authenticated_as: :authenticate, required_envs: %w[GITHUB_ENDPOINT GITHUB_APITOKEN] do
     let(:customer) { create(:customer) }
-    let(:agent) { create(:agent, groups: [Group.find_by(name: 'Users')]) }
+    let(:agent)     { create(:agent, groups: [Group.find_by(name: 'Users')]) }
     let!(:template) { create(:template, :dummy_data, group: Group.find_by(name: 'Users'), owner: agent, customer: customer) }
 
     def authenticate
@@ -480,7 +562,7 @@ RSpec.describe 'Ticket Create', type: :system do
         find('.js-cancel').click
       end
 
-      in_modal disappears: false do
+      in_modal do
         expect(page).to have_text 'Tab has changed'
       end
     end
@@ -488,14 +570,14 @@ RSpec.describe 'Ticket Create', type: :system do
 
   context 'when uploading attachment' do
     it 'shows an error if server throws an error' do
-      allow(Store).to receive(:add) { raise 'Error' }
+      allow(Store).to receive(:create!) { raise 'Error' }
       visit 'ticket/create'
 
       within :active_content do
         page.find('input#fileUpload_1', visible: :all).set(Rails.root.join('test/data/mail/mail001.box'))
       end
 
-      in_modal disappears: false do
+      in_modal do
         expect(page).to have_text 'Error'
       end
     end
@@ -531,7 +613,7 @@ RSpec.describe 'Ticket Create', type: :system do
   end
 
   context 'when agent and customer user login after another' do
-    let(:agent) { create(:agent, password: 'test') }
+    let(:agent)    { create(:agent, password: 'test') }
     let(:customer) { create(:customer, password: 'test') }
 
     it 'customer user should not have agent object attributes', authenticated_as: :agent do
@@ -685,8 +767,8 @@ RSpec.describe 'Ticket Create', type: :system do
   end
 
   context 'default priority', authenticated_as: :authenticate do
-    let(:template)        { create(:template, :dummy_data) }
-    let(:ticket_priority) { create(:ticket_priority, default_create: true) }
+    let(:template)         { create(:template, :dummy_data) }
+    let(:ticket_priority)  { create(:ticket_priority, default_create: true) }
     let(:another_priority) { Ticket::Priority.find(1) }
     let(:priority_field)   { find('[name=priority_id]') }
 
@@ -947,6 +1029,86 @@ RSpec.describe 'Ticket Create', type: :system do
     end
   end
 
+<<<<<<< HEAD
+=======
+  describe 'Assign user to multiple organizations #1573' do
+    let(:organization1) { create(:organization) }
+    let(:organization2) { create(:organization) }
+    let(:organization3) { create(:organization) }
+    let(:organization4) { create(:organization) }
+    let(:user1)         { create(:agent, organization: organization1, organizations: [organization2, organization3]) }
+    let(:user2)         { create(:agent, organization: organization4) }
+    let(:customer1)     { create(:customer, organization: organization1, organizations: [organization2, organization3]) }
+    let(:customer2)     { create(:customer, organization: organization4) }
+
+    context 'when agent', authenticated_as: :authenticate do
+      def authenticate
+        user1
+        user2
+        true
+      end
+
+      before do
+        visit 'ticket/create'
+      end
+
+      it 'does not show the organization field for user 1' do
+        find('[name=customer_id_completion]').fill_in with: user1.firstname
+        find("li.recipientList-entry.js-object[data-object-id='#{user1.id}']").click
+        expect(page).to have_css("div[data-attribute-name='organization_id']")
+      end
+
+      it 'does show the organization field for user 2' do
+        find('[name=customer_id_completion]').fill_in with: user2.firstname
+        find("li.recipientList-entry.js-object[data-object-id='#{user2.id}']").click
+        expect(page).to have_no_css("div[data-attribute-name='organization_id']")
+      end
+
+      it 'can create tickets for secondary organizations' do
+        fill_in 'Title', with: 'test'
+        find('.richtext-content').send_keys 'test'
+        select Group.first.name, from: 'group_id'
+
+        find('[name=customer_id_completion]').fill_in with: user1.firstname
+        wait.until { page.all("li.recipientList-entry.js-object[data-object-id='#{user1.id}']").present? }
+        find("li.recipientList-entry.js-object[data-object-id='#{user1.id}']").click
+
+        find('div[data-attribute-name=organization_id] .js-input').fill_in with: user1.organizations[0].name, fill_options: { clear: :backspace }
+        wait.until { page.all("div[data-attribute-name=organization_id] .js-option[data-value='#{user1.organizations[0].id}']").present? }
+        page.find("div[data-attribute-name=organization_id] .js-option[data-value='#{user1.organizations[0].id}'] span").click
+
+        click '.js-submit'
+        wait.until { Ticket.last.organization_id == user1.organizations[0].id }
+      end
+    end
+
+    context 'when customer' do
+      before do
+        visit 'customer_ticket_new'
+      end
+
+      it 'does not show the organization field for user 1', authenticated_as: :customer1 do
+        expect(page).to have_css("div[data-attribute-name='organization_id']")
+      end
+
+      it 'does show the organization field for user 2', authenticated_as: :customer2 do
+        expect(page).to have_no_css("div[data-attribute-name='organization_id']")
+      end
+
+      it 'can create tickets for secondary organizations', authenticated_as: :customer1 do
+        fill_in 'Title', with: 'test'
+        find('.richtext-content').send_keys 'test'
+        select Group.first.name, from: 'group_id'
+        find('div[data-attribute-name=organization_id] .js-input').fill_in with: customer1.organizations[0].name, fill_options: { clear: :backspace }
+        wait.until { page.all("div[data-attribute-name=organization_id] .js-option[data-value='#{customer1.organizations[0].id}']").present? }
+        page.find("div[data-attribute-name=organization_id] .js-option[data-value='#{customer1.organizations[0].id}'] span").click
+        click '.js-submit'
+        wait.until { Ticket.last.organization_id == customer1.organizations[0].id }
+      end
+    end
+  end
+
+>>>>>>> 979ea9caf03b644fdd6525e7af7179c102ee3ac4
   describe 'Wrong default values in ticket create when creating from user profile #4088' do
     let(:customer) { create(:customer) }
 

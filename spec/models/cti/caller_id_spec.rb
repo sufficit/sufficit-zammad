@@ -49,7 +49,7 @@ RSpec.describe Cti::CallerId do
         expect(described_class.extract_numbers(<<~INPUT.chomp)).to eq(%w[19494310000 19494310001])
           P: +1 (949) 431 0000
           F: +1 (949) 431 0001
-          W: http://znuny
+          W: https://zammad.com
         INPUT
       end
     end
@@ -270,11 +270,10 @@ RSpec.describe Cti::CallerId do
       end
     end
 
-    context 'with maybe caller_id' do
+    context 'with maybe caller_id', performs_jobs: true do
       let(:ticket1) do
         create(:ticket_article, created_by_id: customer2.id, body: 'some text 0123457') # create ticket
-        TransactionDispatcher.commit
-        Scheduler.worker(true)
+        performs_jobs commit_transaction: true
       end
       let!(:customer2) { create(:customer) }
 

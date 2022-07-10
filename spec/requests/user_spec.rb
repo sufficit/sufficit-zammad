@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User', type: :request do
+RSpec.describe 'User', type: :request, performs_jobs: true do
 
   describe 'request handling', searchindex: true do
     let!(:admin) do
@@ -418,7 +418,7 @@ RSpec.describe 'User', type: :request do
       expect(json_response1['email']).to eq('new_customer_by_agent@example.com')
 
       # search as agent
-      Scheduler.worker(true)
+      perform_enqueued_jobs
       sleep 2 # let es time to come ready
       get "/api/v1/users/search?query=#{CGI.escape("Customer#{firstname}")}", params: {}, as: :json
       expect(response).to have_http_status(:ok)
@@ -544,7 +544,7 @@ RSpec.describe 'User', type: :request do
       expect(response).to have_http_status(:forbidden)
 
       # search
-      Scheduler.worker(true)
+      perform_enqueued_jobs
       get "/api/v1/users/search?query=#{CGI.escape('First')}", params: {}, as: :json
       expect(response).to have_http_status(:forbidden)
     end
@@ -574,7 +574,7 @@ RSpec.describe 'User', type: :request do
       expect(json_response['error']).to be_truthy
 
       # search
-      Scheduler.worker(true)
+      perform_enqueued_jobs
       get "/api/v1/users/search?query=#{CGI.escape('First')}", params: {}, as: :json
       expect(response).to have_http_status(:forbidden)
     end
@@ -995,7 +995,7 @@ RSpec.describe 'User', type: :request do
         out_of_office:                true,
         created_at:                   '2016-02-05 19:42:00',
       )
-      Scheduler.worker(true)
+      perform_enqueued_jobs
       sleep 2 # let es time to come ready
 
       authenticated_as(admin)
@@ -1095,7 +1095,7 @@ RSpec.describe 'User', type: :request do
     end
 
     context 'does password reset by token work' do
-      let(:user) { create(:customer, login: 'somebody', email: 'somebody@example.com') }
+      let(:user)  { create(:customer, login: 'somebody', email: 'somebody@example.com') }
       let(:token) { create(:token, action: 'PasswordReset', user_id: user.id) }
 
       context 'for user without email address' do
@@ -1415,7 +1415,7 @@ RSpec.describe 'User', type: :request do
 
   describe 'GET /api/v1/users/search group ids' do
     let(:group1) { create(:group) }
-    let(:group2) { create(:group) }
+    let(:group2)  { create(:group) }
     let!(:agent1) { create(:agent, firstname: '9U7Z-agent1', groups: [group1]) }
     let!(:agent2) { create(:agent, firstname: '9U7Z-agent2', groups: [group2]) }
 
@@ -1521,7 +1521,7 @@ RSpec.describe 'User', type: :request do
   end
 
   describe 'POST /api/v1/users/avatar', authenticated_as: :user do
-    let(:user) { create(:user) }
+    let(:user)   { create(:user) }
     let(:base64) { 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==' }
 
     def make_request(params)
@@ -1653,7 +1653,7 @@ RSpec.describe 'User', type: :request do
 
   describe 'PUT /api/v1/users/unlock/{id}' do
     let(:admin) { create(:admin) }
-    let(:agent) { create(:agent) }
+    let(:agent)    { create(:agent) }
     let(:customer) { create(:customer, login_failed: 2) }
 
     def make_request(id)

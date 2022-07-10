@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe 'Chat Handling', type: :system do
   let(:agent_chat_switch_selector) { '#navigation .js-chatMenuItem .js-switch' }
-  let(:chat_url) { "/assets/chat/#{chat_url_type}.html?port=#{ENV['WS_PORT']}" }
-  let(:chat_url_type) { 'znuny' }
+  let(:chat_url)                   { "/assets/chat/#{chat_url_type}.html?port=#{ENV['WS_PORT']}" }
+  let(:chat_url_type)              { 'znuny' }
 
   def authenticate
     Setting.set('chat', true)
@@ -111,12 +111,14 @@ RSpec.describe 'Chat Handling', type: :system do
       expect(page).to have_no_css('.active .chat-window .chat-status.is-modified')
 
       # Keep focus outside of chat window to check .chat-status.is-modified later.
-      click '#global-search'
+      click_on 'Dashboard'
 
       using_session :customer do
         check_content('.zammad-chat .zammad-chat-agent-status', 'Online')
         send_customer_message('my name is customer')
       end
+
+      click 'a[href="#customer_chat"]'
 
       expect(page).to have_css('.active .chat-window .chat-status.is-modified')
       check_content('.active .chat-window', 'my name is customer')
@@ -296,12 +298,10 @@ RSpec.describe 'Chat Handling', type: :system do
 
       click '.active .js-settings'
 
-      modal_ready
-
-      find('.modal [name="chat::phrase::1"]').send_keys('Hi Stranger!;My Greeting')
-      click '.modal .js-submit'
-
-      modal_disappear
+      in_modal do
+        find('[name="chat::phrase::1"]').send_keys('Hi Stranger!;My Greeting')
+        click '.js-submit'
+      end
 
       using_session :customer do
 
@@ -395,11 +395,11 @@ RSpec.describe 'Chat Handling', type: :system do
 
   context 'when image is present in chat message', authenticated_as: :authenticate do
     let(:chat) { create(:chat) }
-    let(:chat_user) { create(:agent) }
+    let(:chat_user)    { create(:agent) }
     let(:chat_session) { create(:'chat/session', user: chat_user, chat: chat) }
 
     before do
-      file     = File.binread(Rails.root.join('spec/fixtures/image/squares.png'))
+      file     = File.binread(Rails.root.join('spec/fixtures/files/image/squares.png'))
       base64   = Base64.encode64(file).delete("\n")
 
       create(
@@ -413,11 +413,12 @@ RSpec.describe 'Chat Handling', type: :system do
       it 'use image preview' do
         visit "#customer_chat/session/#{chat_session.id}"
 
-        click '.chat-body .chat-message img'
+        find('.chat-body .chat-message img') { |elem| ActiveModel::Type::Boolean.new.cast elem[:complete] }
+          .click
 
-        modal_ready
-
-        expect(page).to have_css('.js-submit', text: 'Download')
+        in_modal do
+          expect(page).to have_css('.js-submit', text: 'Download')
+        end
       end
     end
   end

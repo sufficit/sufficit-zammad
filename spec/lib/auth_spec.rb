@@ -4,8 +4,12 @@ require 'rails_helper'
 
 RSpec.describe Auth do
   let(:password) { 'zammad' }
-  let(:user) { create(:user, password: password) }
+  let(:user)     { create(:user, password: password) }
   let(:instance) { described_class.new(user.login, password) }
+
+  before do
+    stub_const('Auth::BRUTE_FORCE_SLEEP', 0)
+  end
 
   describe '.valid?' do
     it 'responds to valid?' do
@@ -83,7 +87,8 @@ RSpec.describe Auth do
         it 'failed login avoids brute force attack' do
           allow(instance).to receive(:sleep)
           instance.valid?
-          expect(instance).to have_received(:sleep).with(1)
+          # sleep receives the stubbed value.
+          expect(instance).to have_received(:sleep).with(0)
         end
       end
 
@@ -160,7 +165,7 @@ RSpec.describe Auth do
 
     context 'with a ldap user' do
       let(:password_ldap) { 'zammad_ldap' }
-      let(:ldap_user) { instance_double(Ldap::User) }
+      let(:ldap_user)     { instance_double(Ldap::User) }
 
       before do
         Setting.set('ldap_integration', true)
@@ -193,7 +198,8 @@ RSpec.describe Auth do
       end
 
       context 'with a ldap user without internal password' do
-        let(:user) { create(:user, source: 'Ldap') }
+        let(:ldap_source) { create(:ldap_source) }
+        let(:user)     { create(:user, source: "Ldap::#{ldap_source.id}") }
         let(:password) { password_ldap }
 
         context 'with valid credentials' do
@@ -226,7 +232,7 @@ RSpec.describe Auth do
       end
 
       context 'with a ldap user which also has a internal password' do
-        let(:user) { create(:user, source: 'Ldap', password: password) }
+        let(:user)     { create(:user, source: 'Ldap', password: password) }
         let(:password) { password_ldap }
 
         context 'with valid ldap credentials' do
