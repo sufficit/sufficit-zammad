@@ -248,16 +248,16 @@ returns
   ## group_id => para qual grupo do zammad devem ir as mensagens
   ## channel => canal/bot do quepasa que deve processar a msg
   def to_group(message, group_id, channel)
-    # begin import
-    Rails.logger.debug { 'import message' }
+    Rails.logger.info { 'QUEPASA: to group' }
 
     # Retorna por aqui caso a mensagem não seja válida
     return if !Quepasa.MessageValidate(message)
 
+    Rails.logger.info { 'QUEPASA: finding article' }
     # Retorna por aqui caso a msg já tenha sido processada em algum artigo
-    return if Ticket::Article.find_by(message_id: message[:message_id])
+    return if Ticket::Article.find_by(message_id: message[:id])
 
-        # define o ticket como nulo para comerçarmos o processo
+    # define o ticket como nulo para comerçarmos o processo
     ticket = nil
 
     # cria um transação para garantir que todo o processo seja coerente no final
