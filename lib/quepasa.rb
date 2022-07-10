@@ -211,6 +211,7 @@ returns
 =end
 
   def initialize(params)
+    Rails.logger.info { params.inspect }
     @token = params[:api_token]
     @api = QuepasaApi.new(params[:api_token], params[:api_base_url])
   end
