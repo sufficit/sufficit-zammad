@@ -410,7 +410,7 @@ returns
     Rails.logger.info { 'QUEPASA: get or create ticket from message ...' }
     Rails.logger.info { message.inspect }
     Rails.logger.info { user.inspect }
-    Rails.logger.info { group_id.inspect }
+    Rails.logger.info { channel.inspect }
 
     # prepare title
     title = '-'
@@ -425,7 +425,7 @@ returns
     raise RuntimeError, 'bot id not setted' if @bid.nil?
 
     state_ids        = Ticket::State.where(name: %w[closed merged removed]).pluck(:id)
-    possible_tickets = Ticket.where(customer_id: user.id).where.not(state_id: state_ids).order(:updated_at)
+    possible_tickets = Ticket.where(customer_id: user.id).where.not(state_id: state_ids)
     ticket           = possible_tickets.find_each.find { |possible_ticket| possible_ticket.preferences[:channel_id] == channel.id }
 
     if ticket
