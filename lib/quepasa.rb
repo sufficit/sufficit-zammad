@@ -460,13 +460,11 @@ returns
 
   def to_article(message, user, ticket, channel)
 
-    #Rails.logger.info { 'SUFF: Segue a msg para depuração' }
-    #Rails.logger.info { "SUFF: #{message}" }
-
-    Rails.logger.debug { 'Create article from message...' }
-    Rails.logger.debug { message.inspect }
-    Rails.logger.debug { user.inspect }
-    Rails.logger.debug { ticket.inspect }
+    Rails.logger.info { 'QUEPASA: create article from message ...' }
+    Rails.logger.info { message.inspect }
+    Rails.logger.info { user.inspect }
+    Rails.logger.info { ticket.inspect }
+    Rails.logger.info { channel.inspect }
 
     UserInfo.current_user_id = user.id
 
@@ -477,11 +475,10 @@ returns
 
     # capturando timestamp correto do envio ou recebimento da msg pelo quepasa
     # é preciso que seja em formato datetime, não int ou string
-    receveid_at = DateTime.strptime(message[:timestamp].to_s,'%s')
+    #received_at = DateTime.strptime(message[:timestamp].to_s,'%s')
 
     #recovering type id from database
     article_type_id = Ticket::Article::Type.find_by(name: 'quepasa personal-message').id
-    # Rails.logger.info { "SUFF: Generating article, Ticket::Article::Type : #{article_type_id}" }
 
     article = Ticket::Article.new(
       ticket_id:    ticket.id,
@@ -491,21 +488,14 @@ returns
       to:           "#{channel[:options][:bot][:phone]} - #{channel[:options][:bot][:name]}",
       message_id:   message[:id],
       internal:     false,
-      created_at:   receveid_at,
-      preferences:  {
-        quepasa: {
-          timestamp:  message[:timestamp], # Duplicado, marcado para remoção, obsoleto
-          message_id: message[:id], # Duplicado, marcado para remoção, obsoleto
-          from:       message[:chat][:id],
-        }
-      }
+      created_at:   message[:timestamp].to_datetime
     )
 
     if !message[:text]
       raise Exceptions::UnprocessableEntity, 'invalid quepasa message'
     end
 
-    Rails.logger.info { 'SUFF: Processando msg de texto simples ... ' }
+    Rails.logger.info { 'QUEPASA: processando msg de texto simples ... ' }
     article.content_type = 'text/plain'
     article.body = message[:text]
     article.save!
@@ -513,7 +503,7 @@ returns
     # Processando msg com anexos
     attachment = message[:attachment]
     if !attachment.nil? && !attachment.empty?
-      Rails.logger.info { 'SUFF: Processando attachment ... ' }
+      Rails.logger.info { 'QUEPASA: processando attachment ... ' }
       Store.remove(
         object: 'Ticket::Article',
         o_id:   article.id,
