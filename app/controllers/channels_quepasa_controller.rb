@@ -59,10 +59,13 @@ class ChannelsQuepasaController < ApplicationController
   end
 
   def webhook
+    Rails.logger.info { 'QUEPASA CONTROLLER: from webhook' }
+    Rails.logger.info { params.inspect }
     raise Exceptions::UnprocessableEntity, 'bot id is missing' if params['bid'].blank?
 
     channel = Quepasa.bot_by_bot_id(params['bid'])
     raise Exceptions::UnprocessableEntity, 'bot not found' if !channel
+    Rails.logger.info { channel.inspect }
 
     if channel.options[:callback_token] != params['callback_token']
       raise Exceptions::UnprocessableEntity, 'invalid callback token'
