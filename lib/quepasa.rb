@@ -83,7 +83,7 @@ returns
 
     # set webhook / callback url for this bot @ quepasa
     callback_url = "#{Setting.get('http_type')}://#{Setting.get('fqdn')}/api/v1/channels_quepasa_webhook/#{callback_token}?bid=#{@bid}"
-    Quepasa.set_webhook(callback_url)
+    @api.setWebhook(callback_url)
 
     if !channel
       channel = Quepasa.bot_by_bot_id(@bid)
