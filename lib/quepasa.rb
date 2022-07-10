@@ -56,7 +56,7 @@ returns
 
 create or update channel, store bot attributes and verify token
 
-  channel = Quepasa.create_or_update_channel('token', params)
+  channel = Quepasa.create_or_update_channel(params, channel)
 
 returns
 
@@ -67,7 +67,7 @@ returns
   def self.create_or_update_channel(params, channel = nil)
 
     # verify token
-    bot = Quepasa.check_token(token)
+    bot = Quepasa.check_token(params[:api_token])
 
     if !channel && Quepasa.bot_duplicate?(bot['id'])
       raise Exceptions::UnprocessableEntity, 'Bot already exists!'
