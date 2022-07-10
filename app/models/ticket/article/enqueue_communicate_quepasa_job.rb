@@ -44,7 +44,6 @@ module Ticket::Article::EnqueueCommunicateQuepasaJob
     # e preenche as informações basicas
     if !ticket.preferences['channel_id']
       Rails.logger.info { 'QUEPASA ENQUEUE: starting a ticket by quepasa' }
-      Rails.logger.info { ticket.inspect }
 
       ###
       ### setting the first quepasa channel as default outbound sender
@@ -56,6 +55,7 @@ module Ticket::Article::EnqueueCommunicateQuepasaJob
         channel_id: channel.id
       }
       ticket.save!
+      Rails.logger.info { ticket.inspect }
     end
 
     ### starting a ticket by quepasa
