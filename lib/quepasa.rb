@@ -148,9 +148,11 @@ returns
 =end
 
   def initialize(params)
+    Rails.logger.info { 'QUEPASA: initialize' }
     Rails.logger.info { params.inspect }
     @token = params[:api_token]
     @url = params[:api_base_url]
+    @bid = params[:bot][:id] 
     @api = QuepasaApi.new(@token, @url)
   end
 
