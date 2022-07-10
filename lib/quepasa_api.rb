@@ -31,6 +31,7 @@ class QuepasaApi
   attr_reader :token, :url
 
   def initialize(token, url = 'http://api.quepasa.org:31000/v3')
+    Rails.logger.info { "QUEPASA API: creating, token: #{token}, url: #{url}" }
     @token = token
     @url = url
   end
@@ -56,7 +57,7 @@ class QuepasaApi
   # Envia para QuePasa
   # QuePasa espera por (recipient, message, attachments?(opcional))
   def sendMessage(chat_id, message)
-    Rails.logger.info { "QUEPASA: Sending message to: #{chat_id} :: #{message}" }
+    Rails.logger.info { "QUEPASA API: Sending message to: #{chat_id} :: #{message}" }
 
     payload = { recipient: chat_id, message: message }
     urlQuery = @url + '/bot/' + @token + '/sendtext'

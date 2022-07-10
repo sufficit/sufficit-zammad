@@ -84,7 +84,7 @@ returns
 
     # set webhook / callback url for this bot @ quepasa
     callback_url = "#{Setting.get('http_type')}://#{Setting.get('fqdn')}/api/v1/channels_quepasa_webhook/#{callback_token}?bid=#{@bid}"
-    Quepasa.set_webhook(params[:api_token], params[:api_base_url], callback_url)
+    Quepasa.set_webhook(@token, @url, callback_url)
 
     if !channel
       channel = Quepasa.bot_by_bot_id(@bid)
@@ -99,8 +99,8 @@ returns
       },
       callback_token: callback_token,
       callback_url:   callback_url,
-      api_token:      params[:api_token],
-      api_base_url:   params[:api_base_url]
+      api_token:      @token,
+      api_base_url:   @url
     }
     channel.group_id = group.id
     channel.active = true
