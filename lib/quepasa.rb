@@ -412,16 +412,15 @@ returns
     end
 
     # find ticket or create one
+    if !@bid raise Exceptions::UnprocessableEntity, 'bot id not setted'
+
     bot_id = message['bid']
     state_ids        = Ticket::State.where(name: %w[closed merged removed]).pluck(:id)
     possible_tickets = Ticket.where(customer_id: user.id).where.not(state_id: state_ids).order(:updated_at)
     ticket           = possible_tickets.find_each.find { |possible_ticket| possible_ticket.preferences[:channel_id] == channel.id && possible_ticket.preferences[:quepasa][:bid] == bot_id }
 
-    # old method
-    # ticket = Ticket.where(customer_id: user.id).where.not(state_id: state_ids).where("preferences LIKE :bid", {:bid => "%bid: #{bot_id}%"}).order(:updated_at).first
-
     if ticket
-      Rails.logger.info { "SUFF: Append to ticket(#{ticket.id}) from message... #{bot_id}" }
+      Rails.logger.info { "QUEPASA: append to ticket(#{ticket.id}) from message ... #{bot_id}" }
 
       # check if title need to be updated
       if ticket.title == '-'
