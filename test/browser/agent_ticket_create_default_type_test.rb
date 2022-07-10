@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2022 Zammad Foundation, https://zammad-foundation.org/
+# Copyright (C) 2012-2021 Zammad Foundation, http://zammad-foundation.org/
 
 require 'browser_test_helper'
 
@@ -17,6 +17,10 @@ class AgentTicketCreateDefaultTypeTest < TestCase
 
     click(
       css: 'a[href="#ticket/create"]'
+    )
+
+    exists(
+      css: '.type-tabs li[data-type=quepasa-out]'
     )
 
     exists(

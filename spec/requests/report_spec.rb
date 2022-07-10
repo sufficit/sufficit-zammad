@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2022 Zammad Foundation, https://zammad-foundation.org/
+# Copyright (C) 2012-2021 Zammad Foundation, http://zammad-foundation.org/
 
 require 'rails_helper'
 
@@ -34,18 +34,25 @@ RSpec.describe 'Report', type: :request, searchindex: true do
       'create_channels::web_in':      true,
       'create_channels::twitter_in':  true,
       'create_channels::twitter_out': true,
+      'create_channels::quepasa_in':  true,
+      'create_channels::quepasa_out': true,
       'communication::phone_in':      true,
       'communication::phone_out':     true,
       'communication::email_in':      true,
       'communication::email_out':     true,
       'communication::web_in':        true,
       'communication::twitter_in':    true,
-      'communication::twitter_out':   true
+      'communication::twitter_out':   true,
+      'communication::quepasa_in':    true,
+      'communication::quepasa_out':   true
     }
   end
 
   before do
-    configure_elasticsearch rebuild: true do
+    configure_elasticsearch do
+
+      travel 1.minute
+
       travel_to today.midday
       Ticket.destroy_all
       create(:ticket, title: 'ticket for report #1', created_at: today.midday)
@@ -58,6 +65,13 @@ RSpec.describe 'Report', type: :request, searchindex: true do
       create(:ticket, title: 'ticket for report #8', created_at: Time.zone.parse('2019-03-01T00:30:00Z'))
       create(:ticket, title: 'ticket for report #9', created_at: Time.zone.parse('2019-03-31T23:30:00Z'))
       create(:ticket, title: 'ticket for report #10', created_at: Time.zone.parse('2019-04-01T00:30:00Z'))
+
+      rebuild_searchindex
+
+      # execute background jobs
+      Scheduler.worker(true)
+
+      sleep 6
     end
   end
 

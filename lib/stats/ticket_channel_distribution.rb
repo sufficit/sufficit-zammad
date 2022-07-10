@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2022 Zammad Foundation, https://zammad-foundation.org/
+# Copyright (C) 2012-2021 Zammad Foundation, http://zammad-foundation.org/
 
 class Stats::TicketChannelDistribution
 
@@ -67,11 +67,20 @@ class Stats::TicketChannelDistribution
       )
     end
 
-    if Channel.exists?(area: 'Telegram::Account')
+    if Channel.exists?(area: 'Telegram::Bot')
       channels.push(
         {
           sender: 'telegram',
           icon:   'telegram',
+        }
+      )
+    end
+
+    if Channel.exists?(area: 'Quepasa::Bot')
+      channels.push(
+        {
+          sender: 'quepasa',
+          icon:   'quepasa',
         }
       )
     end
