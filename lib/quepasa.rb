@@ -35,10 +35,10 @@ returns
 =end
 
   def self.set_webhook(token, callback_url)
-    ### Removed for testing 
     ### Removed for testing
     ### Removed for testing
-    
+    ### Removed for testing
+
     #if callback_url.match?(%r{^http://}i)
     #  raise Exceptions::UnprocessableEntity, 'webhook url need to start with https://, you use http://'
     #end
@@ -64,7 +64,7 @@ returns
 
 =end
 
-  def self.create_or_update_channel(token, params, channel = nil)
+  def self.create_or_update_channel(params, channel = nil)
 
     # verify token
     bot = Quepasa.check_token(token)
@@ -206,13 +206,13 @@ returns
 
 =begin
 
-  client = Quepasa.new('token')
+  client = Quepasa.new('params')
 
 =end
 
-  def initialize(token)
-    @token = token
-    @api = QuepasaApi.new(token)
+  def initialize(params)
+    @token = params[:api_token]
+    @api = QuepasaApi.new(params[:api_token], params[:api_base_url])
   end
 
 =begin
@@ -302,14 +302,14 @@ returns
     return false if message.nil?
 
     # caso tenho sido eu mesmo quem enviou a msg, não precisa processar pois o artigo já foi criado
-    return false if ActiveModel::Type::Boolean.new.cast(message[:fromme])    
+    return false if ActiveModel::Type::Boolean.new.cast(message[:fromme])
 
     # ignorando msgs de status do whatsapp
     return false if message[:replyto][:id] == 'status@broadcast'
-    
+
     return true
   end
-  
+
   # Porta de entrada das msgs
   ## params = mensagem vinda da api ou do webhook diretamente
   ## group_id => para qual grupo do zammad devem ir as mensagens
@@ -317,7 +317,7 @@ returns
   def to_group(message, group_id, channel)
     # begin import
     Rails.logger.debug { 'import message' }
-    
+
     # Retorna por aqui caso a mensagem não seja válida
     return if !Quepasa.MessageValidate(message)
 
@@ -331,8 +331,8 @@ returns
     # se não conhece database transactions, pare por aqui e vai estudar
     Transaction.execute(reset_user_id: true) do
       wagroup = to_wagroup(message)   # cria um usuario caso a msg venha de algum grupo
-      wauser  = to_wauser(message)    # cria outro usuario caso seja uma msg direta ou para o participante do grupo      
-      
+      wauser  = to_wauser(message)    # cria outro usuario caso seja uma msg direta ou para o participante do grupo
+
       wagroup = wauser if wagroup.nil?
       ticket = to_ticket(message, wagroup, group_id, channel)
       to_article(message, wauser, ticket, channel)
@@ -345,14 +345,14 @@ returns
     Rails.logger.debug { 'Create user/quepasa group from group message...' }
 
     # Somente se for uma msg de grupo
-    if message[:replyto][:id].end_with?("@g.us")   
+    if message[:replyto][:id].end_with?("@g.us")
 
       # definindo o que utilizar como endpoint de usuario
       endPointID = message[:replyto][:id]
       endPointTitle = message[:replyto][:title]
       endPointPhone = message[:replyto][:phone]
 
-      # create or update users  
+      # create or update users
       auth = Authorization.find_by(uid: endPointID, provider: 'quepasa')
       user = if auth
               User.find(auth.user_id)
@@ -371,7 +371,7 @@ returns
 
       # atualizando nome de usuario se possível
       suffixName = "(GROUP)"
-      
+
       # atualiza o primeiro nome do usuário com a definição mais atual vinda do quepasa
       # somente realiza a mudança se o último nome estiver em branco ou caso ainda tenha a tag (QUEPASA)
       # removendo ou modificando manualmente este sufixo, faz com que o titulo para de ser atualizado automáticamente
@@ -399,7 +399,7 @@ returns
     user
   end
 
-  def to_wauser(message)        
+  def to_wauser(message)
     Rails.logger.debug { "Create user from message ..." }
     Rails.logger.debug { message.inspect }
 
@@ -414,7 +414,7 @@ returns
       endPointPhone = message[:replyto][:phone]
     end
 
-    # create or update users  
+    # create or update users
     auth = Authorization.find_by(uid: endPointID, provider: 'quepasa')
     user = if auth
              User.find(auth.user_id)
@@ -432,10 +432,10 @@ returns
         role_ids:  Role.signup_role_ids
       )
     end
-    
+
     # atualizando nome de usuario se possível
     suffixName = "(CONTACT)"
-    
+
     # atualiza o primeiro nome do usuário com a definição mais atual vinda do quepasa
     # somente realiza a mudança se o último nome estiver em branco ou caso ainda tenha a tag (CONTACT)
     # removendo ou modificando manualmente este sufixo, faz com que o titulo para de ser atualizado automáticamente
@@ -477,16 +477,16 @@ returns
     if title.length > 60
       title = "#{title[0, 60]}..."
     end
-        
-    # find ticket or create one   
+
+    # find ticket or create one
     bot_id = message['bid']
     state_ids        = Ticket::State.where(name: %w[closed merged removed]).pluck(:id)
     possible_tickets = Ticket.where(customer_id: user.id).where.not(state_id: state_ids).order(:updated_at)
     ticket           = possible_tickets.find_each.find { |possible_ticket| possible_ticket.preferences[:channel_id] == channel.id && possible_ticket.preferences[:quepasa][:bid] == bot_id }
-    
+
     # old method
     # ticket = Ticket.where(customer_id: user.id).where.not(state_id: state_ids).where("preferences LIKE :bid", {:bid => "%bid: #{bot_id}%"}).order(:updated_at).first
-    
+
     if ticket
       Rails.logger.info { "SUFF: Append to ticket(#{ticket.id}) from message... #{bot_id}" }
 
@@ -513,7 +513,7 @@ returns
         # Usado para encontrar esse elemento ao responder um ticket
         # Usado somente se não encontrar pelo quepasa:bot
         channel_id: channel.id,
-        
+
         # Salva informações do contato para ser usado ao responder qualquer artigo dentro deste ticket
         quepasa:  {
           bid:     bot_id, # Qual Quepasa utilizar para resposta
@@ -570,17 +570,17 @@ returns
 
     if !message[:text]
       raise Exceptions::UnprocessableEntity, 'invalid quepasa message'
-    end    
+    end
 
-    Rails.logger.info { 'SUFF: Processando msg de texto simples ... ' } 
-    article.content_type = 'text/plain'      
+    Rails.logger.info { 'SUFF: Processando msg de texto simples ... ' }
+    article.content_type = 'text/plain'
     article.body = message[:text]
     article.save!
 
-    # Processando msg com anexos    
+    # Processando msg com anexos
     attachment = message[:attachment]
     if !attachment.nil? && !attachment.empty?
-      Rails.logger.info { 'SUFF: Processando attachment ... ' } 
+      Rails.logger.info { 'SUFF: Processando attachment ... ' }
       Store.remove(
         object: 'Ticket::Article',
         o_id:   article.id,
@@ -601,7 +601,7 @@ returns
 
       begin
         # Tentando extrair dados binarios (conteudo do anexo)
-        document = get_file(message[:replyto][:id], attachment, 'pt-br')      
+        document = get_file(message[:replyto][:id], attachment, 'pt-br')
 
         Store.add(
           object:      'Ticket::Article',
@@ -618,13 +618,13 @@ returns
           article.save!
         end
     end
-    
-    return article    
+
+    return article
   end
 
   def get_file(destination, attachment, language)
     Rails.logger.info "QUEPASA: Geting file : #{attachment}"
-    
+
     # quepasa bot files are limited up to 20MB
     if !validate_file_size(attachment['length'])
       message_text = 'File is to big. (Maximum 20mb)'
@@ -633,8 +633,8 @@ returns
     end
 
     begin
-      result = @api.getAttachment(attachment)     
-    rescue => e 
+      result = @api.getAttachment(attachment)
+    rescue => e
       message(destination, "Sorry, we could not handle your message. System unknown error", language)
       raise Exceptions::UnprocessableEntity, e.message
     end
@@ -665,6 +665,6 @@ returns
 
 
   # ---- SUFFICIT
-  # --------------------------------  
+  # --------------------------------
 
 end

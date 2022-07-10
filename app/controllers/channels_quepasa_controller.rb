@@ -19,7 +19,7 @@ class ChannelsQuepasaController < ApplicationController
 
   def add
     begin
-      channel = Quepasa.create_or_update_channel(params[:api_token], params)
+      channel = Quepasa.create_or_update_channel(params)
     rescue => e
       raise Exceptions::UnprocessableEntity, e.message
     end
@@ -29,7 +29,7 @@ class ChannelsQuepasaController < ApplicationController
   def update
     channel = Channel.find_by(id: params[:id], area: 'Quepasa::Bot')
     begin
-      channel = Quepasa.create_or_update_channel(params[:api_token], params, channel)
+      channel = Quepasa.create_or_update_channel(params, channel)
     rescue => e
       raise Exceptions::UnprocessableEntity, e.message
     end
@@ -66,7 +66,7 @@ class ChannelsQuepasaController < ApplicationController
       raise Exceptions::UnprocessableEntity, 'invalid callback token'
     end
 
-    quepasa = Quepasa.new(channel.options[:api_token])
+    quepasa = Quepasa.new(channel.options)
     begin
       quepasa.to_group(params, channel.group_id, channel)
     rescue Exceptions::UnprocessableEntity => e

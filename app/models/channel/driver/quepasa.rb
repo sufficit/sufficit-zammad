@@ -25,7 +25,7 @@ class Channel::Driver::Quepasa
 
     options = check_external_credential(options)
 
-    @client = Quepasa.new(options[:auth][:api_key])
+    @client = Quepasa.new(options)
     @client.from_article(article)
 
   end
