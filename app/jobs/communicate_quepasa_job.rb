@@ -1,5 +1,5 @@
 class CommunicateQuepasaJob < ApplicationJob
-  
+
   retry_on StandardError, attempts: 4, wait: lambda { |executions|
     executions * 5.seconds
   }
@@ -27,7 +27,7 @@ class CommunicateQuepasaJob < ApplicationJob
     log_error(article, "Channel.find(#{channel.id}) has not quepasa api token!") if channel.options[:api_token].blank?
 
     begin
-      api = QuepasaApi.new(channel.options[:api_token])
+      api = QuepasaApi.new(channel.options[:api_token], channel.options[:api_base_url])
       chat_id = ticket.preferences[:quepasa][:chat_id]
 
       # ajustando o corpo da msg para texto simples caso ainda não seja
@@ -35,7 +35,7 @@ class CommunicateQuepasaJob < ApplicationJob
 
         Rails.logger.info { "QUEPASA: adjust content type #{article.content_type} :: #{article.body}" }
 
-        # tenta atualizar primeiro, depois troca o formato se a atualização foi bem sucedida        
+        # tenta atualizar primeiro, depois troca o formato se a atualização foi bem sucedida
         article.body = article.body.html2text
         article.content_type = 'text/plain'
       end
@@ -44,7 +44,7 @@ class CommunicateQuepasaJob < ApplicationJob
 
       ### Prepend user name to quepasa
       user = User.find_by(id: article.created_by_id)
-      if user 
+      if user
         Rails.logger.info { "QUEPASA: Prepending user title" }
         prependText = "\*#{user.firstname} #{user.lastname}\*: "
         messageToSend = "#{prependText}#{messageToSend}"
@@ -78,7 +78,7 @@ class CommunicateQuepasaJob < ApplicationJob
       }
 
       #article.from = "@#{me['username']}"
-      #article.to = "#{result['chat']['title']} Channel"   
+      #article.to = "#{result['chat']['title']} Channel"
     end
 
     # set delivery status

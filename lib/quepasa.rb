@@ -12,8 +12,8 @@ check token and return bot attributes of token
 
 =end
 
-  def self.check_token(token)
-    api = QuepasaApi.new(token)
+  def self.check_token(token, url)
+    api = QuepasaApi.new(token, url)
     begin
       bot = api.getMe()
     rescue
@@ -26,7 +26,7 @@ check token and return bot attributes of token
 
 set webhook for bot
 
-  success = Quepasa.set_webhook('token', callback_url)
+  success = Quepasa.set_webhook(token, url, callback_url)
 
 returns
 
@@ -34,16 +34,8 @@ returns
 
 =end
 
-  def self.set_webhook(token, callback_url)
-    ### Removed for testing
-    ### Removed for testing
-    ### Removed for testing
-
-    #if callback_url.match?(%r{^http://}i)
-    #  raise Exceptions::UnprocessableEntity, 'webhook url need to start with https://, you use http://'
-    #end
-
-    api = QuepasaApi.new(token)
+  def self.set_webhook(token, url, callback_url)
+    api = QuepasaApi.new(token, url)
     begin
       api.setWebhook(callback_url)
     rescue
@@ -67,7 +59,7 @@ returns
   def self.create_or_update_channel(params, channel = nil)
 
     # verify token
-    bot = Quepasa.check_token(params[:api_token])
+    bot = Quepasa.check_token(params[:api_token], params[:api_base_url])
 
     if !channel && Quepasa.bot_duplicate?(bot['id'])
       raise Exceptions::UnprocessableEntity, 'Bot already exists!'
@@ -91,7 +83,7 @@ returns
 
     # set webhook / callback url for this bot @ quepasa
     callback_url = "#{Setting.get('http_type')}://#{Setting.get('fqdn')}/api/v1/channels_quepasa_webhook/#{callback_token}?bid=#{bot['id']}"
-    Quepasa.set_webhook(token, callback_url)
+    Quepasa.set_webhook(params[:api_token], params[:api_base_url], callback_url)
 
     if !channel
       channel = Quepasa.bot_by_bot_id(bot['id'])
@@ -213,7 +205,8 @@ returns
   def initialize(params)
     Rails.logger.info { params.inspect }
     @token = params[:api_token]
-    @api = QuepasaApi.new(params[:api_token], params[:api_base_url])
+    @url = params[:api_base_url]
+    @api = QuepasaApi.new(token, url)
   end
 
 =begin
