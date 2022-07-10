@@ -64,7 +64,7 @@ returns
     @api.setWebhook(callback_url)
 
     if !channel
-      channel = Quepasa.bot_by_bot_id(@bid)
+      channel = Quepasa.GetChannelFromId(@bid)
       if !channel
         channel = Channel.new
       end
@@ -114,7 +114,7 @@ returns
 
 get channel by bot_id
 
-  channel = Quepasa.bot_by_bot_id(bot_id)
+  channel = Quepasa.GetChannelFromId(bot_id)
 
 returns
 
@@ -123,12 +123,12 @@ returns
 =end
 
   ### Tentar localizar no Zammad o Bot referente ao ID passado em parametro
-  def self.bot_by_bot_id(bot_id)
+  def self.GetChannelFromId(botId)
     Channel.where(area: 'Quepasa::Bot').each do |channel|
       next if !channel.options
       next if !channel.options[:bot]
       next if !channel.options[:bot][:id]
-      return channel if channel.options[:bot][:id].to_s == bot_id.to_s
+      return channel if channel.options[:bot][:id].to_s == botId.to_s
     end
     nil
   end
@@ -397,7 +397,7 @@ returns
   def to_ticket(message, user, group_id, channel)
     UserInfo.current_user_id = user.id
 
-    Rails.logger.info { 'QUEPASA: create ticket from message ...' }
+    Rails.logger.info { 'QUEPASA: get or create ticket from message ...' }
     Rails.logger.info { message.inspect }
     Rails.logger.info { user.inspect }
     Rails.logger.info { group_id.inspect }
@@ -414,13 +414,12 @@ returns
     # find ticket or create one
     if !@bid raise Exceptions::UnprocessableEntity, 'bot id not setted'
 
-    bot_id = message['bid']
     state_ids        = Ticket::State.where(name: %w[closed merged removed]).pluck(:id)
     possible_tickets = Ticket.where(customer_id: user.id).where.not(state_id: state_ids).order(:updated_at)
-    ticket           = possible_tickets.find_each.find { |possible_ticket| possible_ticket.preferences[:channel_id] == channel.id && possible_ticket.preferences[:quepasa][:bid] == bot_id }
+    ticket           = possible_tickets.find_each.find { |possible_ticket| possible_ticket.preferences[:channel_id] == channel.id && possible_ticket.preferences[:quepasa][:bid] == @bid }
 
     if ticket
-      Rails.logger.info { "QUEPASA: append to ticket(#{ticket.id}) from message ... #{bot_id}" }
+      Rails.logger.info { "QUEPASA: append to ticket(#{ticket.id}) from message ... #{@bid}" }
 
       # check if title need to be updated
       if ticket.title == '-'
@@ -434,7 +433,7 @@ returns
       return ticket
     end
 
-    Rails.logger.info { "QUEPASA: creating new ticket from message... #{bot_id}" }
+    Rails.logger.info { "QUEPASA: creating new ticket from message ... #{@bid}" }
     ticket = Ticket.new(
       group_id:    group_id,
       title:       title,
@@ -443,12 +442,11 @@ returns
       customer_id: user.id,
       preferences: {
         # Usado para encontrar esse elemento ao responder um ticket
-        # Usado somente se não encontrar pelo quepasa:bot
         channel_id: channel.id,
 
         # Salva informações do contato para ser usado ao responder qualquer artigo dentro deste ticket
         quepasa:  {
-          bid:     bot_id, # Qual Quepasa utilizar para resposta
+          bid:     @bid, # Qual Quepasa utilizar para resposta
           chat_id: message[:chat][:id] # Destino no quepasa
         }
       }
