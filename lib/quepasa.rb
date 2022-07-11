@@ -500,7 +500,9 @@ returns
     # Processando msg com anexos
     attachment = message[:attachment]
     if !attachment.nil? && !attachment.empty?
-      Rails.logger.info { 'QUEPASA: processando attachment ... ' }
+      Rails.logger.info { 'QUEPASA: processing attachment ... ' }
+      Rails.logger.info { attachment.inspect }
+
       Store.remove(
         object: 'Ticket::Article',
         o_id:   article.id,
@@ -521,7 +523,7 @@ returns
 
       begin
         # Tentando extrair dados binarios (conteudo do anexo)
-        document = get_file(message[:chat][:id], attachment, 'pt-br')
+        document = get_file(message[:id], message[:chat][:id], attachment, 'pt-br')
 
         Store.add(
           object:      'Ticket::Article',
@@ -534,7 +536,7 @@ returns
         )
 
         rescue => e
-          article.body = "(( Erro ao tentar baixar anexo )) :: #{e.message[0..50].gsub(/\s\w+\s*$/,'...')}"
+          article.body = "(( error on downloading attachment )) :: #{e.message[0..50].gsub(/\s\w+\s*$/,'...')}"
           article.save!
         end
     end
@@ -542,26 +544,26 @@ returns
     return article
   end
 
-  def get_file(destination, attachment, language)
-    Rails.logger.info "QUEPASA: Geting file : #{attachment}"
+  def get_file(messageId, destination, attachment, language)
 
     # quepasa bot files are limited up to 20MB
-    if !validate_file_size(attachment['length'])
-      message_text = 'File is to big. (Maximum 20mb)'
-      message(destination, "Sorry, we could not handle your message. #{message_text}", language)
+    if !validate_file_size(attachment['filelength'])
+      message_text = 'file is to big. (maximum 20mb)'
+      message(destination, "sorry, we could not handle your message. #{message_text}", language)
       raise Exceptions::UnprocessableEntity, message_text
     end
 
     begin
-      result = @api.getAttachment(attachment)
+      Rails.logger.info { "QUEPASA: getting file ... " }
+      result = @api.getAttachment(messageId)
     rescue => e
-      message(destination, "Sorry, we could not handle your message. System unknown error", language)
+      message(destination, "sorry, we could not handle your message. system unknown error", language)
       raise Exceptions::UnprocessableEntity, e.message
     end
 
     if !validate_download(result)
-      message_text = 'Unable to get you file from bot.'
-      message(destination, "Sorry, we could not handle your message. #{message_text}", language)
+      message_text = 'unable to get you file from bot.'
+      message(destination, "sorry, we could not handle your message. #{message_text}", language)
       raise Exceptions::UnprocessableEntity, message_text
     end
 
@@ -569,22 +571,17 @@ returns
   end
 
   def validate_file_size(length)
-    Rails.logger.info "SUFF: Validating file size : #{length}"
+    Rails.logger.info { "QUEPASA: validating file size, length: #{length}" }
     return false if length >= 20.megabytes
 
     true
   end
 
   def validate_download(result)
-    Rails.logger.info "QUEPASA: Validating download ..."
+    Rails.logger.info { "QUEPASA: validating download ..." }
     return false if result.nil?
 
     true
   end
-
-
-
-  # ---- SUFFICIT
-  # --------------------------------
 
 end
