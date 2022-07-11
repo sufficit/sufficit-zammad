@@ -78,11 +78,11 @@ class QuepasaApi
 
   # Vai na API do QuePasa e faz o download do anexo específico
   # Individualmente
-  def getAttachment(payload)
-    Rails.logger.info { "QUEPASA: Downloading attachment :: #{payload[:mime]}" }
+  def getAttachment(messageId)
+    Rails.logger.info { "QUEPASA: downloading msg attachment id: #{messageId}" }
 
-    urlQuery = @url + '/bot/' + @token + '/attachment'
-    ret = RestClient.post(urlQuery, payload.to_json, { :content_type => :json, accept: :json })
+    url = @url + '/bot/' + @token + '/download/message'
+    ret = RestClient.get(url, params: { id: messageId })
     ret
   end
 
@@ -105,8 +105,6 @@ class QuepasaApi
     end
     url = @api + '/bot/' + @token + path
 
-    #Rails.logger.debug { url }
-    #Rails.logger.debug {"params #{params.inspect}"}
     resp = RestClient.get(url, { accept: :json, :params => params })
     ret = JSON.parse(resp.body)
     ret
