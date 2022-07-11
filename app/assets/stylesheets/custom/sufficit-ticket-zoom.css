@@ -1,0 +1,43 @@
+.ticket-article-item {
+  padding-bottom: 5px;
+  margin: 0px;
+}
+
+.ticket-article-item.is-internal {
+  padding-bottom: 10px;
+  padding-top: 5px;
+}
+
+.ticket-article-item > div[class="js-article-actions"] {
+  opacity: 0%;
+  height: 1px;
+  transition: opacity 0.5s 0.2s, height 0.5s 0.2s;
+}
+
+.ticket-article-item:hover > div[class="js-article-actions"] {
+  height: 30px;
+  opacity: 100%;
+}
+
+.ticket-article-item .article-timestamp {
+  text-align: right;
+  width: auto;
+  float: right;
+  position: relative;
+  margin-top: -8px;
+  margin-right: -6px;
+}
+
+.ticket-article-item .article-timestamp-clearing {
+  clear: both;
+}
+
+.ticket-article-item .article-timestamp > small {
+  font-style: italic;
+  font-size: x-small;
+}
+
+.article-new {
+  margin-top: 20px;
+  margin-bottom: 36px;
+}
