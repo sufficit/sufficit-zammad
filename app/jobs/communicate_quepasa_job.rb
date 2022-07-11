@@ -13,13 +13,11 @@ class CommunicateQuepasaJob < ApplicationJob
     article.preferences['delivery_retry'] += 1
 
     ticket = Ticket.lookup(id: article.ticket_id)
-    log_error(article, "Can't find ticket.preferences for Ticket.find(#{article.ticket_id})") if !ticket.preferences
-    #log_error(article, "Can't find ticket.preferences['quepasa'] for Ticket.find(#{article.ticket_id})") if !ticket.preferences['quepasa']
-    #log_error(article, "Can't find ticket.preferences['quepasa']['chat_id'] for Ticket.find(#{article.ticket_id})") if !ticket.preferences['quepasa']['chat_id']
+    log_error(article, "Can't find ticket.preferences for Ticket.find(#{article.ticket_id})", true) if !ticket.preferences
 
     channel = Channel.lookup(id: ticket.preferences['channel_id'])
-    log_error(article, "No such channel for channel id #{ticket.preferences['channel_id']}") if !channel
-    log_error(article, "Channel.find(#{channel.id}) has not quepasa api token!") if channel.options[:api_token].blank?
+    log_error(article, "No such channel with id: #{ticket.preferences['channel_id']}", true) if !channel
+    log_error(article, "Channel.find(#{channel.id}) has not quepasa api token!", true) if channel.options[:api_token].blank?
 
     begin
       api = QuepasaApi.new(channel.options[:api_token], channel.options[:api_base_url])
@@ -90,7 +88,7 @@ class CommunicateQuepasaJob < ApplicationJob
     article
   end
 
-  def log_error(local_record, message)
+  def log_error(local_record, message, critical = false)
     local_record.preferences['delivery_status'] = 'fail'
     local_record.preferences['delivery_status_message'] = message.encode!('UTF-8', 'UTF-8', invalid: :replace, replace: '?')
     local_record.preferences['delivery_status_date'] = Time.now.utc
@@ -98,9 +96,9 @@ class CommunicateQuepasaJob < ApplicationJob
     Rails.logger.error message
 
     ### Teste de tradução de mensagem de erro para o quepasa
-    if local_record.preferences['delivery_retry'] > 3
+    if local_record.preferences['delivery_retry'] > 3 || critical
 
-      prependMessage = "Unable to send quepasa message"
+      prependMessage = "Unable to send Quepasa message"
       language_code = Setting.get('locale_default') || 'en'
       locale = Locale.find_by(alias: language_code)
       if !locale
