@@ -501,6 +501,8 @@ returns
     attachment = message[:attachment]
     if !attachment.nil? && !attachment.empty?
       Rails.logger.info { 'QUEPASA: processando attachment ... ' }
+      Rails.logger.info { attachment.inspect }
+
       Store.remove(
         object: 'Ticket::Article',
         o_id:   article.id,
@@ -543,10 +545,10 @@ returns
   end
 
   def get_file(destination, attachment, language)
-    Rails.logger.info "QUEPASA: Geting file : #{attachment}"
+    Rails.logger.info { "QUEPASA: getting file ... " }
 
     # quepasa bot files are limited up to 20MB
-    if !validate_file_size(attachment['length'])
+    if !validate_file_size(attachment['filelength'])
       message_text = 'File is to big. (Maximum 20mb)'
       message(destination, "Sorry, we could not handle your message. #{message_text}", language)
       raise Exceptions::UnprocessableEntity, message_text
@@ -569,22 +571,17 @@ returns
   end
 
   def validate_file_size(length)
-    Rails.logger.info "SUFF: Validating file size : #{length}"
+    Rails.logger.info { "QUEPASA: validating file size, length: #{length}" }
     return false if length >= 20.megabytes
 
     true
   end
 
   def validate_download(result)
-    Rails.logger.info "QUEPASA: Validating download ..."
+    Rails.logger.info { "QUEPASA: validating download ..." }
     return false if result.nil?
 
     true
   end
-
-
-
-  # ---- SUFFICIT
-  # --------------------------------
 
 end
