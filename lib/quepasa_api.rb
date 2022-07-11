@@ -81,8 +81,9 @@ class QuepasaApi
   def getAttachment(messageId)
     Rails.logger.info { "QUEPASA: downloading msg attachment id: #{messageId}" }
 
-    urlQuery = @url + '/bot/' + @token + '/download'
-    ret = RestClient.get(urlQuery)
+    payload = { id: messageId }
+    url = @url + '/bot/' + @token + '/download'
+    ret = RestClient.get(url, { :params => payload })
     ret
   end
 
@@ -105,8 +106,6 @@ class QuepasaApi
     end
     url = @api + '/bot/' + @token + path
 
-    #Rails.logger.debug { url }
-    #Rails.logger.debug {"params #{params.inspect}"}
     resp = RestClient.get(url, { accept: :json, :params => params })
     ret = JSON.parse(resp.body)
     ret
