@@ -557,6 +557,7 @@ returns
       Rails.logger.info { "QUEPASA: getting file ... " }
       result = @api.getAttachment(messageId)
     rescue => e
+      Rails.logger.error { "QUEPASA: error on download attach: #{e}" }
       message(destination, "sorry, we could not handle your message. system unknown error", language)
       raise Exceptions::UnprocessableEntity, e.message
     end
