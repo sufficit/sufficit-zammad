@@ -81,8 +81,8 @@ class QuepasaApi
   def getAttachment(messageId)
     Rails.logger.info { "QUEPASA: downloading msg attachment id: #{messageId}" }
 
-    url = @url + '/bot/' + @token + '/download/message'
-    ret = RestClient.get(url, params: { id: messageId })
+    url = @url + '/bot/' + @token + '/download'
+    ret = RestClient.get(url, params: { messageId: messageId })
     ret
   end
 

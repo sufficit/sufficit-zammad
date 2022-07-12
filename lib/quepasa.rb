@@ -37,7 +37,7 @@ returns
 
     # verify token
     info = check_token()
-    @bid = info['bot']['id']
+    @bid = info['server']['bot']['id']
 
     if !channel && duplicate?()
       raise Exceptions::UnprocessableEntity, 'Bot already exists!'
@@ -152,7 +152,7 @@ returns
     Rails.logger.info { params.inspect }
     @token = params[:api_token]
     @url = params[:api_base_url]
-    @bid = params[:bot][:id]
+    @bid = params[:server][:bot][:id]
     @api = QuepasaApi.new(@token, @url)
   end
 
@@ -557,6 +557,7 @@ returns
       Rails.logger.info { "QUEPASA: getting file ... " }
       result = @api.getAttachment(messageId)
     rescue => e
+      Rails.logger.error { "QUEPASA: error on download attach: #{e}" }
       message(destination, "sorry, we could not handle your message. system unknown error", language)
       raise Exceptions::UnprocessableEntity, e.message
     end
