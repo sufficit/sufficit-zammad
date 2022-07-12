@@ -37,7 +37,7 @@ returns
 
     # verify token
     info = check_token()
-    @bid = info['bot']['id']
+    @bid = info['server']['bot']['id']
 
     if !channel && duplicate?()
       raise Exceptions::UnprocessableEntity, 'Bot already exists!'
