@@ -152,7 +152,7 @@ returns
     Rails.logger.info { params.inspect }
     @token = params[:api_token]
     @url = params[:api_base_url]
-    @bid = params[:bot][:id]
+    @bid = params[:server][:bot][:id]
     @api = QuepasaApi.new(@token, @url)
   end
 
