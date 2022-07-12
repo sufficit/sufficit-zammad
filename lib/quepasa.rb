@@ -421,7 +421,11 @@ returns
     end
 
     # find ticket or create one
-    raise RuntimeError, 'bot id not setted' if @bid.nil?
+    # raise RuntimeError, 'bot id not setted' if @bid.nil?
+    if @bid.nil?
+      info = check_token()
+      @bid = info['server']['bot']['id']
+    end
 
     state_ids        = Ticket::State.where(name: %w[closed merged removed]).pluck(:id)
     possible_tickets = Ticket.where(customer_id: user.id).where.not(state_id: state_ids)
