@@ -48,7 +48,7 @@ class QuepasaApi
   # Vai na API do QuePasa e atualiza o endereço de webhook para agilizar as entregas de msgs
   def setWebhook(urlWebHook)
     Rails.logger.info { "QUEPASA API: atualizando webhook, url: #{urlWebHook}" }
-    payload = { url: urlWebHook }
+    payload = { url: urlWebHook, forwardinternal: true, trackid: "zammad" }
     urlQuery = @url + '/bot/' + @token + '/webhook'
     ret = RestClient.post(urlQuery, payload.to_json, { :content_type => :json, accept: :json })
     ret
