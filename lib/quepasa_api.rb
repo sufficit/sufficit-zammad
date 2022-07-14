@@ -34,6 +34,7 @@ class QuepasaApi
     Rails.logger.info { "QUEPASA API: creating, token: #{token}, url: #{url}" }
     @token = token
     @url = url
+    @trackId = 'zammad'
   end
 
   def getMe()
@@ -48,7 +49,7 @@ class QuepasaApi
   # Vai na API do QuePasa e atualiza o endereço de webhook para agilizar as entregas de msgs
   def setWebhook(urlWebHook)
     Rails.logger.info { "QUEPASA API: atualizando webhook, url: #{urlWebHook}" }
-    payload = { url: urlWebHook, forwardinternal: true, trackid: "zammad" }
+    payload = { url: urlWebHook, forwardinternal: true, trackid: @trackId }
     urlQuery = @url + '/bot/' + @token + '/webhook'
     ret = RestClient.post(urlQuery, payload.to_json, { :content_type => :json, accept: :json })
     ret
@@ -59,20 +60,30 @@ class QuepasaApi
   def sendMessage(chat_id, message)
     Rails.logger.info { "QUEPASA API: sending message to: #{chat_id} :: #{message}" }
 
+    headers = {
+      :content_type => :json,
+      accept: :json,
+      "X-QUEPASA-TRACKID": @trackId
+    }
     payload = { recipient: chat_id, message: message }
     urlQuery = @url + '/bot/' + @token + '/sendtext'
-    ret = RestClient.post(urlQuery, payload.to_json, { :content_type => :json, accept: :json })
+    ret = RestClient.post(urlQuery, payload.to_json, headers)
     ret = JSON.parse(ret)
     ret
   end
 
   def sendDocument(chat_id, document)
-    Rails.logger.info { "QUEPASA: Sending document to: #{chat_id} " }
+    Rails.logger.info { "QUEPASA: sending document to: #{chat_id} " }
     Rails.logger.info { "QUEPASA: #{ document[:filename] }" }
 
+    headers = {
+      :content_type => :json,
+      accept: :json,
+      "X-QUEPASA-TRACKID": @trackId
+    }
     payload = { recipient: chat_id, attachment: document }
     urlQuery = @url + '/bot/' + @token + '/senddocument'
-    ret = RestClient.post(urlQuery, payload.to_json, { :content_type => :json, accept: :json })
+    ret = RestClient.post(urlQuery, payload.to_json, headers)
     ret
   end
 
